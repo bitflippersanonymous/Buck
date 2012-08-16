@@ -20,6 +20,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+                <activity
+            android:name=".MillActivity"
+            android:label="@string/title_activity_mill" >
+        </activity>
+        <activity
+            android:name=".JobActivity"
+            android:label="@string/title_activity_job" >
+        </activity>
+        
     </application>
 
 </manifest>

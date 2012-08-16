@@ -1,11 +1,21 @@
 <resources>
 
     <string name="app_name">Frag</string>
-    <string name="title_section3">Section 3</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section1">Section 1</string>
-    <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
-    <string name="title_activity_main">MainActivity</string>
-
+    <string name="title_activity_main">Main</string>
+    <string name="title_activity_mill">Mill Detail</string>
+    <string name="title_activity_job">Job Detail</string>
+<string-array name="navigation_items">
+        <item name="mill">Mill</item>
+        <item name="job">Job</item>
+    </string-array>
+    <string-array name="mills">
+        <item name="big_lumber">Big Lumber</item>
+        <item name="small_sawyer">Small Sawyer</item>
+    </string-array>
+        <string-array name="jobs">
+        <item name="back_40">Back 40</item>
+        <item name="pumpkin_patch">Pumpkin Patch</item>
+    </string-array>
+    
 </resources>

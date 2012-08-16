@@ -3,10 +3,13 @@ package com.example.frag;
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.ListFragment;
 import android.support.v4.app.NavUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -14,13 +17,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 
-public class MainActivity extends FragmentActivity implements ActionBar.OnNavigationListener {
+public class MainActivity extends FragmentActivity 
+	implements ActionBar.OnNavigationListener, MainListFragment.OnItemListener  {
 
     private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
-
+    //private static Class<?>[] mChildActivities = {MillActivity.class, JobActivity.class};
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,20 +39,23 @@ public class MainActivity extends FragmentActivity implements ActionBar.OnNaviga
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
         // Set up the dropdown list navigation in the action bar.
-        actionBar.setListNavigationCallbacks(
+        final String[] navigation_items = getResources().getStringArray(R.array.navigation_items);
+		actionBar.setListNavigationCallbacks(
                 // Specify a SpinnerAdapter to populate the dropdown list.
                 new ArrayAdapter<String>(
                         actionBar.getThemedContext(),
                         android.R.layout.simple_list_item_1,
                         android.R.id.text1,
-                        new String[]{
-                                getString(R.string.title_section1),
-                                getString(R.string.title_section2),
-                                getString(R.string.title_section3),
-                        }),
+                        navigation_items
+                        ),
                 this);
     }
 
+    @Override
+    public void onResume() {
+      super.onResume();
+    }
+    
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         if (savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
@@ -71,33 +81,52 @@ public class MainActivity extends FragmentActivity implements ActionBar.OnNaviga
     @Override
     public boolean onNavigationItemSelected(int position, long id) {
         // When the given tab is selected, show the tab contents in the container
-        Fragment fragment = new DummySectionFragment();
+    	MainListFragment fragment = new MainListFragment();
+        fragment.setListAdapter(getItemListAdapter(position));
         Bundle args = new Bundle();
-        args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
+        args.putInt(MainListFragment.ARG_SECTION_NUMBER, position);
         fragment.setArguments(args);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, fragment)
                 .commit();
+        fragment.setOnItemListener(this); // May need to do this in onCreate and onResume
         return true;
     }
+    
+    private ListAdapter getItemListAdapter(int position) {
+    	int index = 0;
+    	switch ( position ) {
+    	case 0: // FIXME: wish I could do better than 0, 1. Java enums are wack 
+    		index = R.array.mills;
+    		break;
+    	case 1:
+    		index = R.array.jobs;
+    		break;
+    	default:
+    	}
 
-    /**
-     * A dummy fragment representing a section of the app, but that simply displays dummy text.
-     */
-    public static class DummySectionFragment extends Fragment {
-        public DummySectionFragment() {
-        }
+    	final String[] items = getResources().getStringArray(index);
 
-        public static final String ARG_SECTION_NUMBER = "section_number";
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            TextView textView = new TextView(getActivity());
-            textView.setGravity(Gravity.CENTER);
-            Bundle args = getArguments();
-            textView.setText(Integer.toString(args.getInt(ARG_SECTION_NUMBER)));
-            return textView;
-        }
+    	ListAdapter adapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_list_item_1,
+                android.R.id.text1,
+                items);
+		return adapter;
     }
+
+	@Override
+	public void onItemSelected(Object item) {
+		// Need to pass item, ie which mill to display
+		// Need to see if we're displaying mills or jobs
+
+		switch ( getActionBar().getSelectedNavigationIndex() ) {
+		case 0:
+			startActivity(new Intent(this, MillActivity.class));
+			break;
+		case 1:
+			startActivity(new Intent(this, JobActivity.class));
+			break;
+		}
+	}
 }
