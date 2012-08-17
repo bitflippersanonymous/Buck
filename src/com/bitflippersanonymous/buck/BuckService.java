@@ -1,38 +1,25 @@
 package com.bitflippersanonymous.buck;
-import java.io.IOException;
+
+
 import java.util.ArrayList;
 
-import com.bitflippersanonymous.flippy.R;
-import com.bitflippersanonymous.flippy.activity.FlippyInfoActivity;
-import com.bitflippersanonymous.flippy.db.FlippyDatabaseAdapter;
-import com.bitflippersanonymous.flippy.domain.*;
-import com.bitflippersanonymous.flippy.domain.PlsEntry.Tags;
-import com.bitflippersanonymous.flippy.util.*;
-
-
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.content.res.XmlResourceParser;
-import android.database.Cursor;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.util.Log;
-import android.widget.BaseAdapter;
 
 public class BuckService extends Service  {
 	private final IBinder mBinder = new LocalBinder();
 	final private ArrayList<Messenger> mClients = new ArrayList<Messenger>();
-	private FlippyDatabaseAdapter mDbAdapter = new FlippyDatabaseAdapter(this);;
+	private BuckDatabaseAdapter mDbAdapter = new BuckDatabaseAdapter(this);;
 	private LoadTask mLoadTask = null;
+	public boolean mLoadComplete;
 	
-	public FlippyDatabaseAdapter getDbAdapter() {
+	public BuckDatabaseAdapter getDbAdapter() {
 		return mDbAdapter;
 	}
 	
@@ -90,9 +77,7 @@ public class BuckService extends Service  {
 	public boolean refreshDb() {
 		if ( mLoadTask != null )
 			return false;
-		
-		String path = getResources().getString(R.string.recent_messages_url);
-		
+		String path = null;
 		mLoadTask = new LoadTask();
 		mLoadTask.execute(path);
 		return true;
@@ -103,9 +88,7 @@ public class BuckService extends Service  {
 		@Override
 		protected Integer doInBackground(String... params) {
 			String path = params[0];
-			PodcastParser parser = new PodcastParser(path, mDbAdapter);
-			parser.parse();
-		
+			// Do something that takes long time
 			return 0;
 		}
 
