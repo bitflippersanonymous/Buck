@@ -3,38 +3,46 @@ package com.bitflippersanonymous.buck;
 import java.sql.Time;
 import java.util.HashMap;
 
-
 import android.content.ContentValues;
 import android.database.Cursor;
 
 public class Mill implements Util.DbItem {
 
-	@Override
-	public ContentValues createContentValues() {
-		ContentValues values = new ContentValues();
-		return values;
+	// Add more data fields here as needed.   Tags are used for db column creation
+	public enum Tags { Name } 
+
+	private int mId;
+	private final HashMap<Tags, String> mData;
+
+	public Mill(HashMap<Tags, String> data, int id) {
+		mId = id;
+		mData = data;
 	}
 	
+	public Mill(HashMap<Tags, String> data) {
+		mId = -1;
+		mData = data;
+	}
+		
+	public int getId() {
+		return mId;
+	}
+	
+	public String get(Tags tag) {
+		return mData.get(tag);
+	}
+
 	@Override
 	public String getTableName() {
 		return Util.DatabaseBase.Tables.Mills.name();
 	}
-
-	/*
+	
 	// Into DB
 	@Override
 	public ContentValues createContentValues() {
 		ContentValues values = new ContentValues();
 		for ( Tags tag : Tags.values() ) {
 			switch ( tag ) {
-			case keywords:
-				continue;
-			case enqueue:
-				values.put(tag.name(), false);
-				break;
-			case pubDate:
-				values.put(tag.name(), Time.parse(get(tag)));
-				break;
 			default:
 				values.put(tag.name(), get(tag));
 				break;
@@ -44,10 +52,11 @@ public class Mill implements Util.DbItem {
 	}
 	
 	// Outof DB
-	public static PlsEntry cursorToEntry(Cursor cursor) {
+	public static Mill cursorToEntry(Cursor cursor) {
 		if ( cursor == null || cursor.getCount() == 0 )
 			return null;
 		
+		// Match column names in cursor to Tags and load HashMap data
 		int id = cursor.getInt(0);
 		HashMap<Tags, String> data = new HashMap<Tags, String>();
 		String[] colNames = cursor.getColumnNames();
@@ -58,7 +67,7 @@ public class Mill implements Util.DbItem {
 				data.put(tag, cursor.getString(i));
 			} catch(IllegalArgumentException ex) { }
 		}
-		return new PlsEntry(data, id);
+		return new Mill(data, id);
 	}
-*/
+
 }

@@ -31,6 +31,7 @@ public class BuckService extends Service  {
 
 	public void onCreate() {
 		//TODO: Need to load database on service create if it is empty
+		// Load with sample test data?
 		//refreshDb();
 	}
 
@@ -74,6 +75,7 @@ public class BuckService extends Service  {
 		}
 	}
 	
+	// Used to read XML data into database in background.
 	public boolean refreshDb() {
 		if ( mLoadTask != null )
 			return false;
@@ -84,11 +86,13 @@ public class BuckService extends Service  {
 	}
 
 	// TODO: Need to call some sort of finish when this is done to make the task thread go away
+	// Used by refreshDb
 	class LoadTask extends AsyncTask<String, Integer, Integer> {
 		@Override
 		protected Integer doInBackground(String... params) {
 			String path = params[0];
 			// Do something that takes long time
+			// XML -> db
 			return 0;
 		}
 

@@ -41,10 +41,7 @@ public class BuckDatabaseAdapter implements Util.DatabaseBase {
 	
 	public long insertMill(Util.DbItem item) {
 		SQLiteDatabase database = mDbHelper.getWritableDatabase();
-		ArrayList<Long> keywordIds = new ArrayList<Long>();
-
-		// Return -1 on entry already exists
-		ContentValues values = item.createEntryContentValues();
+		ContentValues values = item.createContentValues();
 		return database.insert(item.getTableName(), null, values);
 	}
 

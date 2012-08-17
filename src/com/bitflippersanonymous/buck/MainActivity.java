@@ -117,6 +117,7 @@ public class MainActivity extends FragmentActivity
 		return adapter;
     }
 
+    // Is called with you select a specific Mill/Job.  Will start a new activity to show details
 	@Override
 	public void onItemSelected(Object item) {
 		switch ( getActionBar().getSelectedNavigationIndex() ) {

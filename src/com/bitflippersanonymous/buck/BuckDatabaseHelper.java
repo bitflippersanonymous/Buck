@@ -14,13 +14,26 @@ public class BuckDatabaseHelper extends SQLiteOpenHelper implements Util.Databas
 	// Strings to recreate DB from scratch
 	private static final String [] CREATE_TABLES = { 
 		"create table " + Tables.Mills.name() + " ("
-		+ BuckDatabaseAdapter.Fields.RowId.name() + " integer primary key autoincrement, "
-		+ Fields.Name.name() + " text not null" + ");",
+		+ BuckDatabaseAdapter.Fields.RowId.name() + " integer primary key autoincrement ",
 		
 		"create table " + Tables.Jobs.name() + " ("
-		+ Fields.RowId.name() + " integer primary key autoincrement, "
-		+ Fields.Name.name() + " text not null" + ");",
+		+ Fields.RowId.name() + " integer primary key autoincrement ",
+
 	};
+	
+	static {
+		for ( Mill.Tags tag : Mill.Tags.values() ) {
+			CREATE_TABLES[0] += ", " + tag.name() + " text "; 
+		}
+		CREATE_TABLES[0] += ");";
+		/*
+		for ( Jobs.Tags tag : Jobs.Tags.values() ) {
+			CREATE_TABLES[1] += ", " + tag.name() + " text "; 
+		}
+		 */
+		CREATE_TABLES[1] += ");";
+
+	}
 	
 	public BuckDatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
