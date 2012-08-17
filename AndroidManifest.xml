@@ -20,7 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-                <activity
+        <activity
             android:name=".MillActivity"
             android:label="@string/title_activity_mill" >
         </activity>
@@ -28,7 +28,6 @@
             android:name=".JobActivity"
             android:label="@string/title_activity_job" >
         </activity>
-        
     </application>
 
 </manifest>
