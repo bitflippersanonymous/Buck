@@ -11,8 +11,8 @@ import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-public class BuckDatabaseAdapter {
-	
+public class BuckDatabaseAdapter implements Util.DatabaseBase {
+
 	private BuckDatabaseHelper mDbHelper = null;
 
 	public BuckDatabaseAdapter(Context context) {
@@ -29,4 +29,23 @@ public class BuckDatabaseAdapter {
 		mDbHelper.close();
 		mDbHelper = null;
 	}
+	
+	public Cursor fetchAll(String table) throws SQLException {
+		Cursor cursor = mDbHelper.getReadableDatabase().query(false, table,
+				null, null, null, null, null, null, null);
+		if (cursor != null) {
+			cursor.moveToFirst();
+		}
+		return cursor;
+	}
+	
+	public long insertMill(Util.DbItem item) {
+		SQLiteDatabase database = mDbHelper.getWritableDatabase();
+		ArrayList<Long> keywordIds = new ArrayList<Long>();
+
+		// Return -1 on entry already exists
+		ContentValues values = item.createEntryContentValues();
+		return database.insert(item.getTableName(), null, values);
+	}
+
 }

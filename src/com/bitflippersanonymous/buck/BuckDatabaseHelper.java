@@ -6,17 +6,15 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 
-public class BuckDatabaseHelper extends SQLiteOpenHelper {
+public class BuckDatabaseHelper extends SQLiteOpenHelper implements Util.DatabaseBase {
+
 	private static final String DATABASE_NAME = "applicationdata.db";
 	private static final int DATABASE_VERSION = 1;
-
-	private enum Tables {Mills, Jobs}
-	private enum Fields {RowId, Name}
 
 	// Strings to recreate DB from scratch
 	private static final String [] CREATE_TABLES = { 
 		"create table " + Tables.Mills.name() + " ("
-		+ Fields.RowId.name() + " integer primary key autoincrement, "
+		+ BuckDatabaseAdapter.Fields.RowId.name() + " integer primary key autoincrement, "
 		+ Fields.Name.name() + " text not null" + ");",
 		
 		"create table " + Tables.Jobs.name() + " ("
