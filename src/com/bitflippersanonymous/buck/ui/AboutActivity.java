@@ -1,16 +1,9 @@
 package com.bitflippersanonymous.buck.ui;
 
 import com.bitflippersanonymous.buck.R;
-import com.bitflippersanonymous.buck.R.id;
-import com.bitflippersanonymous.buck.R.layout;
-import com.bitflippersanonymous.buck.R.string;
-
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.View;
 import android.webkit.WebView;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 public class AboutActivity extends Activity {
 

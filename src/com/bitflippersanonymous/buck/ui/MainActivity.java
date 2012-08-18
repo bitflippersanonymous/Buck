@@ -1,47 +1,23 @@
 package com.bitflippersanonymous.buck.ui;
 
 import com.bitflippersanonymous.buck.R;
-import com.bitflippersanonymous.buck.R.array;
-import com.bitflippersanonymous.buck.R.id;
-import com.bitflippersanonymous.buck.R.layout;
-import com.bitflippersanonymous.buck.R.menu;
 import com.bitflippersanonymous.buck.db.BuckDatabaseAdapter;
 import com.bitflippersanonymous.buck.domain.ItemDbAdapter;
-import com.bitflippersanonymous.buck.domain.Mill;
 import com.bitflippersanonymous.buck.domain.SimpleCursorLoader;
 import com.bitflippersanonymous.buck.domain.Util.DatabaseBase.Tables;
-import com.bitflippersanonymous.buck.service.BuckService;
-
 import android.app.ActionBar;
-import android.app.FragmentTransaction;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.app.NavUtils;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends BaseActivity 

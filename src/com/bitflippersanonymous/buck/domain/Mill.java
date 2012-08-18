@@ -1,12 +1,9 @@
 package com.bitflippersanonymous.buck.domain;
 
-import java.sql.Time;
 import java.util.HashMap;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
-import android.view.View;
 
 public class Mill implements Util.DbItem {
 

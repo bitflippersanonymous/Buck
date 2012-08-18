@@ -1,17 +1,9 @@
 package com.bitflippersanonymous.buck.db;
 
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import com.bitflippersanonymous.buck.domain.Util;
-import com.bitflippersanonymous.buck.domain.Util.DatabaseBase;
-import com.bitflippersanonymous.buck.domain.Util.DbItem;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
