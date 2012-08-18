@@ -12,7 +12,7 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class BuckAboutActivity extends Activity {
+public class AboutActivity extends Activity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

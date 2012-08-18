@@ -38,9 +38,12 @@ public class BuckService extends Service  {
 		//TODO: Need to load database on service create if it is empty
 		// Load with sample test data?
 		mDbAdapter.recreate();
-		HashMap<Tags, String> data = new HashMap<Tags, String>();
-		data.put(Tags.Name, "Big Lumber");
-		mDbAdapter.insertItem(new Mill(data, -1));
+		final String mills[] = {"Big Lumber", "LP", "Boise"};
+		for ( String mill : mills ) {
+			HashMap<Tags, String> data = new HashMap<Tags, String>();
+			data.put(Tags.Name, mill);
+			mDbAdapter.insertItem(new Mill(data, -1));
+		}
 		mLoadComplete = true;
 	}
 

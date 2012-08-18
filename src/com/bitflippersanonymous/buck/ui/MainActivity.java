@@ -42,8 +42,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class MainActivity extends BuckBaseActivity 
+public class MainActivity extends BaseActivity 
 	implements ActionBar.OnNavigationListener, MainListFragment.OnItemListener, 
 	LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 
@@ -100,7 +101,27 @@ public class MainActivity extends BuckBaseActivity
         getMenuInflater().inflate(R.menu.activity_main, menu);
         return true;
     }
-
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+    	case R.id.menu_add:
+    		Toast.makeText(this, "Add", Toast.LENGTH_SHORT).show();
+    		return true;
+    	case R.id.menu_buck:
+    		Toast.makeText(this, "Buck", Toast.LENGTH_SHORT).show();
+    		return true;
+    	case R.id.menu_about:
+			startActivity(new Intent(this, AboutActivity.class));
+    		return true;
+    	case R.id.menu_settings:
+    		Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
+    		return true;
+    	default:
+    		return super.onOptionsItemSelected(item);
+    	}
+    }
+   
     @Override
     public boolean onNavigationItemSelected(int position, long id) {
         // When the given tab is selected, show the tab contents in the container

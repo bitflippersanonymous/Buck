@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -12,7 +13,7 @@ import android.os.Messenger;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
-public abstract class BuckBaseActivity extends FragmentActivity
+public abstract class BaseActivity extends FragmentActivity
 	implements ServiceConnection {
 
 	private boolean mBound = false;
@@ -27,9 +28,9 @@ public abstract class BuckBaseActivity extends FragmentActivity
 		while ( mService == null || mService.getDbAdapter() == null ) {
 			try { Thread.sleep(1000); } catch(InterruptedException e){ }
 			if ( mService == null )
-				Log.e(BuckBaseActivity.class.getName(), "Service not started");
+				Log.e(BaseActivity.class.getName(), "Service not started");
 			if ( mService.getDbAdapter() == null )
-				Log.e(BuckBaseActivity.class.getName(), "DB not started");
+				Log.e(BaseActivity.class.getName(), "DB not started");
 		}
 		return mService; 
 	}
@@ -63,9 +64,9 @@ public abstract class BuckBaseActivity extends FragmentActivity
 	}
 	
 	@Override
-	public void onStop() {
-		super.onStop();
-		Log.i(getClass().getSimpleName(), "onStop");
+	public void onDestroy() {
+		super.onDestroy();
+		Log.i(getClass().getSimpleName(), "onDestroy");
 	    if ( mBound ) {
 	    	getService().removeClient(mMessenger);
 	        unbindService(this);
@@ -73,9 +74,9 @@ public abstract class BuckBaseActivity extends FragmentActivity
 	}
 
 	@Override
-	public void onStart() {
-		super.onStart();
-		Log.i(getClass().getSimpleName(), "onStart");
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		Log.i(getClass().getSimpleName(), "onCreate");
 		Intent intent = new Intent(this, BuckService.class);
 		bindService(intent, this, Context.BIND_AUTO_CREATE);
 	}
