@@ -5,6 +5,7 @@ import java.util.HashMap;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+//
 public class Mill implements Util.DbItem {
 
 	// Add more data fields here as needed.   Tags are used for db column creation
