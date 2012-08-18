@@ -5,18 +5,23 @@ import com.bitflippersanonymous.buck.R.array;
 import com.bitflippersanonymous.buck.R.id;
 import com.bitflippersanonymous.buck.R.layout;
 import com.bitflippersanonymous.buck.R.menu;
+import com.bitflippersanonymous.buck.db.BuckDatabaseAdapter;
 import com.bitflippersanonymous.buck.domain.ItemDbAdapter;
 import com.bitflippersanonymous.buck.domain.Mill;
 import com.bitflippersanonymous.buck.domain.SimpleCursorLoader;
 import com.bitflippersanonymous.buck.domain.Util.DatabaseBase.Tables;
+import com.bitflippersanonymous.buck.service.BuckService;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -25,6 +30,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,7 +44,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainActivity extends BuckBaseActivity 
-	implements ActionBar.OnNavigationListener, MainListFragment.OnItemListener, LoaderManager.LoaderCallbacks<Cursor> {
+	implements ActionBar.OnNavigationListener, MainListFragment.OnItemListener, 
+	LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 
 	private CursorAdapter mAdapter = null; // This cursor populates the mainlistfragment (ie, list of mills)
 	
@@ -66,6 +73,7 @@ public class MainActivity extends BuckBaseActivity
                         navigation_items
                         ),
                 this);
+    	mAdapter = new ItemDbAdapter(this, null, 0);
     }
 
     @Override
@@ -93,8 +101,6 @@ public class MainActivity extends BuckBaseActivity
         return true;
     }
 
-    
-
     @Override
     public boolean onNavigationItemSelected(int position, long id) {
         // When the given tab is selected, show the tab contents in the container
@@ -107,10 +113,8 @@ public class MainActivity extends BuckBaseActivity
                 .commit();
         fragment.setOnItemListener(this); // May need to do this in onCreate and onResume
         
-        // This should be in the fragment?
-		getSupportLoaderManager().initLoader(0, null, this);
-    	mAdapter = new ItemDbAdapter(this, null, 0); // Currently ignores position
     	fragment.setListAdapter(mAdapter);
+    	getSupportLoaderManager().restartLoader(0, null, this); // May still be waiting for service to load
 		return true;
     }
     
@@ -132,8 +136,12 @@ public class MainActivity extends BuckBaseActivity
 		return new SimpleCursorLoader(this) {
 			@Override
 			public Cursor loadInBackground() {
+				if ( !isBound() ) {
+					
+				}
 				String table = Tables.Mills.name(); // FIXME: Get from args?
-				return getService().getDbAdapter().fetchAll(table);
+				BuckDatabaseAdapter db = getService().getDbAdapter();
+				return db.fetchAll(table);
 			}
 		};
 	}
@@ -147,5 +155,11 @@ public class MainActivity extends BuckBaseActivity
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
 		
+	}
+
+	@Override
+	public void onServiceConnected(ComponentName name, IBinder service) {
+		super.onServiceConnected(name, service);
+		getSupportLoaderManager().initLoader(0, null, this);
 	}
 }

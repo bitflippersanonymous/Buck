@@ -20,9 +20,9 @@ import android.util.Log;
 public class BuckService extends Service  {
 	private final IBinder mBinder = new LocalBinder();
 	final private ArrayList<Messenger> mClients = new ArrayList<Messenger>();
-	private BuckDatabaseAdapter mDbAdapter = new BuckDatabaseAdapter(this);;
+	private BuckDatabaseAdapter mDbAdapter = new BuckDatabaseAdapter(this);
 	private LoadTask mLoadTask = null;
-	public boolean mLoadComplete;
+	private boolean mLoadComplete = false;
 	
 	public BuckDatabaseAdapter getDbAdapter() {
 		return mDbAdapter;
@@ -41,6 +41,7 @@ public class BuckService extends Service  {
 		HashMap<Tags, String> data = new HashMap<Tags, String>();
 		data.put(Tags.Name, "Big Lumber");
 		mDbAdapter.insertItem(new Mill(data, -1));
+		mLoadComplete = true;
 	}
 
     @Override

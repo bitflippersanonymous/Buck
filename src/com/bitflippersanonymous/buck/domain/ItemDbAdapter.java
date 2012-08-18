@@ -28,8 +28,7 @@ public class ItemDbAdapter extends CursorAdapter implements ListAdapter {
 
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
-		LayoutInflater inflater = LayoutInflater.from(context);
-	    View view = inflater.inflate(android.R.layout.simple_list_item_1, parent, true);
+	    View view = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_1, parent, false);
 		bindView(view, context, cursor);
         return view;
 	}

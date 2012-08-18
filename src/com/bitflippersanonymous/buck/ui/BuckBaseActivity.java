@@ -12,15 +12,25 @@ import android.os.Messenger;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
-public abstract class BuckBaseActivity extends FragmentActivity {
+public abstract class BuckBaseActivity extends FragmentActivity
+	implements ServiceConnection {
 
 	private boolean mBound = false;
-	
 	private static BuckService mService = null;
+	
+	protected boolean isBound() {
+		return mBound;
+	}
+
 	public static BuckService getService() { 
 		//TODO: If service not bound, bind it and wait until it's bound, then return it
-		if ( mService == null )
-			Log.e(BuckBaseActivity.class.getName(), "Service not started");
+		while ( mService == null || mService.getDbAdapter() == null ) {
+			try { Thread.sleep(1000); } catch(InterruptedException e){ }
+			if ( mService == null )
+				Log.e(BuckBaseActivity.class.getName(), "Service not started");
+			if ( mService.getDbAdapter() == null )
+				Log.e(BuckBaseActivity.class.getName(), "DB not started");
+		}
 		return mService; 
 	}
 
@@ -36,23 +46,21 @@ public abstract class BuckBaseActivity extends FragmentActivity {
 	}
 	
 	private Messenger mMessenger = new Messenger(getHandler());
-	
-	private ServiceConnection mConnection = new ServiceConnection() {
-		@Override
-		public void onServiceConnected(ComponentName name, IBinder service) {
-			BuckService.LocalBinder binder = (BuckService.LocalBinder) service;
-			mService = binder.getService();
-			mService.addClient(mMessenger);
-			mBound = true;
-			update();
-		}
 
-		@Override
-		public void onServiceDisconnected(ComponentName name) {
-			mService = null;
-			mBound = false;
-		}
-	};
+	@Override
+	public void onServiceConnected(ComponentName name, IBinder service) {
+		BuckService.LocalBinder binder = (BuckService.LocalBinder) service;
+		mService = binder.getService();
+		mService.addClient(mMessenger);
+		mBound = true;
+		update();
+	}
+
+	@Override
+	public void onServiceDisconnected(ComponentName name) {
+		mService = null;
+		mBound = false;
+	}
 	
 	@Override
 	public void onStop() {
@@ -60,7 +68,7 @@ public abstract class BuckBaseActivity extends FragmentActivity {
 		Log.i(getClass().getSimpleName(), "onStop");
 	    if ( mBound ) {
 	    	getService().removeClient(mMessenger);
-	        unbindService(mConnection);
+	        unbindService(this);
 	    }
 	}
 
@@ -69,7 +77,7 @@ public abstract class BuckBaseActivity extends FragmentActivity {
 		super.onStart();
 		Log.i(getClass().getSimpleName(), "onStart");
 		Intent intent = new Intent(this, BuckService.class);
-		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+		bindService(intent, this, Context.BIND_AUTO_CREATE);
 	}
 	
 	protected void update() {
