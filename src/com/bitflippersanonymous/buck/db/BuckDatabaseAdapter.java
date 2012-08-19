@@ -34,6 +34,33 @@ public class BuckDatabaseAdapter implements Util.DatabaseBase {
 		}
 		return cursor;
 	}
+
+	public Cursor fetchEntry(String table, long rowId) throws SQLException {
+		Cursor cursor = mDbHelper.getReadableDatabase().query(true, table, 
+				null,
+				Util._ID + "=?", new String[]{String.valueOf(rowId)}, null, null, null, null);
+		if (cursor != null) {
+			cursor.moveToFirst();
+		}
+		return cursor;
+	}
+	
+	/*
+	public Cursor fetchItem(String table) throws SQLException {
+		Cursor cursor = mDbHelper.getReadableDatabase().query(false, table,
+				null, //columns
+				null, //selection
+				null, //selectionArgs
+				null, //groupBy
+				null, //having
+				null, //sortby
+				null);//limit
+		if (cursor != null) {
+			cursor.moveToFirst();
+		}
+		return cursor;
+	}
+	*/
 	
 	public long insertItem(Util.DbItem item) {
 		SQLiteDatabase database = mDbHelper.getWritableDatabase();

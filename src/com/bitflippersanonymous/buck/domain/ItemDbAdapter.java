@@ -21,7 +21,7 @@ public class ItemDbAdapter extends CursorAdapter implements ListAdapter {
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
 		Mill mill = Mill.cursorToItem(cursor);
-	    view.setTag(mill);
+	    // Dont need this: view.setTag(mill);
         TextView name = (TextView) view.findViewById(android.R.id.text1);
         name.setText(mill.get(Mill.Tags.Name));
 	}

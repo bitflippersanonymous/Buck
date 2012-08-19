@@ -4,6 +4,7 @@ import com.bitflippersanonymous.buck.R;
 import com.bitflippersanonymous.buck.db.BuckDatabaseAdapter;
 import com.bitflippersanonymous.buck.domain.ItemDbAdapter;
 import com.bitflippersanonymous.buck.domain.SimpleCursorLoader;
+import com.bitflippersanonymous.buck.domain.Util;
 import com.bitflippersanonymous.buck.domain.Util.DatabaseBase.Tables;
 import android.app.ActionBar;
 import android.content.ComponentName;
@@ -17,6 +18,7 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
@@ -118,9 +120,12 @@ public class MainActivity extends BaseActivity
     // Is called with you select a specific Mill/Job.  Will start a new activity to show details
 	@Override
 	public void onItemSelected(Object item) {
+		Cursor cursor = (Cursor)item;
 		switch ( getActionBar().getSelectedNavigationIndex() ) {
 		case 0:
-			startActivity(new Intent(this, MillActivity.class));
+			Intent intent = new Intent(this, MillActivity.class);
+			intent.putExtra(Util._ID, cursor.getInt(0));
+			startActivity(intent);
 			break;
 		case 1:
 			startActivity(new Intent(this, JobActivity.class));
