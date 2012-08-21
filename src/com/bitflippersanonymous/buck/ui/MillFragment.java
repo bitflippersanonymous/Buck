@@ -21,8 +21,10 @@ class MillFragment extends Fragment {
 	  @Override
 	  public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	                            Bundle savedInstanceState) {
-		  int rowId = getActivity().getIntent().getExtras().getInt(Util._ID);
+		  int rowId = getArguments().getInt(Util._ID);
 		  String table = Util.DatabaseBase.Tables.Mills.name();
+		  
+		  // This fetch could take a long time, so should be done as async task
 		  Cursor cursor = BaseActivity.getService().getDbAdapter().fetchEntry(table, rowId);
 		  Mill mill = Mill.cursorToItem(cursor);
 		  

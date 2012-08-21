@@ -1,6 +1,8 @@
 package com.bitflippersanonymous.buck.ui;
 
 import com.bitflippersanonymous.buck.R;
+import com.bitflippersanonymous.buck.domain.Util;
+
 import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,6 +24,9 @@ public class MillActivity extends BaseActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.mill_container, fragment)
                 .commit();
+
+        // Pass along all the extras.  Could create a new bundle and only pass ones we need
+        fragment.setArguments(getIntent().getExtras());
     }
     
     @Override
