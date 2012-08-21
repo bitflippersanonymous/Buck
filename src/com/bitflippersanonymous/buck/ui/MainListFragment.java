@@ -16,10 +16,13 @@ class MainListFragment extends ListFragment {
 	
 	public MainListFragment() {	}
 
+	/**
+	 * Notify our listener of list item clicks passing the list item
+	 * instead of the position.
+	 */
 	@Override
 	public void onListItemClick(ListView l, View view, int position, long id) {
 		super.onListItemClick(l, view, position, id);
-
 		if ( mListener != null ) {
 			mListener.onItemSelected(getListAdapter().getItem(position));
 		}

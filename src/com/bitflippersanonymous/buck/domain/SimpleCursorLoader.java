@@ -2,6 +2,7 @@ package com.bitflippersanonymous.buck.domain;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.support.v4.content.AsyncTaskLoader;
 
 /**
@@ -17,11 +18,26 @@ import android.support.v4.content.AsyncTaskLoader;
  */
 public abstract class SimpleCursorLoader extends AsyncTaskLoader<Cursor> {
     private Cursor mCursor;
+    private Bundle mArgs = null;
 
     public SimpleCursorLoader(Context context) {
+      super(context);
+    }
+    
+    public SimpleCursorLoader(Context context, Bundle args) {
         super(context);
+        setArgs(args);
     }
 
+
+		public Bundle getArgs() {
+			return mArgs;
+		}
+
+		private void setArgs(Bundle mArgs) {
+			this.mArgs = mArgs;
+		}
+    
     /* Runs on a worker thread */
     @Override
     public abstract Cursor loadInBackground();
@@ -93,4 +109,5 @@ public abstract class SimpleCursorLoader extends AsyncTaskLoader<Cursor> {
         }
         mCursor = null;
     }
+
 }

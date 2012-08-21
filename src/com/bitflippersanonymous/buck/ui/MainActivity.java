@@ -16,6 +16,7 @@ import android.os.IBinder;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -99,6 +100,11 @@ public class MainActivity extends BaseActivity
     	}
     }
    
+    /**
+     * Called when switching view between Mills/Jobs.  Restarts Loader to re-query db.
+     * Create a new bundle with the position args to tell the MainListFragment what we're
+     * showing, though it's currently unused.
+     */
     @Override
     public boolean onNavigationItemSelected(int position, long id) {
         // When the given tab is selected, show the tab contents in the container
@@ -112,13 +118,21 @@ public class MainActivity extends BaseActivity
         fragment.setOnItemListener(this); // May need to do this in onCreate and onResume
         
     	fragment.setListAdapter(mAdapter);
-    	getSupportLoaderManager().restartLoader(0, null, this); // May still be waiting for service to load
+    	getSupportLoaderManager().restartLoader(0, args, this);
 		return true;
     }
     
-    // Is called with you select a specific Mill/Job.  Will start a new activity to show details
+  /**
+   *  Is called with you select a specific Mill/Job.  Will start a new activity to show details
+   *  @param item Item in the list that was selected. Since the ListAdapter is a cursor,
+   *  we get a cursor at the selected position.
+   *  @see MainListFragment#onListItemClick(android.widget.ListView, android.view.View, int, long)
+   */
 	@Override
 	public void onItemSelected(Object item) {
+		if (!( item instanceof Cursor) ) {
+			Log.e(getClass().getSimpleName(), "onItemSelected: item is not a Cursor");
+		}
 		Cursor cursor = (Cursor)item;
 		switch ( getActionBar().getSelectedNavigationIndex() ) {
 		case 0:
@@ -133,14 +147,14 @@ public class MainActivity extends BaseActivity
 	}
 	
 	@Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		return new SimpleCursorLoader(this) {
+	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+		return new SimpleCursorLoader(this, args) {
 			@Override
 			public Cursor loadInBackground() {
-				if ( !isBound() ) {
-					
-				}
-				String table = Tables.Mills.name(); // FIXME: Get from args?
+				String table = Tables.Mills.name();
+				Bundle args = getArgs();
+				if ( args != null && args.getInt(MainListFragment.ARG_SECTION_NUMBER) == 1)
+					table = Tables.Jobs.name();
 				BuckDatabaseAdapter db = getService().getDbAdapter();
 				return db.fetchAll(table);
 			}
@@ -158,6 +172,11 @@ public class MainActivity extends BaseActivity
 		
 	}
 
+	/**
+	 * Delay initLoader until we have a service connection.
+	 * initLoader runs an async db query to load main ListView. (list of mills/jobs)
+	 * @see BaseActivity#onServiceConnected(android.content.ComponentName, android.os.IBinder)
+	 */
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder service) {
 		super.onServiceConnected(name, service);

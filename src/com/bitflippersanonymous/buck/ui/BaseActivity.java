@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -13,9 +14,14 @@ import android.os.Messenger;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
-public abstract class BaseActivity extends FragmentActivity
-	implements ServiceConnection {
-
+/**
+ * 
+ * Base class for activities that need access to the service.  The service
+ * maintains a persistent database connection as activities are created
+ * and destroyed.
+ */
+public abstract class BaseActivity extends FragmentActivity	implements ServiceConnection {
+	
 	private boolean mBound = false;
 	private static BuckService mService = null;
 	
@@ -35,17 +41,17 @@ public abstract class BaseActivity extends FragmentActivity
 		return mService; 
 	}
 
-    private Handler mHandler = new Handler() {
+	private Handler mHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			update();
 		}
 	};
-	
+
 	protected Handler getHandler() {
 		return mHandler;
 	}
-	
+
 	private Messenger mMessenger = new Messenger(getHandler());
 
 	@Override
@@ -62,15 +68,15 @@ public abstract class BaseActivity extends FragmentActivity
 		mService = null;
 		mBound = false;
 	}
-	
+
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
 		Log.i(getClass().getSimpleName(), "onDestroy");
-	    if ( mBound ) {
-	    	getService().removeClient(mMessenger);
-	        unbindService(this);
-	    }
+		if ( mBound ) {
+			getService().removeClient(mMessenger);
+			unbindService(this);
+		}
 	}
 
 	@Override
@@ -80,10 +86,11 @@ public abstract class BaseActivity extends FragmentActivity
 		Intent intent = new Intent(this, BuckService.class);
 		bindService(intent, this, Context.BIND_AUTO_CREATE);
 	}
-	
+
+	/* 
+	 * Currently unused. 
+	 * Was used for the service to notify connected activities 
+	 * to update their views */
 	protected void update() {
 	}
-	
-
-
 }
