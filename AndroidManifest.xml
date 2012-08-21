@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.MillActivity"
+            android:name=".ui.DetailActivity"
             android:label="@string/title_activity_mill" >
         </activity>
         <activity

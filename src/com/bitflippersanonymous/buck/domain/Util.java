@@ -3,7 +3,8 @@ package com.bitflippersanonymous.buck.domain;
 import android.content.ContentValues;
 
 public class Util {
-	public static final String _ID = "_id"; 
+	public static final String _ID = "_id";
+	public static final String FRAGMENT = "FRAGMENT"; 
 	
 	// Define an common interface for db classes for shared strings
 	public interface DatabaseBase {

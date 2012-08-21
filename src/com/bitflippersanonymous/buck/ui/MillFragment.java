@@ -4,7 +4,6 @@ package com.bitflippersanonymous.buck.ui;
 // Comment
 import com.bitflippersanonymous.buck.R;
 import com.bitflippersanonymous.buck.domain.Mill;
-import com.bitflippersanonymous.buck.domain.Mill.Tags;
 import com.bitflippersanonymous.buck.domain.Util;
 
 import android.database.Cursor;
@@ -30,7 +29,7 @@ class MillFragment extends Fragment {
 		  
 		  View view = inflater.inflate(R.layout.fragment_mill, container, false);
 		  TextView t = (TextView)view.findViewById(R.id.textView1);
-		  t.setText(mill.get(Tags.Name));
+		  t.setText(mill.get(Mill.Tags.Name));
 		  return view;
 	  }
 }

@@ -13,6 +13,7 @@ import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
@@ -23,129 +24,126 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 public class MainActivity extends BaseActivity 
-	implements ActionBar.OnNavigationListener, MainListFragment.OnItemListener, 
-	LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
+implements ActionBar.OnNavigationListener, MainListFragment.OnItemListener, 
+LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 
 	private CursorAdapter mAdapter = null; // This cursor populates the mainlistfragment (ie, list of mills)
-	
-    private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
-    //private static Class<?>[] mChildActivities = {MillActivity.class, JobActivity.class};
-    
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        // Set up the action bar.
-        final ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
+	//private static Class<?>[] mChildActivities = {MillActivity.class, JobActivity.class};
 
-        // Set up the dropdown list navigation in the action bar.
-        final String[] navigation_items = getResources().getStringArray(R.array.navigation_items);
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+
+		// Set up the action bar.
+		final ActionBar actionBar = getActionBar();
+		actionBar.setDisplayShowTitleEnabled(false);
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+
+		// Set up the dropdown list navigation in the action bar.
+		final String[] navigation_items = getResources().getStringArray(R.array.navigation_items);
 		actionBar.setListNavigationCallbacks(
-                // Specify a SpinnerAdapter to populate the dropdown list.
-                new ArrayAdapter<String>(
-                        actionBar.getThemedContext(),
-                        android.R.layout.simple_list_item_1,
-                        android.R.id.text1,
-                        navigation_items
-                        ),
-                this);
-    	mAdapter = new ItemDbAdapter(this, null, 0);
-    }
+				// Specify a SpinnerAdapter to populate the dropdown list.
+				new ArrayAdapter<String>(
+						actionBar.getThemedContext(),
+						android.R.layout.simple_list_item_1,
+						android.R.id.text1,
+						navigation_items
+						),
+						this);
+		mAdapter = new ItemDbAdapter(this, null, 0);
+	}
 
-    @Override
-    public void onResume() {
-      super.onResume();
-    }
-    
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        if (savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
-            getActionBar().setSelectedNavigationItem(
-                    savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
-        }
-    }
+	@Override
+	public void onResume() {
+		super.onResume();
+	}
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putInt(STATE_SELECTED_NAVIGATION_ITEM,
-                getActionBar().getSelectedNavigationIndex());
-    }
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		if (savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
+			getActionBar().setSelectedNavigationItem(
+					savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
+		}
+	}
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_main, menu);
-        return true;
-    }
-    
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-    	switch (item.getItemId()) {
-    	case R.id.menu_add:
-    		Toast.makeText(this, "Add", Toast.LENGTH_SHORT).show();
-    		return true;
-    	case R.id.menu_buck:
-    		Toast.makeText(this, "Buck", Toast.LENGTH_SHORT).show();
-    		return true;
-    	case R.id.menu_about:
-			startActivity(new Intent(this, AboutActivity.class));
-    		return true;
-    	case R.id.menu_settings:
-    		Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
-    		return true;
-    	default:
-    		return super.onOptionsItemSelected(item);
-    	}
-    }
-   
-    /**
-     * Called when switching view between Mills/Jobs.  Restarts Loader to re-query db.
-     * Create a new bundle with the position args to tell the MainListFragment what we're
-     * showing, though it's currently unused.
-     */
-    @Override
-    public boolean onNavigationItemSelected(int position, long id) {
-        // When the given tab is selected, show the tab contents in the container
-    	MainListFragment fragment = new MainListFragment();
-        Bundle args = new Bundle();
-        args.putInt(MainListFragment.ARG_SECTION_NUMBER, position);
-        fragment.setArguments(args);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, fragment)
-                .commit();
-        fragment.setOnItemListener(this); // May need to do this in onCreate and onResume
-        
-    	fragment.setListAdapter(mAdapter);
-    	getSupportLoaderManager().restartLoader(0, args, this);
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		outState.putInt(STATE_SELECTED_NAVIGATION_ITEM,
+				getActionBar().getSelectedNavigationIndex());
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.activity_main, menu);
 		return true;
-    }
-    
-  /**
-   *  Is called with you select a specific Mill/Job.  Will start a new activity to show details
-   *  @param item Item in the list that was selected. Since the ListAdapter is a cursor,
-   *  we get a cursor at the selected position.
-   *  @see MainListFragment#onListItemClick(android.widget.ListView, android.view.View, int, long)
-   */
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menu_add:
+			Toast.makeText(this, "Add", Toast.LENGTH_SHORT).show();
+			return true;
+		case R.id.menu_buck:
+			Toast.makeText(this, "Buck", Toast.LENGTH_SHORT).show();
+			return true;
+		case R.id.menu_about:
+			startActivity(new Intent(this, AboutActivity.class));
+			return true;
+		case R.id.menu_settings:
+			Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	/**
+	 * Called when switching view between Mills/Jobs.  Restarts Loader to re-query db.
+	 * Create a new bundle with the position args to tell the MainListFragment what we're
+	 * showing, though it's currently unused.
+	 */
+	@Override
+	public boolean onNavigationItemSelected(int position, long id) {
+		// When the given tab is selected, show the tab contents in the container
+		MainListFragment fragment = new MainListFragment();
+		Bundle args = new Bundle();
+		args.putInt(MainListFragment.ARG_SECTION_NUMBER, position);
+		fragment.setArguments(args);
+		getSupportFragmentManager().beginTransaction()
+		.replace(R.id.container, fragment)
+		.commit();
+		fragment.setOnItemListener(this); // May need to do this in onCreate and onResume
+
+		fragment.setListAdapter(mAdapter);
+		getSupportLoaderManager().restartLoader(0, args, this);
+		return true;
+	}
+
+	/**
+	 *  Is called with you select a specific Mill/Job.  Will start a new activity to show details
+	 *  @param item Item in the list that was selected. Since the ListAdapter is a cursor,
+	 *  we get a cursor at the selected position.
+	 *  @see MainListFragment#onListItemClick(android.widget.ListView, android.view.View, int, long)
+	 */
 	@Override
 	public void onItemSelected(Object item) {
 		if (!( item instanceof Cursor) ) {
 			Log.e(getClass().getSimpleName(), "onItemSelected: item is not a Cursor");
 		}
+		Class<?> fragmentClass = MillFragment.class;
+		if ( getActionBar().getSelectedNavigationIndex() == 1 )
+			fragmentClass = JobFragment.class;
 		Cursor cursor = (Cursor)item;
-		switch ( getActionBar().getSelectedNavigationIndex() ) {
-		case 0:
-			Intent intent = new Intent(this, MillActivity.class);
-			intent.putExtra(Util._ID, cursor.getInt(0));
-			startActivity(intent);
-			break;
-		case 1:
-			startActivity(new Intent(this, JobActivity.class));
-			break;
-		}
+		Intent intent = new Intent(this, DetailActivity.class);
+		intent.putExtra(Util.FRAGMENT, fragmentClass);
+		intent.putExtra(Util._ID, cursor.getInt(0));
+		startActivity(intent);
 	}
-	
+
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		return new SimpleCursorLoader(this, args) {
@@ -162,14 +160,14 @@ public class MainActivity extends BaseActivity
 	}
 
 	@Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 		mAdapter.swapCursor(data);
 	}
 
 	@Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        mAdapter.swapCursor(null);
-		
+	public void onLoaderReset(Loader<Cursor> loader) {
+		mAdapter.swapCursor(null);
+
 	}
 
 	/**
