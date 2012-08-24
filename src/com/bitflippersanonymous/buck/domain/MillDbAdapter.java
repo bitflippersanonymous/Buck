@@ -1,35 +1,31 @@
 package com.bitflippersanonymous.buck.domain;
 
 
-import com.bitflippersanonymous.buck.domain.Mill;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CursorAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
-import android.support.v4.widget.*;
 
-
-public class ItemDbAdapter extends CursorAdapter implements ListAdapter {
-	public ItemDbAdapter(Context context, Cursor c, int flags) {
+public class MillDbAdapter extends CursorAdapter implements ListAdapter {
+	public MillDbAdapter(Context context, Cursor c, int flags) {
 		super(context, c, flags);
 	}
 
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
 		Mill mill = Mill.cursorToItem(cursor);
-	    // Dont need this: view.setTag(mill);
-        TextView name = (TextView) view.findViewById(android.R.id.text1);
-        name.setText(mill.get(Mill.Tags.Name));
+		TextView name = (TextView) view.findViewById(android.R.id.text1);
+		name.setText(mill.get(Mill.getTags()[0]));
 	}
 
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
-	    View view = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_1, parent, false);
+		View view = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_1, parent, false);
 		bindView(view, context, cursor);
-        return view;
+		return view;
 	}
 }

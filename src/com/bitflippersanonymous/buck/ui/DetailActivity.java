@@ -6,7 +6,7 @@ import com.bitflippersanonymous.buck.domain.Util;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.util.Log;
 import android.view.MenuItem;
 
@@ -30,7 +30,7 @@ public class DetailActivity extends BaseActivity {
 			return;
 		}
 		
-		getSupportFragmentManager().beginTransaction()
+		getFragmentManager().beginTransaction()
 		.replace(R.id.detail_container, fragment)
 		.commit();
 

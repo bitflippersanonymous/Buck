@@ -5,13 +5,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-import android.support.v4.app.FragmentActivity;
+import android.app.Activity;
 import android.util.Log;
 
 /**
@@ -20,7 +19,7 @@ import android.util.Log;
  * maintains a persistent database connection as activities are created
  * and destroyed.
  */
-public abstract class BaseActivity extends FragmentActivity	implements ServiceConnection {
+public abstract class BaseActivity extends Activity	implements ServiceConnection {
 	
 	private boolean mBound = false;
 	private static BuckService mService = null;

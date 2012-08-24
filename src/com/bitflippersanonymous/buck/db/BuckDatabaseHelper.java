@@ -1,5 +1,6 @@
 package com.bitflippersanonymous.buck.db;
 
+import com.bitflippersanonymous.buck.domain.Job;
 import com.bitflippersanonymous.buck.domain.Mill;
 import com.bitflippersanonymous.buck.domain.Util;
 import android.content.Context;
@@ -24,15 +25,15 @@ public class BuckDatabaseHelper extends SQLiteOpenHelper implements Util.Databas
 	};
 	
 	static {
-		for ( Mill.Tags tag : Mill.Tags.values() ) {
-			CREATE_TABLES[0] += ", " + tag.name() + " text "; 
+		for ( String tag : Mill.getTags() ) {
+			CREATE_TABLES[0] += ", " + tag + " text "; 
 		}
 		CREATE_TABLES[0] += ");";
-		/*
-		for ( Jobs.Tags tag : Jobs.Tags.values() ) {
-			CREATE_TABLES[1] += ", " + tag.name() + " text "; 
+		
+		for ( String tag : Job.getTags() ) {
+			CREATE_TABLES[1] += ", " + tag + " text "; 
 		}
-		 */
+		
 		CREATE_TABLES[1] += ");";
 
 	}

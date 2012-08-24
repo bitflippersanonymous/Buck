@@ -2,7 +2,8 @@ package com.bitflippersanonymous.buck.ui;
 
 import com.bitflippersanonymous.buck.R;
 import com.bitflippersanonymous.buck.db.BuckDatabaseAdapter;
-import com.bitflippersanonymous.buck.domain.ItemDbAdapter;
+import com.bitflippersanonymous.buck.domain.JobDbAdapter;
+import com.bitflippersanonymous.buck.domain.MillDbAdapter;
 import com.bitflippersanonymous.buck.domain.SimpleCursorLoader;
 import com.bitflippersanonymous.buck.domain.Util;
 import com.bitflippersanonymous.buck.domain.Util.DatabaseBase.Tables;
@@ -13,14 +14,13 @@ import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
-import android.support.v4.widget.CursorAdapter;
+import android.app.LoaderManager;
+import android.content.Loader;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.CursorAdapter;
 import android.widget.Toast;
 
 public class MainActivity extends BaseActivity 
@@ -28,6 +28,7 @@ implements ActionBar.OnNavigationListener, MainListFragment.OnItemListener,
 LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 
 	private CursorAdapter mAdapter = null; // This cursor populates the mainlistfragment (ie, list of mills)
+	private static CursorAdapter[] mAdapters = {null, null};
 
 	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 	//private static Class<?>[] mChildActivities = {MillActivity.class, JobActivity.class};
@@ -53,12 +54,18 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 						navigation_items
 						),
 						this);
-		mAdapter = new ItemDbAdapter(this, null, 0);
+		mAdapters[0] = new MillDbAdapter(this, null, 0);
+		mAdapters[1] = new JobDbAdapter(this, null, 0);
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
+	}
+	
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
 	}
 
 	@Override
@@ -113,13 +120,15 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 		Bundle args = new Bundle();
 		args.putInt(MainListFragment.ARG_SECTION_NUMBER, position);
 		fragment.setArguments(args);
-		getSupportFragmentManager().beginTransaction()
+		getFragmentManager().beginTransaction()
 		.replace(R.id.container, fragment)
 		.commit();
 		fragment.setOnItemListener(this); // May need to do this in onCreate and onResume
 
+		// Is a bit slow.  We requery each time
+		(mAdapter = mAdapters[position]).swapCursor(null);
 		fragment.setListAdapter(mAdapter);
-		getSupportLoaderManager().restartLoader(0, args, this);
+		getLoaderManager().restartLoader(0, args, this);
 		return true;
 	}
 
@@ -159,15 +168,19 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 		};
 	}
 
+	/**
+	 * Called when loader async task has finished and cursor has a new data for the adapter 
+	 * mAdapter is null on return to activity where onServiceConnected is called as activity is unpaused.  
+	 */
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-		mAdapter.swapCursor(data);
+		if ( mAdapter != null )
+			mAdapter.swapCursor(data);
 	}
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
 		mAdapter.swapCursor(null);
-
 	}
 
 	/**
@@ -178,6 +191,6 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder service) {
 		super.onServiceConnected(name, service);
-		getSupportLoaderManager().initLoader(0, null, this);
+		getLoaderManager().initLoader(0, null, this);
 	}
 }

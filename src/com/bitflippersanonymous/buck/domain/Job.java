@@ -5,7 +5,7 @@ import java.util.HashMap;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-public class Mill implements Util.DbItem {
+public class Job implements Util.DbItem {
 
 	// Add more data fields here as needed.   Tags are used for db column creation
 	//public enum Tags { Name } 
@@ -19,7 +19,7 @@ public class Mill implements Util.DbItem {
 	private int mId;
 	private final HashMap<String, String> mData;
 
-	public Mill(HashMap<String, String> data, int id) {
+	public Job(HashMap<String, String> data, int id) {
 		mId = id;
 		mData = data;
 	}
@@ -34,7 +34,7 @@ public class Mill implements Util.DbItem {
 
 	@Override
 	public String getTableName() {
-		return Util.DatabaseBase.Tables.Mills.name();
+		return Util.DatabaseBase.Tables.Jobs.name();
 	}
 	
 	// Into DB
@@ -48,7 +48,7 @@ public class Mill implements Util.DbItem {
 	}
 	
 	// Outof DB
-	public static Mill cursorToItem(Cursor cursor) {
+	public static Job cursorToItem(Cursor cursor) {
 		if ( cursor == null || cursor.getCount() == 0 )
 			return null;
 		
@@ -60,6 +60,6 @@ public class Mill implements Util.DbItem {
 			String tag = colNames[i];
 			data.put(tag, cursor.getString(i));
 		}
-		return new Mill(data, id);
+		return new Job(data, id);
 	}
 }

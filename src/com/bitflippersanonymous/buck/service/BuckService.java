@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.bitflippersanonymous.buck.db.BuckDatabaseAdapter;
+import com.bitflippersanonymous.buck.domain.Job;
 import com.bitflippersanonymous.buck.domain.Mill;
-import com.bitflippersanonymous.buck.domain.Mill.Tags;
 
 import android.app.Service;
 import android.content.Intent;
@@ -22,7 +22,6 @@ public class BuckService extends Service  {
 	final private ArrayList<Messenger> mClients = new ArrayList<Messenger>();
 	private BuckDatabaseAdapter mDbAdapter = new BuckDatabaseAdapter(this);
 	private LoadTask mLoadTask = null;
-	private boolean mLoadComplete = false;
 	
 	public BuckDatabaseAdapter getDbAdapter() {
 		return mDbAdapter;
@@ -40,11 +39,19 @@ public class BuckService extends Service  {
 		mDbAdapter.recreate();
 		final String mills[] = {"Big Lumber", "LP", "Boise"};
 		for ( String mill : mills ) {
-			HashMap<Tags, String> data = new HashMap<Tags, String>();
-			data.put(Tags.Name, mill);
+			HashMap<String, String> data = new HashMap<String, String>();
+			data.put(Mill.getTags()[0], mill);
 			mDbAdapter.insertItem(new Mill(data, -1));
 		}
-		mLoadComplete = true;
+
+		final String jobs[] = {"Back 40", "Homeplace"};
+		for ( String job : jobs ) {
+			HashMap<String, String> data = new HashMap<String, String>();
+			data.put(Job.getTags()[0], job);
+			mDbAdapter.insertItem(new Job(data, -1));
+		}
+		
+		
 	}
 
     @Override
@@ -102,7 +109,7 @@ public class BuckService extends Service  {
 	class LoadTask extends AsyncTask<String, Integer, Integer> {
 		@Override
 		protected Integer doInBackground(String... params) {
-			String path = params[0];
+			//String path = params[0];
 			// Do something that takes long time
 			// XML -> db
 			return 0;
@@ -121,14 +128,12 @@ public class BuckService extends Service  {
 		@Override
 		protected void onPostExecute(Integer result) {
 			Log.i(getClass().getSimpleName(), "Load Complete");
-			mLoadComplete  = true;
 			mLoadTask = null;
 			sendUpdate();
 		}
 
 		@Override
 		protected void onPreExecute() {
-			mLoadComplete = false;
 		}
 	}
 
