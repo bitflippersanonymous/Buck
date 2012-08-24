@@ -4,7 +4,8 @@ import android.content.ContentValues;
 
 public class Util {
 	public static final String _ID = "_id";
-	public static final String FRAGMENT = "FRAGMENT"; 
+	public static final String FRAGMENT = "FRAGMENT";
+	public static final String CUTS = "CUTS"; 
 	
 	// Define an common interface for db classes for shared strings
 	public interface DatabaseBase {

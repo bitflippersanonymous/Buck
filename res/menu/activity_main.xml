@@ -20,5 +20,5 @@
         android:icon="@drawable/hand_saw"
         android:showAsAction="always|withText"
         android:title="@string/menu_buck"/>
-    
+
 </menu>

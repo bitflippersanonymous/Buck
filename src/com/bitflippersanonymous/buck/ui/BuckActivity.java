@@ -1,37 +1,27 @@
 package com.bitflippersanonymous.buck.ui;
 
-import java.util.LinkedList;
-import java.util.List;
-
+import java.util.ArrayList;
 import com.bitflippersanonymous.buck.R;
 import com.bitflippersanonymous.buck.domain.Util;
-import com.bitflippersanonymous.buck.ui.BuckActivity.Cut;
+import com.bitflippersanonymous.buck.domain.Cut;
 
 import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
-import android.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.view.ViewGroup;
 
 public class BuckActivity extends BaseActivity implements View.OnClickListener {
-
-	// Needs to preserve through Create/Destroy
-	class Cut {
-		float mWidth;
-		float mLength;
-	}
 	
-	private ArrayAdapter<Cut> mAdapter;
+	private ArrayAdapter<Cut> mAdapter = null;
+	private ArrayList<Cut> mCuts = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -50,16 +40,16 @@ public class BuckActivity extends BaseActivity implements View.OnClickListener {
 		 * An adapter that holds the data for each measurement to be displayed in the ListView
 		 * Has an override to map a Cut to a View
 		 */
-		mAdapter = new ArrayAdapter<Cut>(this, 0, 0, new LinkedList<Cut>()) {
+		mAdapter = new ArrayAdapter<Cut>(this, 0, 0, mCuts = new ArrayList<Cut>()) {
 		  @Override
 		  public View getView(int position, View convertView, ViewGroup parent) {
 		  	if ( convertView == null )
 		  		convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_list_item_2, parent, false);
 		  	Cut cut = getItem(position);
 		  	TextView tv = ((TextView)convertView.findViewById(android.R.id.text1));
-		  	tv.setText(String.valueOf(cut.mWidth));
+		  	tv.setText(String.valueOf(cut.getWidth()));
 		  	tv = ((TextView)convertView.findViewById(android.R.id.text2));
-		  	tv.setText(String.valueOf(cut.mLength));
+		  	tv.setText(String.valueOf(cut.getLength()));
 		    return convertView;
 		  }
 		};
@@ -71,15 +61,23 @@ public class BuckActivity extends BaseActivity implements View.OnClickListener {
 	// FIXME: save/restore the whole mAdapter array
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
-		if (savedInstanceState.containsKey("Foo")) {
-			int foo = savedInstanceState.getInt("Foo");
+		if (savedInstanceState.containsKey(Util.CUTS)) {
+			mCuts = savedInstanceState.getParcelableArrayList(Util.CUTS);
 		}
 	}
 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-		outState.putInt("Foo", 0);
+		outState.putParcelableArrayList(Util.CUTS, mCuts);
 	}
+	
+	//FIXME: Only show 'finish' menu option when mCuts.length() > 0
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.activity_buck, menu);
+		return true;
+	}
+
 	
 	private void clearTextEdits() {
 		for (int id : new int[]{R.id.editTextBuckLength, R.id.editTextBuckWidth} )
@@ -91,9 +89,9 @@ public class BuckActivity extends BaseActivity implements View.OnClickListener {
 		Cut cut = new Cut();
 		try { 
 			EditText wedit = (EditText)findViewById(R.id.editTextBuckWidth);
-			cut.mWidth = Float.parseFloat(wedit.getText().toString());
+			cut.setWidth(Float.parseFloat(wedit.getText().toString()));
 			EditText ledit = (EditText)findViewById(R.id.editTextBuckLength);
-			cut.mLength = Float.parseFloat(ledit.getText().toString());
+			cut.setLength(Float.parseFloat(ledit.getText().toString()));
 		} catch (NumberFormatException e) {
 			return;
 		}
@@ -115,7 +113,6 @@ public class BuckActivity extends BaseActivity implements View.OnClickListener {
 		
 	}
 
-
 	
 	/**
 	 * Handles option item selections, including 'Home', which restarts the main activity
@@ -135,6 +132,16 @@ public class BuckActivity extends BaseActivity implements View.OnClickListener {
 					Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(parentActivityIntent);
 			finish();
+			return true;
+		case R.id.menu_done:
+			Intent intent = new Intent(this, CutOptionsActivity.class);
+			// FIXME: how to put mCuts in correctly?
+			intent.putExtra("", mCuts);
+			//Bundle args = new Bundle();
+			//intent.getExtras().putParcelableArrayList(Util.CUTS, mCuts);
+			startActivity(intent);
+			clearTextEdits();
+			mCuts.clear();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

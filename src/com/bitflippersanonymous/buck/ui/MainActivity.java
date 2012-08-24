@@ -95,6 +95,7 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 				getActionBar().getSelectedNavigationIndex());
 	}
 
+	//FIXME: I wonder if I can call through to super and append option menus
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.activity_main, menu);

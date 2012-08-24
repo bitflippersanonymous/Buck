@@ -22,6 +22,7 @@
             android:name=".ui.BuckActivity"
             android:label="@string/title_activity_buck" >
         </activity>
+        <activity android:name=".ui.CutOptionsActivity" />
         <service android:name=".service.BuckService" />
     </application>
 
