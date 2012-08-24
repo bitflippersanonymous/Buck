@@ -18,7 +18,7 @@ public class DetailActivity extends BaseActivity {
 		setContentView(R.layout.activity_detail);
 
 		ActionBar actionBar = getActionBar();
-		actionBar.setDisplayShowTitleEnabled(true);
+		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setDisplayHomeAsUpEnabled(true);
 
 		Class<?> fragmentClass = (Class<?>) getIntent().getSerializableExtra(Util.FRAGMENT);
@@ -30,14 +30,22 @@ public class DetailActivity extends BaseActivity {
 			return;
 		}
 		
+		// FIXME: actionBar title needs set to mill/job name here with a common interface
+		
+		// Pass along all the extras.  Could create a new bundle and only pass ones we need
+		fragment.setArguments(getIntent().getExtras());
+		
 		getFragmentManager().beginTransaction()
 		.replace(R.id.detail_container, fragment)
 		.commit();
 
-		// Pass along all the extras.  Could create a new bundle and only pass ones we need
-		fragment.setArguments(getIntent().getExtras());
 	}
 
+	/**
+	 * Handles option item selections, including 'Home', which restarts the main activity
+	 * resetting your current location to default Mills. Buck needs a home landing activity
+	 * instead
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {

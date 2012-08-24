@@ -12,7 +12,7 @@ public class Job implements Util.DbItem {
 	
 	private static final String[] sTags = {"Name", "Location"};
 	
-	public static	String[] getTags() {
+	public static String[] getTags() {
 		return sTags;
 	}
 

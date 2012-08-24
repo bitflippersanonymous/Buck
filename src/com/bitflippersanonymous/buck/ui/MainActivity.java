@@ -27,12 +27,14 @@ public class MainActivity extends BaseActivity
 implements ActionBar.OnNavigationListener, MainListFragment.OnItemListener, 
 LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 
+	private static final int MILL_IDX = 0;
+	private static final int JOB_IDX = 1;
+	
 	private CursorAdapter mAdapter = null; // This cursor populates the mainlistfragment (ie, list of mills)
 	private static CursorAdapter[] mAdapters = {null, null};
 
 	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 	//private static Class<?>[] mChildActivities = {MillActivity.class, JobActivity.class};
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -54,10 +56,21 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 						navigation_items
 						),
 						this);
-		mAdapters[0] = new MillDbAdapter(this, null, 0);
-		mAdapters[1] = new JobDbAdapter(this, null, 0);
+		
+		mAdapters[MILL_IDX] = new MillDbAdapter(this, null, 0); 
+		mAdapters[JOB_IDX] = new JobDbAdapter(this, null, 0);
+
+		//Possibly .unregisterListener(listener) to prevent callback before have service
+		//How is this the correct idx?
+		int idx = getActionBar().getSelectedNavigationIndex();
+		getLoaderManager().initLoader(idx, null, this);
 	}
 
+	@Override
+	public void onPause() {
+		super.onPause();
+	}
+	
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -71,8 +84,8 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		if (savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
-			getActionBar().setSelectedNavigationItem(
-					savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
+			int idx = savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM);
+			getActionBar().setSelectedNavigationItem(idx);
 		}
 	}
 
@@ -125,10 +138,10 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 		.commit();
 		fragment.setOnItemListener(this); // May need to do this in onCreate and onResume
 
-		// Is a bit slow.  We requery each time
 		(mAdapter = mAdapters[position]).swapCursor(null);
 		fragment.setListAdapter(mAdapter);
-		getLoaderManager().restartLoader(0, args, this);
+		getLoaderManager().initLoader(position, args, this); 
+		//Possibly .unregisterListener(listener) to prevent callback before have service
 		return true;
 	}
 
@@ -144,7 +157,7 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 			Log.e(getClass().getSimpleName(), "onItemSelected: item is not a Cursor");
 		}
 		Class<?> fragmentClass = MillFragment.class;
-		if ( getActionBar().getSelectedNavigationIndex() == 1 )
+		if ( getActionBar().getSelectedNavigationIndex() == JOB_IDX )
 			fragmentClass = JobFragment.class;
 		Cursor cursor = (Cursor)item;
 		Intent intent = new Intent(this, DetailActivity.class);
@@ -160,7 +173,7 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 			public Cursor loadInBackground() {
 				String table = Tables.Mills.name();
 				Bundle args = getArgs();
-				if ( args != null && args.getInt(MainListFragment.ARG_SECTION_NUMBER) == 1)
+				if ( args != null && args.getInt(MainListFragment.ARG_SECTION_NUMBER) == JOB_IDX )
 					table = Tables.Jobs.name();
 				BuckDatabaseAdapter db = getService().getDbAdapter();
 				return db.fetchAll(table);
@@ -184,13 +197,11 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 	}
 
 	/**
-	 * Delay initLoader until we have a service connection.
-	 * initLoader runs an async db query to load main ListView. (list of mills/jobs)
+	 * Do things now that we have a connection to the service
 	 * @see BaseActivity#onServiceConnected(android.content.ComponentName, android.os.IBinder)
 	 */
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder service) {
 		super.onServiceConnected(name, service);
-		getLoaderManager().initLoader(0, null, this);
 	}
 }

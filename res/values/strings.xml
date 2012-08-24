@@ -10,15 +10,6 @@
         <item name="mill">Mill</item>
         <item name="job">Job</item>
     </string-array>
-    <string-array name="mills">
-        <item name="big_lumber">Big Lumber</item>
-        <item name="small_sawyer">Small Sawyer</item>
-    </string-array>
-    <string-array name="jobs">
-        <item name="back_40">Back 40</item>
-        <item name="pumpkin_patch">Pumpkin Patch</item>
-    </string-array>
-
     <string name="about_url">file:///android_asset/html/about.html</string>
     <string name="menu_buck">Buck</string>
     <string name="menu_about">About</string>
