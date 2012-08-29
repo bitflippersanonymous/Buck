@@ -39,8 +39,8 @@ public class BuckActivity extends BaseActivity implements View.OnClickListener {
 			findViewById(id).setOnClickListener(this);
 	
 		//Restore instance state can set mAdapter
+		ListView list = (ListView) findViewById(R.id.listViewBuck);
 		if ( mAdapter == null) {
-			ListView list = (ListView) findViewById(R.id.listViewBuck);
 			list.setAdapter(mAdapter = makeAdapter(mCuts = new ArrayList<Cut>()));
 		}
 
@@ -67,12 +67,15 @@ public class BuckActivity extends BaseActivity implements View.OnClickListener {
 		  @Override
 		  public View getView(int position, View convertView, ViewGroup parent) {
 		  	if ( convertView == null )
-		  		convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_list_item_2, parent, false);
+		  		convertView = LayoutInflater.from(getContext()).inflate(R.layout.cut_entry, parent, false);
 		  	Cut cut = getItem(position);
-		  	TextView tv = ((TextView)convertView.findViewById(android.R.id.text1));
+		  	TextView tv = ((TextView)convertView.findViewById(R.id.textViewWidth));
 		  	tv.setText(String.valueOf(cut.getWidth()));
-		  	tv = ((TextView)convertView.findViewById(android.R.id.text2));
+		  	tv = ((TextView)convertView.findViewById(R.id.textViewLength));
 		  	tv.setText(String.valueOf(cut.getLength()));
+		  	View removeButton = convertView.findViewById(R.id.imageViewRemove);
+		  	removeButton.setTag(position);
+		  	removeButton.setOnClickListener(BuckActivity.this);
 		    return convertView;
 		  }
 		};
@@ -132,11 +135,12 @@ public class BuckActivity extends BaseActivity implements View.OnClickListener {
 			addCut();
 			clearTextEdits();
 			break;
+		case R.id.imageViewRemove:
+			mAdapter.remove(mAdapter.getItem((Integer)v.getTag()));
 		default:
 		}		
 		
 	}
-
 	
 	/**
 	 * Handles option item selections, including 'Home', which restarts the main activity
@@ -159,11 +163,9 @@ public class BuckActivity extends BaseActivity implements View.OnClickListener {
 			return true;
 		case R.id.menu_done:
 			Intent intent = new Intent(this, CutOptionsActivity.class);
-			// FIXME: how to put mCuts in correctly?
-			intent.putExtra("", mCuts);
-			//Bundle args = new Bundle();
-			//intent.getExtras().putParcelableArrayList(Util.CUTS, mCuts);
+			intent.putParcelableArrayListExtra(Util.CUTS, mCuts);
 			startActivity(intent);
+			// May not want to clear here, wait until piece is cut and added
 			clearTextEdits();
 			mCuts.clear();
 			return true;
