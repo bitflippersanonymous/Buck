@@ -8,6 +8,7 @@ import com.bitflippersanonymous.buck.domain.Cut;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 
 public class BuckActivity extends BaseActivity implements View.OnClickListener {
 	
@@ -36,11 +38,32 @@ public class BuckActivity extends BaseActivity implements View.OnClickListener {
 		for (int id : new int[]{R.id.buttonBuckClear, R.id.buttonBuckAdd} )
 			findViewById(id).setOnClickListener(this);
 	
-		/*
-		 * An adapter that holds the data for each measurement to be displayed in the ListView
-		 * Has an override to map a Cut to a View
-		 */
-		mAdapter = new ArrayAdapter<Cut>(this, 0, 0, mCuts = new ArrayList<Cut>()) {
+		//Restore instance state can set mAdapter
+		if ( mAdapter == null) {
+			ListView list = (ListView) findViewById(R.id.listViewBuck);
+			list.setAdapter(mAdapter = makeAdapter(mCuts = new ArrayList<Cut>()));
+		}
+
+		EditText editText = (EditText) findViewById(R.id.editTextBuckLength);
+		editText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView v, int actionId,	KeyEvent event) {
+				if (actionId == EditorInfo.IME_ACTION_DONE) {
+					addCut();
+					clearTextEdits();
+					return true;
+				}
+				return false;
+			}
+		});
+	}
+
+	/**
+	 * An adapter that holds the data for each measurement to be displayed in the ListView
+	 * Has an override to map a Cut to a View
+	 */
+	private ArrayAdapter<Cut> makeAdapter(ArrayList<Cut> cuts) {
+		ArrayAdapter<Cut> adapter = new ArrayAdapter<Cut>(this, 0, 0, cuts) {
 		  @Override
 		  public View getView(int position, View convertView, ViewGroup parent) {
 		  	if ( convertView == null )
@@ -53,16 +76,16 @@ public class BuckActivity extends BaseActivity implements View.OnClickListener {
 		    return convertView;
 		  }
 		};
-		
-		ListView list = (ListView) findViewById(R.id.listViewBuck);
-		list.setAdapter(mAdapter);
+		return adapter;
 	}
 
-	// FIXME: save/restore the whole mAdapter array
+	// FIXME: Why rebuild whole adapter instead of just changing data under it
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		if (savedInstanceState.containsKey(Util.CUTS)) {
 			mCuts = savedInstanceState.getParcelableArrayList(Util.CUTS);
+			ListView list = (ListView) findViewById(R.id.listViewBuck);
+			list.setAdapter(mAdapter = makeAdapter(mCuts));
 		}
 	}
 
@@ -86,16 +109,17 @@ public class BuckActivity extends BaseActivity implements View.OnClickListener {
 	}
 	
 	private void addCut() {
-		Cut cut = new Cut();
 		try { 
 			EditText wedit = (EditText)findViewById(R.id.editTextBuckWidth);
-			cut.setWidth(Float.parseFloat(wedit.getText().toString()));
+			float width = Float.parseFloat(wedit.getText().toString());
 			EditText ledit = (EditText)findViewById(R.id.editTextBuckLength);
-			cut.setLength(Float.parseFloat(ledit.getText().toString()));
+			float length = Float.parseFloat(ledit.getText().toString());
+			mAdapter.add(new Cut(width, length));
+			ListView list = (ListView) findViewById(R.id.listViewBuck);
+			list.setSelectionFromTop(mAdapter.getCount(), 0);
 		} catch (NumberFormatException e) {
 			return;
 		}
-		mAdapter.add(cut);
 	}
 	
 	@Override

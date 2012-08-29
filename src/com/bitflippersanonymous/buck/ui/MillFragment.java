@@ -3,7 +3,6 @@ package com.bitflippersanonymous.buck.ui;
 
 // FIXME: Lots of duplicate code here between mill and job fragments.
 import com.bitflippersanonymous.buck.R;
-import com.bitflippersanonymous.buck.domain.Job;
 import com.bitflippersanonymous.buck.domain.Mill;
 import com.bitflippersanonymous.buck.domain.Util;
 
