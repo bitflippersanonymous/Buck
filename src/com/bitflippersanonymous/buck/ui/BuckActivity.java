@@ -114,9 +114,9 @@ public class BuckActivity extends BaseActivity implements View.OnClickListener {
 	private void addCut() {
 		try { 
 			EditText wedit = (EditText)findViewById(R.id.editTextBuckWidth);
-			float width = Float.parseFloat(wedit.getText().toString());
+			int width = Integer.parseInt(wedit.getText().toString());
 			EditText ledit = (EditText)findViewById(R.id.editTextBuckLength);
-			float length = Float.parseFloat(ledit.getText().toString());
+			int length = Integer.parseInt(ledit.getText().toString());
 			mAdapter.add(new Cut(width, length));
 			ListView list = (ListView) findViewById(R.id.listViewBuck);
 			list.setSelectionFromTop(mAdapter.getCount(), 0);

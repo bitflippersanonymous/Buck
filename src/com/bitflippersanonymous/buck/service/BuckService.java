@@ -1,15 +1,24 @@
 package com.bitflippersanonymous.buck.service;
 
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.bitflippersanonymous.buck.db.BuckDatabaseAdapter;
+import com.bitflippersanonymous.buck.domain.Cut;
 import com.bitflippersanonymous.buck.domain.Job;
 import com.bitflippersanonymous.buck.domain.Mill;
+import com.bitflippersanonymous.buck.domain.Util;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
@@ -22,6 +31,7 @@ public class BuckService extends Service  {
 	final private ArrayList<Messenger> mClients = new ArrayList<Messenger>();
 	private BuckDatabaseAdapter mDbAdapter = new BuckDatabaseAdapter(this);
 	private LoadTask mLoadTask = null;
+	private Map<Cut, Integer> mScribnerTable = null;
 	
 	public BuckDatabaseAdapter getDbAdapter() {
 		return mDbAdapter;
@@ -51,7 +61,7 @@ public class BuckService extends Service  {
 			mDbAdapter.insertItem(new Job(data, -1));
 		}
 		
-		
+		loadScribner();
 	}
 
     @Override
@@ -95,41 +105,88 @@ public class BuckService extends Service  {
 	}
 	
 	// Used to read XML data into database in background.
-	public boolean refreshDb() {
+	private boolean loadScribner() {
 		if ( mLoadTask != null )
 			return false;
-		String path = null;
-		mLoadTask = new LoadTask();
-		mLoadTask.execute(path);
+
+		mScribnerTable = new HashMap<Cut, Integer>();
+		Util.FileReader reader = new ScribnerReader(mScribnerTable, "scribner.csv");
+		(mLoadTask = new LoadTask()).execute(reader);
 		return true;
 	}
 
-	// TODO: Need to call some sort of finish when this is done to make the task thread go away
-	// Used by refreshDb
-	class LoadTask extends AsyncTask<String, Integer, Integer> {
+	class ScribnerReader implements Util.FileReader {
+		List<Integer> mWidths;
+		Map<Cut, Integer> mScribnerTable;
+		String mFilename;
+		
+		public ScribnerReader(Map<Cut, Integer> scribnerTable, String filename) {
+			mScribnerTable = scribnerTable;
+			mFilename = filename;
+		}
+		
 		@Override
-		protected Integer doInBackground(String... params) {
-			//String path = params[0];
-			// Do something that takes long time
-			// XML -> db
+		public void handleLine(String line) {
+			List<Integer> ints = new ArrayList<Integer>();
+			 for ( String s : line.split(","))
+				 ints.add(Integer.parseInt(s));
+			 if ( mWidths == null )
+				 mWidths = ints;
+			 else {
+				 // FIXME: Check for nulls here, table may be incomplete
+				 for ( int i = 1; i < ints.size(); i++ )
+					 mScribnerTable.put(new Cut(mWidths.get(i), ints.get(0)*12), ints.get(i));
+			 }
+		}
+
+		@Override
+		public String getFilename() {
+			return mFilename;
+		}
+
+	}
+		
+
+	// TODO: Need to call some sort of finish when this is done to make the task thread go away
+	// TODO: As is, hard to tell if table load is complete
+	class LoadTask extends AsyncTask<Util.FileReader, Void, Integer> {
+		// Could put file in raw, then could access with R.id instead of filename
+		// Could put this into a class, then subclass that for handler
+		public void readFile(Util.FileReader reader) {
+			try {
+				AssetManager am = getAssets();
+				InputStream instream = am.open(reader.getFilename());
+				if ( instream != null ) {
+					InputStreamReader inputreader = new InputStreamReader(instream);
+					BufferedReader buffreader = new BufferedReader(inputreader);
+					String line;
+					while (( line = buffreader.readLine()) != null) {
+						reader.handleLine(line);
+					}
+				}
+				instream.close();
+			} catch (java.io.FileNotFoundException e) {
+				// do something if the myfilename.txt does not exits
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		protected Integer doInBackground(Util.FileReader... params) {
+			readFile(params[0]);
 			return 0;
 		}
 
 		@Override
 		protected void onCancelled() {
-			// Should we close db here?
 			mLoadTask = null;
-		}
-
-		@Override
-		protected void onProgressUpdate(Integer... progress) {
 		}
 
 		@Override
 		protected void onPostExecute(Integer result) {
 			Log.i(getClass().getSimpleName(), "Load Complete");
 			mLoadTask = null;
-			sendUpdate();
 		}
 
 		@Override
@@ -137,5 +194,24 @@ public class BuckService extends Service  {
 		}
 	}
 
+	//FIXME: mLoadTask may not be complete yet.
+	public int getBoardFeet(Cut cut) {
+		Cut trim = new Cut(cut.getWidth(), roundLength(cut.getLength()));
+		Integer bf = mScribnerTable.get(trim);
+		if ( bf != null )
+			return bf;
+		
+		Log.e(getClass().getSimpleName(), "Scribner Table Incomplete: " + cut);
+		return 0;
+	}
+
+	/**
+	 * Doesn't account for required trim yet
+	 * @param length Length in inches
+	 * @return Length in inches rounded down according to log scaling rules
+	 */
+	private int roundLength(int length) {
+		return length - length % 12;
+	}
 
 }

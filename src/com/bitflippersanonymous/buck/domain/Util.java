@@ -16,5 +16,10 @@ public class Util {
 		ContentValues createContentValues();
 		String getTableName();
 	}
+	
+	public interface FileReader {
+		public String getFilename();
+		public void handleLine(String line);
+	}
 
 }

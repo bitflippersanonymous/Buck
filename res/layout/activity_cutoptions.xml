@@ -8,12 +8,20 @@
     android:orientation="vertical"
     tools:context=".ui.CutOptionsActivity" >
 
+
     <TextView
         android:id="@+id/textViewCutOptions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:text="@string/cutoptions_text"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
+    
+    <TextView
+        android:id="@+id/textViewBF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BF"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    
 </LinearLayout>
