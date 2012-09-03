@@ -24,7 +24,8 @@ public class MillDbAdapter extends CursorAdapter implements ListAdapter {
 
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
-		View view = LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_1, parent, false);
+		View view = LayoutInflater.from(context).inflate(
+				android.R.layout.simple_list_item_1, parent, false);
 		bindView(view, context, cursor);
 		return view;
 	}

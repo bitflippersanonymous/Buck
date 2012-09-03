@@ -11,9 +11,10 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity android:name=".ui.MainActivity">
+        <activity android:name=".ui.MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -22,7 +23,10 @@
             android:name=".ui.BuckActivity"
             android:label="@string/title_activity_buck" >
         </activity>
-        <activity android:name=".ui.CutOptionsActivity" />
+        <activity
+            android:name=".ui.PickerActivity"
+            android:label="@string/title_activity_picker" />
+
         <service android:name=".service.BuckService" />
     </application>
 

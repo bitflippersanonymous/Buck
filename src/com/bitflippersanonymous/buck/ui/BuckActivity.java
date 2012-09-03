@@ -162,7 +162,7 @@ public class BuckActivity extends BaseActivity implements View.OnClickListener {
 			finish();
 			return true;
 		case R.id.menu_done:
-			Intent intent = new Intent(this, CutOptionsActivity.class);
+			Intent intent = new Intent(this, PickerActivity.class);
 			intent.putParcelableArrayListExtra(Util.CUTS, mCuts);
 			startActivity(intent);
 			// May not want to clear here, wait until piece is cut and added

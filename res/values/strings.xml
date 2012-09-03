@@ -6,7 +6,8 @@
     <string name="title_activity_job">Job</string>
     <string name="title_activity_mill">Mill</string>
     <string name="title_activity_buck">Buck</string>
-
+    <string name="title_activity_picker">Picker</string>
+    
     <string-array name="navigation_items">
         <item name="mill">Mill</item>
         <item name="job">Job</item>
@@ -21,7 +22,5 @@
     <string name="buck_length">Length</string>
 	<string name="buck_clear">Clear</string>
     <string name="buck_add">Add</string>
-
-    <string name="cutoptions_text">A list of all the cut options and dollar values</string>
     
 </resources>

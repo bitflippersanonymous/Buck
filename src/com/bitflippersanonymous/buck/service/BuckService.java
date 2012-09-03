@@ -12,6 +12,7 @@ import java.util.Map;
 
 import com.bitflippersanonymous.buck.db.BuckDatabaseAdapter;
 import com.bitflippersanonymous.buck.domain.Cut;
+import com.bitflippersanonymous.buck.domain.CutPlan;
 import com.bitflippersanonymous.buck.domain.Job;
 import com.bitflippersanonymous.buck.domain.Mill;
 import com.bitflippersanonymous.buck.domain.Util;
@@ -166,9 +167,9 @@ public class BuckService extends Service  {
 				}
 				instream.close();
 			} catch (java.io.FileNotFoundException e) {
-				// do something if the myfilename.txt does not exits
+				Log.e(getClass().getSimpleName(), "File not found: " + reader.getFilename());
 			} catch (IOException e) {
-				e.printStackTrace();
+				Log.e(getClass().getSimpleName(), "Error reading: " + reader.getFilename());
 			}
 		}
 
@@ -206,12 +207,22 @@ public class BuckService extends Service  {
 	}
 
 	/**
-	 * Doesn't account for required trim yet
+	 * Round length down to nearest foot. Doesn't round according to 'official_Rules_Revised.pdf' yet.
 	 * @param length Length in inches
 	 * @return Length in inches rounded down according to log scaling rules
 	 */
 	private int roundLength(int length) {
 		return length - length % 12;
+	}
+
+	public List<CutPlan> getCutPlans(List<Cut> cuts) {
+		List<CutPlan> plans = new ArrayList<CutPlan>();
+		for ( Cut cut : cuts ) {
+			CutPlan plan = new CutPlan();
+			plan.setBoardFeet(getBoardFeet(cut));
+			plans.add(plan);
+		}
+		return plans;
 	}
 
 }
