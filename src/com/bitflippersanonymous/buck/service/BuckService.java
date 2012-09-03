@@ -217,11 +217,17 @@ public class BuckService extends Service  {
 
 	public List<CutPlan> getCutPlans(List<Cut> cuts) {
 		List<CutPlan> plans = new ArrayList<CutPlan>();
+		CutPlan plan = new CutPlan(cuts);
+		plans.add(plan);
+		
+		int boardFeet = 0;
+		List<Integer> ints = new ArrayList<Integer>();
 		for ( Cut cut : cuts ) {
-			CutPlan plan = new CutPlan();
-			plan.setBoardFeet(getBoardFeet(cut));
-			plans.add(plan);
+			boardFeet += getBoardFeet(cut);
+			ints.add(cut.getLength());
 		}
+		plan.setCuts(ints);
+		plan.setBoardFeet(boardFeet);
 		return plans;
 	}
 
