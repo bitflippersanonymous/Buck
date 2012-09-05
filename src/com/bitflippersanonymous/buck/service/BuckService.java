@@ -231,4 +231,8 @@ public class BuckService extends Service  {
 		return plans;
 	}
 
+	public void savePick(CutPlan item) {
+		Log.e(getClass().getSimpleName(), "Store CutPlan in db");
+	}
+
 }

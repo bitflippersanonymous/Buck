@@ -165,9 +165,7 @@ public class BuckActivity extends BaseActivity implements View.OnClickListener {
 			Intent intent = new Intent(this, PickerActivity.class);
 			intent.putParcelableArrayListExtra(Util.CUTS, mCuts);
 			startActivity(intent);
-			// May not want to clear here, wait until piece is cut and added
 			clearTextEdits();
-			mCuts.clear();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
