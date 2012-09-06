@@ -6,10 +6,10 @@
     android:layout_height="match_parent"
     android:gravity="top"
     android:orientation="vertical"
-    tools:context=".ui.BuckActivity" >
+    tools:context=".ui.MeasureActivity" >
 
     <ListView
-        android:id="@+id/listViewBuck"
+        android:id="@+id/listViewMeasure"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight=".75"
@@ -28,19 +28,19 @@
             android:layout_height="wrap_content" >
 
             <TextView
-                android:id="@+id/textViewBuckWidth"
+                android:id="@+id/textViewMeasureWidth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight=".5"
-                android:text="@string/buck_width"
+                android:text="@string/measure_width"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
-                android:id="@+id/textViewBuckLength"
+                android:id="@+id/textViewMeasureLength"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight=".5"
-                android:text="@string/buck_length"
+                android:text="@string/measure_length"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
         </TableRow>
@@ -50,20 +50,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
             <EditText
-                android:id="@+id/editTextBuckWidth"
+                android:id="@+id/editTextMeasureWidth"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight=".5"
                 android:ems="10"
                 android:text="8"
                 android:imeOptions="actionNext" 
-                android:nextFocusRight="@+id/editTextBuckLength"
+                android:nextFocusRight="@+id/editTextMeasureLength"
                 android:inputType="numberDecimal">
             <requestFocus />
             </EditText>
 
             <EditText
-                android:id="@id/editTextBuckLength"
+                android:id="@id/editTextMeasureLength"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight=".5"
@@ -79,18 +79,18 @@
             android:layout_height="wrap_content" >
 
             <Button
-                android:id="@+id/buttonBuckClear"
+                android:id="@+id/buttonMeasureClear"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight=".5"
-                android:text="@string/buck_clear" />
+                android:text="@string/measure_clear" />
 
             <Button
-                android:id="@+id/buttonBuckAdd"
+                android:id="@+id/buttonMeasureAdd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight=".5"
-                android:text="@string/buck_add" />
+                android:text="@string/measure_add" />
 
         </TableRow>
     </TableLayout>

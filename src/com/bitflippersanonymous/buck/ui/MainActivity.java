@@ -108,8 +108,8 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 		case R.id.menu_add:
 			Toast.makeText(this, "Add", Toast.LENGTH_SHORT).show();
 			return true;
-		case R.id.menu_buck:
-			Intent intent = new Intent(this, BuckActivity.class);
+		case R.id.menu_measure:
+			Intent intent = new Intent(this, MeasureActivity.class);
 			startActivity(intent);
 			return true;
 		case R.id.menu_about:

@@ -20,12 +20,12 @@
         </activity>
         <activity android:name=".ui.DetailActivity" />
         <activity
-            android:name=".ui.BuckActivity"
-            android:label="@string/title_activity_buck" >
+            android:name=".ui.MeasureActivity"
+            android:label="@string/title_activity_measure" >
         </activity>
         <activity
-            android:name=".ui.PickerActivity"
-            android:label="@string/title_activity_picker" />
+            android:name=".ui.CutActivity"
+            android:label="@string/title_activity_cut" />
 
         <service android:name=".service.BuckService" />
     </application>

@@ -16,9 +16,9 @@
         android:showAsAction="ifRoom|withText"
         android:title="@string/menu_add"/>
     <item
-        android:id="@+id/menu_buck"
+        android:id="@+id/menu_measure"
         android:icon="@drawable/hand_saw"
         android:showAsAction="always|withText"
-        android:title="@string/menu_buck"/>
+        android:title="@string/menu_measure"/>
 
 </menu>

@@ -6,7 +6,7 @@ import java.util.List;
 import com.bitflippersanonymous.buck.R;
 import com.bitflippersanonymous.buck.domain.Cut;
 import com.bitflippersanonymous.buck.domain.CutPlan;
-import com.bitflippersanonymous.buck.domain.PickerAdapter;
+import com.bitflippersanonymous.buck.domain.CutAdapter;
 import com.bitflippersanonymous.buck.domain.Util;
 
 import android.app.ActionBar;
@@ -22,29 +22,29 @@ import android.content.Loader;
 
 
 
-public class PickerActivity extends BaseActivity 
+public class CutActivity extends BaseActivity 
 	implements LoaderManager.LoaderCallbacks<List<CutPlan>>,
 		OnItemClickListener {
 
-	private PickerAdapter mAdapter = null;
+	private CutAdapter mAdapter = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_picker);
+		setContentView(R.layout.activity_cut);
 		
 		// TODO: This code is common to all BaseActivity derived classes... move it up
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayShowTitleEnabled(true);
 		actionBar.setDisplayHomeAsUpEnabled(true);
-		actionBar.setTitle(R.string.title_activity_picker);
+		actionBar.setTitle(R.string.title_activity_cut);
 		
-		ListView list = (ListView) findViewById(R.id.listViewPicker);
-		list.setAdapter(mAdapter = new PickerAdapter(this, 0, new ArrayList<CutPlan>()));
+		ListView list = (ListView) findViewById(R.id.listViewCut);
+		list.setAdapter(mAdapter = new CutAdapter(this, 0, new ArrayList<CutPlan>()));
 		list.setOnItemClickListener(this);
 		
-		findViewById(R.id.listViewPicker).setVisibility(View.GONE);
-		findViewById(R.id.progressBarPicker).setVisibility(View.VISIBLE);
+		findViewById(R.id.listViewCut).setVisibility(View.GONE);
+		findViewById(R.id.progressBarCut).setVisibility(View.VISIBLE);
 		getLoaderManager().initLoader(0, null, this);
 	}
 
@@ -65,8 +65,8 @@ public class PickerActivity extends BaseActivity
 	public void onLoadFinished(Loader<List<CutPlan>> loader, List<CutPlan> cutPlans) {
 		mAdapter.addAll(cutPlans);
 		mAdapter.notifyDataSetChanged();
-		findViewById(R.id.listViewPicker).setVisibility(View.VISIBLE);
-		findViewById(R.id.progressBarPicker).setVisibility(View.GONE);
+		findViewById(R.id.listViewCut).setVisibility(View.VISIBLE);
+		findViewById(R.id.progressBarCut).setVisibility(View.GONE);
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class PickerActivity extends BaseActivity
 
 	@Override
 	public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-		Intent intent = new Intent(this, BuckActivity.class);
+		Intent intent = new Intent(this, MeasureActivity.class);
 		intent.addFlags(
 				Intent.FLAG_ACTIVITY_CLEAR_TOP |
 				Intent.FLAG_ACTIVITY_NEW_TASK);

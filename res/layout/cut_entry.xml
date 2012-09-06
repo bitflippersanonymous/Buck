@@ -3,8 +3,9 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" >
 
-        <TextView
-        android:id="@+id/textViewWidth"
+
+    <TextView
+        android:id="@+id/textViewCutCuts"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight=".5"
@@ -12,19 +13,12 @@
         android:paddingLeft="2sp"/>
 
     <TextView
-        android:id="@+id/textViewLength"
+        android:id="@+id/textViewCutValue"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight=".5"
-        android:gravity="left"
+        android:gravity="right"
         android:paddingLeft="2sp"/>
 
-    <ImageView
-        android:id="@+id/imageViewRemove"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="2sp"
-        android:paddingRight="2sp"
-        android:src="@drawable/content_remove" />
-    
+
 </LinearLayout>

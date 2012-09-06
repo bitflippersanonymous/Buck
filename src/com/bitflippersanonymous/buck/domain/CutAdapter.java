@@ -13,9 +13,9 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 
-public class PickerAdapter extends ArrayAdapter<CutPlan> implements ListAdapter {
+public class CutAdapter extends ArrayAdapter<CutPlan> implements ListAdapter {
 
-	public PickerAdapter(Context context, int textViewResourceId,
+	public CutAdapter(Context context, int textViewResourceId,
 			List<CutPlan> objects) {
 		super(context, textViewResourceId, objects);
 	}
@@ -25,11 +25,11 @@ public class PickerAdapter extends ArrayAdapter<CutPlan> implements ListAdapter 
 		CutPlan plan = getItem(position);
 		if ( convertView == null )
 			convertView = LayoutInflater.from(parent.getContext()).inflate(
-					R.layout.picker_entry, parent, false);
+					R.layout.cut_entry, parent, false);
 
-		TextView tc = (TextView)convertView.findViewById(R.id.textViewPickerCuts);
+		TextView tc = (TextView)convertView.findViewById(R.id.textViewCutCuts);
 		tc.setText(makeCutString(plan.getCuts()));
-		TextView tv = (TextView)convertView.findViewById(R.id.textViewPickerValue);
+		TextView tv = (TextView)convertView.findViewById(R.id.textViewCutValue);
 		tv.setText(Integer.valueOf(plan.getBoardFeet()).toString());
 		return convertView;
 	}
