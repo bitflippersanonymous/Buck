@@ -142,25 +142,9 @@ public class MeasureActivity extends BaseActivity implements View.OnClickListene
 		
 	}
 	
-	/**
-	 * Handles option item selections, including 'Home', which restarts the main activity
-	 * resetting your current location to default Mills. Measure needs a home landing activity
-	 * instead
-	 * Move this to BaseActivity
-	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case android.R.id.home:
-			// This is called when the Home (Up) button is pressed
-			// in the Action Bar.
-			Intent parentActivityIntent = new Intent(this, MainActivity.class);
-			parentActivityIntent.addFlags(
-					Intent.FLAG_ACTIVITY_CLEAR_TOP |
-					Intent.FLAG_ACTIVITY_NEW_TASK);
-			startActivity(parentActivityIntent);
-			finish();
-			return true;
 		case R.id.menu_done:
 			Intent intent = new Intent(this, CutActivity.class);
 			intent.putParcelableArrayListExtra(Util.CUTS, mCuts);

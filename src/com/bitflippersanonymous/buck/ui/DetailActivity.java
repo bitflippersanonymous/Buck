@@ -40,26 +40,4 @@ public class DetailActivity extends BaseActivity {
 		.commit();
 
 	}
-
-	/**
-	 * Handles option item selections, including 'Home', which restarts the main activity
-	 * resetting your current location to default Mills. Buck needs a home landing activity
-	 * instead
-	 */
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			// This is called when the Home (Up) button is pressed
-			// in the Action Bar.
-			Intent parentActivityIntent = new Intent(this, MainActivity.class);
-			parentActivityIntent.addFlags(
-					Intent.FLAG_ACTIVITY_CLEAR_TOP |
-					Intent.FLAG_ACTIVITY_NEW_TASK);
-			startActivity(parentActivityIntent);
-			finish();
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
 }
