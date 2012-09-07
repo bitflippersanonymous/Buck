@@ -21,21 +21,22 @@ public class MillFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		int rowId = getArguments().getInt(Util._ID);
-		String table = Util.DatabaseBase.Tables.Mills.name();
+		int millId = getArguments().getInt(Util._ID);
 
 		// This fetch could take a long time, so should be done as async task
-		Cursor cursor = BaseActivity.getService().getDbAdapter().fetchEntry(table, rowId);
-		Mill mill = Mill.cursorToItem(cursor);
+		Mill mill = BaseActivity.getService().getMill(millId);
+		String millName = mill.get(mill.getTags()[0].getKey());
 		
 		// FIXME: Job.getTags()[0] is the name, kind of hard to tell here.  Need better name
 		ActionBar actionBar = getActivity().getActionBar();
 		actionBar.setDisplayShowTitleEnabled(true);
-		actionBar.setTitle(mill.get(Mill.getTags()[0]));
+		actionBar.setTitle(millName);
 
 		View view = inflater.inflate(R.layout.fragment_mill, container, false);
 		TextView t = (TextView)view.findViewById(R.id.textViewMill);
-		t.setText(mill.get(Mill.getTags()[0]));
+		t.setText(millName);
+	
+		//TODO: set adapter on R.id.listViewMill
 		return view;
 	}
 }

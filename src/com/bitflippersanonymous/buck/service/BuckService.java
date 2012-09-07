@@ -16,10 +16,13 @@ import com.bitflippersanonymous.buck.domain.CutPlan;
 import com.bitflippersanonymous.buck.domain.Job;
 import com.bitflippersanonymous.buck.domain.Mill;
 import com.bitflippersanonymous.buck.domain.Util;
+import com.bitflippersanonymous.buck.domain.Util.DatabaseBase.Tables;
+import com.bitflippersanonymous.buck.ui.BaseActivity;
 
 import android.app.Service;
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
@@ -51,14 +54,14 @@ public class BuckService extends Service  {
 		final String mills[] = {"Big Lumber", "LP", "Boise"};
 		for ( String mill : mills ) {
 			HashMap<String, String> data = new HashMap<String, String>();
-			data.put(Mill.getTags()[0], mill);
+			data.put(Mill.getsTags()[0].getKey(), mill);
 			mDbAdapter.insertItem(new Mill(data, -1));
 		}
 
 		final String jobs[] = {"Back 40", "Homeplace"};
 		for ( String job : jobs ) {
 			HashMap<String, String> data = new HashMap<String, String>();
-			data.put(Job.getTags()[0], job);
+			data.put(Job.getsTags()[0].getKey(), job);
 			mDbAdapter.insertItem(new Job(data, -1));
 		}
 		
@@ -233,6 +236,11 @@ public class BuckService extends Service  {
 
 	public void savePick(CutPlan item) {
 		Log.e(getClass().getSimpleName(), "Store CutPlan in db");
+	}
+
+	public Mill getMill(int millId) {
+		Cursor cursor = getDbAdapter().fetchEntry(Tables.Mills, millId);
+		return new Mill(cursor);
 	}
 
 }

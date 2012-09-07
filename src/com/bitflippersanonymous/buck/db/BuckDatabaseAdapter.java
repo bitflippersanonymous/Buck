@@ -1,6 +1,8 @@
 package com.bitflippersanonymous.buck.db;
 
 import com.bitflippersanonymous.buck.domain.Util;
+import com.bitflippersanonymous.buck.domain.Util.DbTags;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -35,8 +37,8 @@ public class BuckDatabaseAdapter implements Util.DatabaseBase {
 		return cursor;
 	}
 
-	public Cursor fetchEntry(String table, long rowId) throws SQLException {
-		Cursor cursor = mDbHelper.getReadableDatabase().query(true, table, 
+	public Cursor fetchEntry(Tables table, long rowId) throws SQLException {
+		Cursor cursor = mDbHelper.getReadableDatabase().query(true, table.name(), 
 				null,
 				Util._ID + "=?", new String[]{String.valueOf(rowId)}, null, null, null, null);
 		if (cursor != null) {
@@ -62,7 +64,7 @@ public class BuckDatabaseAdapter implements Util.DatabaseBase {
 	}
 	*/
 	
-	public long insertItem(Util.DbItem item) {
+	public long insertItem(DbTags item) {
 		SQLiteDatabase database = mDbHelper.getWritableDatabase();
 		ContentValues values = item.createContentValues();
 		return database.insert(item.getTableName(), null, values);

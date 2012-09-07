@@ -2,7 +2,10 @@ package com.bitflippersanonymous.buck.db;
 
 import com.bitflippersanonymous.buck.domain.Job;
 import com.bitflippersanonymous.buck.domain.Mill;
+import com.bitflippersanonymous.buck.domain.Price;
 import com.bitflippersanonymous.buck.domain.Util;
+import com.bitflippersanonymous.buck.domain.Util.DbTags;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -15,6 +18,7 @@ public class BuckDatabaseHelper extends SQLiteOpenHelper implements Util.Databas
 	private static final int DATABASE_VERSION = 1;
 
 	// Strings to recreate DB from scratch
+	// FIXME: refactor with a loop. duplicate code
 	private static final String [] CREATE_TABLES = { 
 		"create table " + Tables.Mills.name() + " ("
 		+ Util._ID + " integer primary key autoincrement ",
@@ -22,20 +26,27 @@ public class BuckDatabaseHelper extends SQLiteOpenHelper implements Util.Databas
 		"create table " + Tables.Jobs.name() + " ("
 		+ Util._ID + " integer primary key autoincrement ",
 
+		"create table " + Tables.Prices.name() + " ("
+		+ Util._ID + " integer primary key autoincrement ",
+
 	};
 	
 	static {
-		for ( String tag : Mill.getTags() ) {
-			CREATE_TABLES[0] += ", " + tag + " text "; 
+		for ( DbTags.Tags column : Mill.getsTags() ) {
+			CREATE_TABLES[0] += ", " + column.getKey() + " " + column.getValue(); 
 		}
 		CREATE_TABLES[0] += ");";
 		
-		for ( String tag : Job.getTags() ) {
-			CREATE_TABLES[1] += ", " + tag + " text "; 
-		}
 		
+		for ( DbTags.Tags column : Job.getsTags() ) {
+			CREATE_TABLES[1] += ", " + column.getKey() + " " + column.getValue(); 
+		}
 		CREATE_TABLES[1] += ");";
 
+		for ( DbTags.Tags column : Price.getsTags() ) {
+			CREATE_TABLES[2] += ", " + column.getKey() + " " + column.getValue(); 
+		}
+		CREATE_TABLES[2] += ");";
 	}
 	
 	public BuckDatabaseHelper(Context context) {

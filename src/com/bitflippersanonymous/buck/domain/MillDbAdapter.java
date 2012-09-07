@@ -17,9 +17,9 @@ public class MillDbAdapter extends CursorAdapter implements ListAdapter {
 
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
-		Mill mill = Mill.cursorToItem(cursor);
+		Mill mill = new Mill(cursor);
 		TextView name = (TextView) view.findViewById(android.R.id.text1);
-		name.setText(mill.get(Mill.getTags()[0]));
+		name.setText(mill.get(mill.getTags()[0].getKey()));
 	}
 
 	@Override

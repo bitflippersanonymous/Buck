@@ -1,9 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/textViewMill"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:drawableLeft="@drawable/ic_launcher"
-    android:textAppearance="?android:attr/textAppearanceLarge" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="top"
+    android:orientation="vertical"
+    tools:context=".ui.DetailActivity" >
+    <TextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/textViewMill"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_launcher"
+        android:textAppearance="?android:attr/textAppearanceLarge">
+    </TextView>
 
-</TextView>
+    <ListView
+        android:id="@+id/listViewMill"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight=".75"
+        android:footerDividersEnabled="true" >
+    </ListView>
+</LinearLayout>
