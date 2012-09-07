@@ -76,6 +76,9 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 		super.onResume();
 	}
 	
+	// Since this activity is first in the stack, when it's destroyed the service 
+	// is destroyed too.  Could fix that by binding to BuckService in a derived
+	// Application class
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
