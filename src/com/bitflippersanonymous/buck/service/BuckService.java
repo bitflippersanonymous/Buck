@@ -50,8 +50,7 @@ public class BuckService extends Service  {
 	}
 
 	public void onCreate() {
-		//TODO: Need to load database on service create if it is empty
-		// Load with sample test data?
+		//TODO: Load from xml
 		mDbAdapter.recreate();
 		final String mills[] = {"Big Lumber", "LP", "Boise"};
 		for ( String name : mills ) {

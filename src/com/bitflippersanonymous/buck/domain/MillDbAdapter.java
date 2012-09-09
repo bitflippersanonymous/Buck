@@ -18,7 +18,7 @@ public class MillDbAdapter extends CursorAdapter implements ListAdapter {
 
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
-		int columnIndex = cursor.getColumnIndex(Mill.getsTags()[0].getKey());
+		int columnIndex = cursor.getColumnIndex(Mill.Fields.Name.name());
 		String millName = cursor.getString(columnIndex);
 		TextView textView = (TextView) view.findViewById(android.R.id.text1);
 		textView.setText(millName);
