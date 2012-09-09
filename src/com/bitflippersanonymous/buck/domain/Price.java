@@ -1,15 +1,9 @@
 package com.bitflippersanonymous.buck.domain;
 
-import java.util.HashMap;
-
-import com.bitflippersanonymous.buck.domain.Mill.Fields;
-import com.bitflippersanonymous.buck.domain.Util.DbTags.Tag;
-
-import android.content.ContentValues;
 import android.database.Cursor;
 
 
-public class Price extends DbItem {
+public class Price extends DbItem<Price.Fields> {
 	
 	public enum Fields {MillId, Width, Length, Rate, Price};
 	private static final Tag[] sTags = {

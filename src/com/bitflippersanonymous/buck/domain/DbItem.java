@@ -3,7 +3,7 @@ package com.bitflippersanonymous.buck.domain;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-public abstract class DbItem implements Util.DbTags {
+public abstract class DbItem<Fields extends Enum<?>> implements Util.DbTags {
 
 	private final Tag[] mTags;
 	private int mId;
@@ -40,18 +40,18 @@ public abstract class DbItem implements Util.DbTags {
 	}
 
 	//TODO: Check that Tag matches type
-	public String getAsString(Enum<?> field) {
+	public String getAsString(Fields field) {
 		return mData.getAsString(field.name());
 	}
 
-	public Integer getAsInteger(Enum<?> field) {
+	public Integer getAsInteger(Fields field) {
 		return mData.getAsInteger(field.name());
 	}
 	
-	public void put(Enum<?> field, String value) {
+	public void put(Fields field, String value) {
 		mData.put(field.name(), value);
 	}
-	public void put(Enum<?> field, Integer value) {
+	public void put(Fields field, Integer value) {
 		mData.put(field.name(), value);
 	}
 	//

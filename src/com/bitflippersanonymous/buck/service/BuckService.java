@@ -62,6 +62,7 @@ public class BuckService extends Service  {
 			//Need millId to insert price
 			Price price = new Price(-1);
 			price.put(Price.Fields.MillId, millId);
+			price.put(Price.Fields.Price, 300);
 			price.put(Price.Fields.Length, 16);
 			mDbAdapter.insertItem(price);
 		}

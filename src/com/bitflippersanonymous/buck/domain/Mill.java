@@ -7,7 +7,7 @@ import com.bitflippersanonymous.buck.domain.Mill.Fields;
 
 import android.database.Cursor;
 
-public class Mill extends DbItem {
+public class Mill extends DbItem<Mill.Fields> {
 	public enum Fields {Name};
 	private static final Tag[] sTags = {
 		new Tag(Fields.Name),

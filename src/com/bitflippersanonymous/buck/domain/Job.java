@@ -1,7 +1,7 @@
 package com.bitflippersanonymous.buck.domain;
 import android.database.Cursor;
 
-public class Job extends DbItem {
+public class Job extends DbItem<Job.Fields> {
 	public enum Fields {Name};
 	private static final Tag[] sTags = {
 		new Tag(Fields.Name),
