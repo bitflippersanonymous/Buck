@@ -28,8 +28,8 @@ public class BuckDatabaseAdapter implements Util.DatabaseBase {
 		mDbHelper = null;
 	}
 	
-	public Cursor fetchAll(String table) throws SQLException {
-		Cursor cursor = mDbHelper.getReadableDatabase().query(false, table,
+	public Cursor fetchAll(Tables table) throws SQLException {
+		Cursor cursor = mDbHelper.getReadableDatabase().query(false, table.name(),
 				null, null, null, null, null, null, null);
 		if (cursor != null) {
 			cursor.moveToFirst();
@@ -64,9 +64,10 @@ public class BuckDatabaseAdapter implements Util.DatabaseBase {
 	}
 	*/
 	
+	// Optionally could set id on item. (Would need to add setId to DbTags interface)
 	public long insertItem(DbTags item) {
 		SQLiteDatabase database = mDbHelper.getWritableDatabase();
-		ContentValues values = item.createContentValues();
+		ContentValues values = item.getContentValues();
 		return database.insert(item.getTableName(), null, values);
 	}
 	

@@ -28,7 +28,7 @@ public class JobFragment extends Fragment {
 		// This fetch could take a long time, so should be done as async task
 		Cursor cursor = BaseActivity.getService().getDbAdapter().fetchEntry(Tables.Jobs, jobId);
 		Job job = new Job(cursor);
-		String jobName = job.get(job.getTags()[0].getKey());
+		String jobName = job.getAsString(Job.Fields.Name);
 		
 		// FIXME: Job.getTags()[0] is the name, kind of hard to tell here.  Need better name
 		ActionBar actionBar = getActivity().getActionBar();

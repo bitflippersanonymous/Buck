@@ -15,11 +15,13 @@ import com.bitflippersanonymous.buck.domain.Cut;
 import com.bitflippersanonymous.buck.domain.CutPlan;
 import com.bitflippersanonymous.buck.domain.Job;
 import com.bitflippersanonymous.buck.domain.Mill;
+import com.bitflippersanonymous.buck.domain.Price;
 import com.bitflippersanonymous.buck.domain.Util;
 import com.bitflippersanonymous.buck.domain.Util.DatabaseBase.Tables;
 import com.bitflippersanonymous.buck.ui.BaseActivity;
 
 import android.app.Service;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.database.Cursor;
@@ -52,17 +54,23 @@ public class BuckService extends Service  {
 		// Load with sample test data?
 		mDbAdapter.recreate();
 		final String mills[] = {"Big Lumber", "LP", "Boise"};
-		for ( String mill : mills ) {
-			HashMap<String, String> data = new HashMap<String, String>();
-			data.put(Mill.getsTags()[0].getKey(), mill);
-			mDbAdapter.insertItem(new Mill(data, -1));
+		for ( String name : mills ) {
+			Mill mill = new Mill(-1);
+			mill.put(Mill.Fields.Name, name);
+			int millId = (int)mDbAdapter.insertItem(mill);
+
+			//Need millId to insert price
+			Price price = new Price(-1);
+			price.put(Price.Fields.MillId, millId);
+			price.put(Price.Fields.Length, 16);
+			mDbAdapter.insertItem(price);
 		}
 
 		final String jobs[] = {"Back 40", "Homeplace"};
-		for ( String job : jobs ) {
-			HashMap<String, String> data = new HashMap<String, String>();
-			data.put(Job.getsTags()[0].getKey(), job);
-			mDbAdapter.insertItem(new Job(data, -1));
+		for ( String name : jobs ) {
+			Job job = new Job(-1);
+			job.put(Job.Fields.Name, name);
+			mDbAdapter.insertItem(job);
 		}
 		
 		loadScribner();
@@ -240,7 +248,20 @@ public class BuckService extends Service  {
 
 	public Mill getMill(int millId) {
 		Cursor cursor = getDbAdapter().fetchEntry(Tables.Mills, millId);
-		return new Mill(cursor);
+		Mill mill = new Mill(cursor);
+		mill.setPrices(getPrices(millId));
+		return mill;
 	}
+
+	private List<Price> getPrices(int millId) {
+		List<Price > prices = new ArrayList<Price>();
+		Cursor cursor =  getDbAdapter().fetchAll(Tables.Prices); // FIXME
+		for (boolean hasItem = cursor.moveToFirst(); hasItem; hasItem = cursor.moveToNext()) {
+			prices.add(new Price(cursor));
+		}
+		cursor.close();
+		return prices;
+	}
+
 
 }

@@ -10,6 +10,7 @@ import android.widget.CursorAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+// Almost simple enough to do away with and use SimpleCursorAdapter
 public class MillDbAdapter extends CursorAdapter implements ListAdapter {
 	public MillDbAdapter(Context context, Cursor c, int flags) {
 		super(context, c, flags);
@@ -17,9 +18,10 @@ public class MillDbAdapter extends CursorAdapter implements ListAdapter {
 
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
-		Mill mill = new Mill(cursor);
-		TextView name = (TextView) view.findViewById(android.R.id.text1);
-		name.setText(mill.get(mill.getTags()[0].getKey()));
+		int columnIndex = cursor.getColumnIndex(Mill.getsTags()[0].getKey());
+		String millName = cursor.getString(columnIndex);
+		TextView textView = (TextView) view.findViewById(android.R.id.text1);
+		textView.setText(millName);
 	}
 
 	@Override

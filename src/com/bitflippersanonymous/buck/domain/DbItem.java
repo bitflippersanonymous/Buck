@@ -1,24 +1,22 @@
 package com.bitflippersanonymous.buck.domain;
 
-import java.util.AbstractMap;
-import java.util.HashMap;
-
 import android.content.ContentValues;
 import android.database.Cursor;
 
 public abstract class DbItem implements Util.DbTags {
 
-	private final Tags[] mTags;
+	private final Tag[] mTags;
 	private int mId;
-	private final HashMap<String, String> mData;
+	private final ContentValues mData;
 
-	public Tags[] getTags() {
+	public Tag[] getTags() {
 		return mTags;
 	}
 	
-	protected DbItem(Tags[] tags, Cursor cursor) {
+	// Out of DB
+	protected DbItem(Tag[] tags, Cursor cursor) {
 		mTags = tags;
-		mData = new HashMap<String, String>();
+		mData = new ContentValues();
 		if ( cursor == null || cursor.getCount() == 0 )
 			return;
 		
@@ -31,27 +29,36 @@ public abstract class DbItem implements Util.DbTags {
 		}
 	}
 
-	public DbItem(Tags[] tags, HashMap<String, String> data, int id) {
+	protected DbItem(Tag[] tags, int id) {
 		mTags = tags;
-		mData = data;
+		mData = new ContentValues();
 		mId = id;
 	}
 
 	public int getId() {
 		return mId;
 	}
-	
-	public String get(String tag) {
-		return mData.get(tag);
+
+	//TODO: Check that Tag matches type
+	public String getAsString(Enum<?> field) {
+		return mData.getAsString(field.name());
+	}
+
+	public Integer getAsInteger(Enum<?> field) {
+		return mData.getAsInteger(field.name());
 	}
 	
+	public void put(Enum<?> field, String value) {
+		mData.put(field.name(), value);
+	}
+	public void put(Enum<?> field, Integer value) {
+		mData.put(field.name(), value);
+	}
+	//
+	
 	// Into DB
-	public ContentValues createContentValues() {
-		ContentValues values = new ContentValues();
-		for ( Tags tag : getTags() ) {
-			values.put(tag.getKey(), get(tag.getKey()));
-		}
-		return values;
+	public ContentValues getContentValues() {
+		return mData;
 	}
 	
 	public abstract String getTableName();

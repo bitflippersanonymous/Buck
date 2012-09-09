@@ -16,10 +16,16 @@
     </TextView>
 
     <ListView
-        android:id="@+id/listViewMill"
+        android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight=".75"
         android:footerDividersEnabled="true" >
     </ListView>
+    
+    <TextView
+        android:id="@id/android:empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/no_data" />
 </LinearLayout>

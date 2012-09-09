@@ -16,15 +16,16 @@ public class Util {
 	
 	public interface DbTags {
 		enum DataType {text, integer}
-		class Tags extends AbstractMap.SimpleEntry<String, DataType> {
-			public Tags(String string, DataType dataType) {
-				super(string, dataType);
+		class Tag extends AbstractMap.SimpleEntry<String, DataType> {
+			private static final long serialVersionUID = 1L;
+			public Tag(Enum<?> e, DataType dataType) {
+				super(e.name(), dataType);
 			}
-			public Tags(String string) {
-				super(string, DataType.text);
+			public Tag(Enum<?> e) {
+				super(e.name(), DataType.text);
 			}	
 		}
-		ContentValues createContentValues();
+		ContentValues getContentValues();
 		String getTableName();
 	}
 	

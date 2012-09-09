@@ -2,18 +2,24 @@ package com.bitflippersanonymous.buck.domain;
 
 import java.util.HashMap;
 
+import com.bitflippersanonymous.buck.domain.Mill.Fields;
+import com.bitflippersanonymous.buck.domain.Util.DbTags.Tag;
+
+import android.content.ContentValues;
 import android.database.Cursor;
 
 
 public class Price extends DbItem {
-	private static final Tags[] sTags = {
-		new Tags("MillId", DataType.integer), 
-		new Tags("Width", DataType.integer), 
-		new Tags("Length", DataType.integer), 
-		new Tags("Rate", DataType.integer), 
-		new Tags("Price", DataType.integer)};
 	
-	public static Tags[] getsTags() {
+	public enum Fields {MillId, Width, Length, Rate, Price};
+	private static final Tag[] sTags = {
+		new Tag(Fields.MillId, DataType.integer), 
+		new Tag(Fields.Width, DataType.integer), 
+		new Tag(Fields.Length, DataType.integer), 
+		new Tag(Fields.Rate, DataType.integer), 
+		new Tag(Fields.Price, DataType.integer)};
+	
+	public static Tag[] getsTags() {
 		return sTags;
 	}
 
@@ -21,8 +27,8 @@ public class Price extends DbItem {
 		super(sTags, cursor);
 	}
 
-	public Price(HashMap<String, String> data, int i) {
-		super(sTags, data, i);
+	public Price(int i) {
+		super(sTags, i);
 	}
 
 	@Override

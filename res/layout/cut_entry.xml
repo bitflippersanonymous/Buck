@@ -4,13 +4,15 @@
     android:layout_height="wrap_content" >
 
 
+    <!--  Should be setting some sort of style here that's common to measure_entry.xml -->
     <TextView
         android:id="@+id/textViewCutCuts"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight=".5"
         android:gravity="left"
-        android:paddingLeft="2sp"/>
+        android:paddingLeft="2sp"
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
 
     <TextView
         android:id="@+id/textViewCutValue"
@@ -18,7 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_weight=".5"
         android:gravity="right"
-        android:paddingLeft="2sp"/>
+        android:paddingLeft="2sp"
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
 
 
 </LinearLayout>

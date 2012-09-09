@@ -22,5 +22,7 @@
     <string name="measure_length">Length</string>
 	<string name="measure_clear">Clear</string>
     <string name="measure_add">Add</string>
+
+    <string name="no_data">No Data</string>
     
 </resources>

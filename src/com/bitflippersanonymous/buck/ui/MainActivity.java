@@ -176,10 +176,10 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 		return new SimpleCursorLoader(this, args) {
 			@Override
 			public Cursor loadInBackground() {
-				String table = Tables.Mills.name();
+				Tables table = Tables.Mills;
 				Bundle args = getArgs();
 				if ( args != null && args.getInt(MainListFragment.ARG_SECTION_NUMBER) == JOB_IDX )
-					table = Tables.Jobs.name();
+					table = Tables.Jobs;
 				BuckDatabaseAdapter db = getService().getDbAdapter();
 				return db.fetchAll(table);
 			}

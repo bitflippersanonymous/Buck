@@ -1,16 +1,13 @@
 package com.bitflippersanonymous.buck.domain;
-
-import java.util.HashMap;
-
 import android.database.Cursor;
 
 public class Job extends DbItem {
-
-	private static final Tags[] sTags = {
-		new Tags("Name"),
+	public enum Fields {Name};
+	private static final Tag[] sTags = {
+		new Tag(Fields.Name),
 	};
-
-	public static Tags[] getsTags() {
+	
+	public static Tag[] getsTags() {
 		return sTags;
 	}
 	
@@ -23,8 +20,8 @@ public class Job extends DbItem {
 		super(sTags, cursor);
 	}
 
-	public Job(HashMap<String, String> data, int i) {
-		super(sTags, data, i);
+	public Job(int i) {
+		super(sTags, i);
 	}
 
 }

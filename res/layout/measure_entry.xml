@@ -9,7 +9,8 @@
         android:layout_height="wrap_content"
         android:layout_weight=".5"
         android:gravity="left"
-        android:paddingLeft="2sp"/>
+        android:paddingLeft="2sp"
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
 
     <TextView
         android:id="@+id/textViewLength"
@@ -17,7 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_weight=".5"
         android:gravity="left"
-        android:paddingLeft="2sp"/>
+        android:paddingLeft="2sp"
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
 
     <ImageView
         android:id="@+id/imageViewRemove"

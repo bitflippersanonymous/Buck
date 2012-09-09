@@ -32,18 +32,18 @@ public class BuckDatabaseHelper extends SQLiteOpenHelper implements Util.Databas
 	};
 	
 	static {
-		for ( DbTags.Tags column : Mill.getsTags() ) {
+		for ( DbTags.Tag column : Mill.getsTags() ) {
 			CREATE_TABLES[0] += ", " + column.getKey() + " " + column.getValue(); 
 		}
 		CREATE_TABLES[0] += ");";
 		
 		
-		for ( DbTags.Tags column : Job.getsTags() ) {
+		for ( DbTags.Tag column : Job.getsTags() ) {
 			CREATE_TABLES[1] += ", " + column.getKey() + " " + column.getValue(); 
 		}
 		CREATE_TABLES[1] += ");";
 
-		for ( DbTags.Tags column : Price.getsTags() ) {
+		for ( DbTags.Tag column : Price.getsTags() ) {
 			CREATE_TABLES[2] += ", " + column.getKey() + " " + column.getValue(); 
 		}
 		CREATE_TABLES[2] += ");";

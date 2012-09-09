@@ -19,7 +19,7 @@ public class JobDbAdapter extends CursorAdapter implements ListAdapter {
 	public void bindView(View view, Context context, Cursor cursor) {
 		Job job = new Job(cursor);
 		TextView name = (TextView) view.findViewById(android.R.id.text1);
-		name.setText(job.get(job.getTags()[0].getKey()));
+		name.setText(job.getAsString(Job.Fields.Name));
 	}
 
 	@Override
