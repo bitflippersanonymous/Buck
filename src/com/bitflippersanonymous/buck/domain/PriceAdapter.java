@@ -4,9 +4,11 @@ import java.util.List;
 
 import com.bitflippersanonymous.buck.R;
 import com.bitflippersanonymous.buck.domain.Price;
+import com.bitflippersanonymous.buck.domain.Price.Fields;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.LayoutInflater.Filter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -35,11 +37,13 @@ public class PriceAdapter extends ArrayAdapter<Price> implements ListAdapter {
 				android.R.layout.simple_list_item_1, parent, false);
 		}
 		
-		String text = new String();
 		Price price = getItem(position);
-		for ( Price.Fields field : Price.Fields.values() ) {
-			text += price.getAsString(field) + " ";
-		}
+		String text = new String();
+		text += price.getAsString(Fields.Length) + "'  ";
+		String rate = price.getAsString(Fields.Rate);
+		if ( rate != null )
+			text += rate + "%  ";
+		text += "$" + price.getAsString(Fields.Price) + " MBF";
 		
 		TextView textView = (TextView) view.findViewById(android.R.id.text1);
 		textView.setText(text);

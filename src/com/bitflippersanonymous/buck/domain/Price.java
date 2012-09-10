@@ -5,10 +5,9 @@ import android.database.Cursor;
 
 public class Price extends DbItem<Price.Fields> {
 	
-	public enum Fields {MillId, Width, Length, Rate, Price};
+	public enum Fields {MillId, Length, Rate, Price};
 	private static final Tag[] sTags = {
 		new Tag(Fields.MillId, DataType.integer), 
-		new Tag(Fields.Width, DataType.integer), 
 		new Tag(Fields.Length, DataType.integer), 
 		new Tag(Fields.Rate, DataType.integer), 
 		new Tag(Fields.Price, DataType.integer)};

@@ -1,5 +1,6 @@
 package com.bitflippersanonymous.buck.db;
 
+import com.bitflippersanonymous.buck.domain.Price;
 import com.bitflippersanonymous.buck.domain.Util;
 import com.bitflippersanonymous.buck.domain.Util.DbTags;
 
@@ -37,15 +38,28 @@ public class BuckDatabaseAdapter implements Util.DatabaseBase {
 		return cursor;
 	}
 
-	public Cursor fetchEntry(Tables table, long rowId) throws SQLException {
-		Cursor cursor = mDbHelper.getReadableDatabase().query(true, table.name(), 
+	public Cursor fetchPrices(int millId) throws SQLException {
+		Cursor cursor = mDbHelper.getReadableDatabase().query(true, Tables.Prices.name(), 
 				null,
-				Util._ID + "=?", new String[]{String.valueOf(rowId)}, null, null, null, null);
+				Price.Fields.MillId + "=?", new String[]{String.valueOf(millId)}, 
+				null, null, null, null);
 		if (cursor != null) {
 			cursor.moveToFirst();
 		}
 		return cursor;
 	}
+
+	public Cursor fetchEntry(Tables table, int id) throws SQLException {
+		Cursor cursor = mDbHelper.getReadableDatabase().query(true, table.name(), 
+				null,
+				Util._ID + "=?", new String[]{String.valueOf(id)}, 
+				null, null, null, null);
+		if (cursor != null) {
+			cursor.moveToFirst();
+		}
+		return cursor;
+	}
+
 	
 	/*
 	public Cursor fetchItem(String table) throws SQLException {

@@ -61,8 +61,8 @@ public class BuckService extends Service  {
 			//Need millId to insert price
 			Price price = new Price(-1);
 			price.put(Price.Fields.MillId, millId);
-			price.put(Price.Fields.Price, 300);
 			price.put(Price.Fields.Length, 16);
+			price.put(Price.Fields.Price, 300);
 			mDbAdapter.insertItem(price);
 		}
 
@@ -255,7 +255,7 @@ public class BuckService extends Service  {
 
 	private List<Price> getPrices(int millId) {
 		List<Price > prices = new ArrayList<Price>();
-		Cursor cursor =  getDbAdapter().fetchAll(Tables.Prices); // FIXME
+		Cursor cursor =  getDbAdapter().fetchPrices(millId);
 		for (boolean hasItem = cursor.moveToFirst(); hasItem; hasItem = cursor.moveToNext()) {
 			prices.add(new Price(cursor));
 		}
