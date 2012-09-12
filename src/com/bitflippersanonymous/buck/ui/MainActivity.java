@@ -98,6 +98,14 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 				getActionBar().getSelectedNavigationIndex());
 	}
 
+	@Override
+	protected void update() {
+		super.update();
+		// Should update all of them?
+		int idx = getActionBar().getSelectedNavigationIndex();
+		getLoaderManager().restartLoader(idx, null, this);
+	}
+	
 	//FIXME: I wonder if I can call through to super and append option menus
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -110,7 +118,6 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 		switch (item.getItemId()) {
 		case R.id.menu_add:
 			Toast.makeText(this, "Add", Toast.LENGTH_SHORT).show();
-			getLoaderManager().restartLoader(0, null, this);
 			return true;
 		case R.id.menu_measure:
 			Intent intent = new Intent(this, MeasureActivity.class);

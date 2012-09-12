@@ -1,0 +1,18 @@
+<Buck Version="1">
+	<Mill Name="We Cut Logs">
+		<Price Length="16" Rate="50" Price="500"/>
+		<Price Length="32" Price="600"/>
+		<Price Length="32" Price="900"/>
+	</Mill>
+	<Mill Name="Big Mill">
+		<Price Length="64" Rate="20" Price="300"/>
+		<Price Length="128" Price="600"/>
+		<Price Length="72" Price="900"/>
+	</Mill>
+	<Mill Name="Pole Palace">
+		<Price Length="8"  Price="300"/>
+		<Price Length="16" Rate="80" Price="600"/>
+		<Price Length="12" Price="900"/>
+		<Price Length="12" Price="300"/>
+	</Mill>
+</Buck>

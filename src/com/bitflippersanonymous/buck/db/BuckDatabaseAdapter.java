@@ -87,18 +87,17 @@ public class BuckDatabaseAdapter implements Util.DatabaseBase, Util.InsertItems 
 	}
 	
 	public long insertMill(Mill mill) {
-		SQLiteDatabase database = mDbHelper.getWritableDatabase();
-		database.beginTransaction();
+		final SQLiteDatabase database = mDbHelper.getWritableDatabase();
+		database.beginTransactionNonExclusive();
 		mill.setId((int)database.insert(mill.getTableName(), null, mill.getContentValues()));
-		if ( mill.getPrices() != null ) {
-			for ( Price price : mill.getPrices() ) {
-				price.put(Price.Fields.MillId, mill.getId());
-				price.setId((int)database.insert(price.getTableName(), null, price.getContentValues()));
-			}
+		for ( Price price : mill.getPrices() ) {
+			price.put(Price.Fields.MillId, mill.getId());
+			price.setId((int)database.insert(price.getTableName(), null, price.getContentValues()));
 		}
 		database.setTransactionSuccessful();
 		database.endTransaction();
 		return mill.getId();
 	}
+
 	
 }

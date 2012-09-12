@@ -1,5 +1,6 @@
 package com.bitflippersanonymous.buck.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import android.database.Cursor;
 
@@ -33,6 +34,8 @@ public class Mill extends DbItem<Mill.Fields> {
 	}
 
 	public List<Price> getPrices() {
+		if ( mPrices == null )
+			mPrices = new ArrayList<Price>();
 		return mPrices;
 	}
 	

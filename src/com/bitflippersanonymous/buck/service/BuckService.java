@@ -32,6 +32,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
@@ -59,19 +60,6 @@ public class BuckService extends Service  {
 	public void onCreate() {
 		//TODO: Load from xml
 		mDbAdapter.recreate();
-		final String mills[] = {"Big Lumber", "LP", "Boise"};
-		for ( String name : mills ) {
-			Mill mill = new Mill(-1);
-			mill.put(Mill.Fields.Name, name);
-			int millId = (int)mDbAdapter.insertItem(mill);
-
-			//Need millId to insert price
-			Price price = new Price(-1);
-			price.put(Price.Fields.MillId, millId);
-			price.put(Price.Fields.Length, 16);
-			price.put(Price.Fields.Price, 300);
-			mDbAdapter.insertItem(price);
-		}
 
 		final String jobs[] = {"Back 40", "Homeplace"};
 		for ( String name : jobs ) {
@@ -83,7 +71,12 @@ public class BuckService extends Service  {
 		loadScribner();
 		
 		// Don't reuse reader until it's done, create new one for each file
-		new DBItemXMLReader(this, mDbAdapter){}.loadXML("foo.xml");
+		new DBItemXMLReader(this, mDbAdapter){
+			@Override
+			public void onPostExecute(Integer result) {
+				sendUpdate();
+			}
+		}.loadXML("database_init.xml");
 	}
 
     @Override

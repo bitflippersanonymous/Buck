@@ -76,19 +76,18 @@ public class DBItemXMLReader {
 	        super.startElement(uri, localName, name, attributes);
 	        
 	        // Just pass attributes to c'tor and let it fill in?
-	        if ( localName.equals(Mill.MILL) )
+	        if ( localName.equals(Mill.MILL) ) {
 	        	mCurrent = mMill = new Mill(-1);
-	        
-	        else if ( localName.equals(Price.PRICE) ) {
+	        } else if ( localName.equals(Price.PRICE) && mMill != null ) {
 	        	Price price = new Price(-1);
 	        	mMill.getPrices().add(price);
 	        	mCurrent = price;
-	        }
-	        else if ( localName.equals(Job.JOB) )
+	        } else if ( localName.equals(Job.JOB) )
 	        	mCurrent = new Job(-1);
-	        else
+	        else {
 				Log.w(getClass().getName(), "Unhandled XML Element: " + localName );
-	        
+				return;
+	        }
 	        for ( int i = 0; i < attributes.getLength(); i++ ) {
 	        	mCurrent.put(attributes.getLocalName(i), attributes.getValue(i));
 	        }
