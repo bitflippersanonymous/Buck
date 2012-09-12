@@ -16,7 +16,19 @@ public class BuckDatabaseHelper extends SQLiteOpenHelper implements Util.Databas
 
 	private static final String DATABASE_NAME = "applicationdata.db";
 	private static final int DATABASE_VERSION = 1;
-
+	private static BuckDatabaseHelper mSingleton = null;
+	
+	synchronized static BuckDatabaseHelper getInstance(Context context) {
+		if ( mSingleton == null ) {
+			mSingleton = new BuckDatabaseHelper(context.getApplicationContext());
+		}
+		return(mSingleton);
+	}
+	
+	private BuckDatabaseHelper(Context context) {
+		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+	}
+	
 	// Strings to recreate DB from scratch
 	// FIXME: refactor with a loop. duplicate code
 	private static final String [] CREATE_TABLES = { 
@@ -49,10 +61,6 @@ public class BuckDatabaseHelper extends SQLiteOpenHelper implements Util.Databas
 		CREATE_TABLES[2] += ");";
 	}
 	
-	public BuckDatabaseHelper(Context context) {
-		super(context, DATABASE_NAME, null, DATABASE_VERSION);
-	}
-
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		for ( String table : CREATE_TABLES )
