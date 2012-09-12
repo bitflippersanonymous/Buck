@@ -34,7 +34,6 @@ public class MillFragment extends ListFragment
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-
 		ActionBar actionBar = getActivity().getActionBar();
 		actionBar.setDisplayShowTitleEnabled(true);
 

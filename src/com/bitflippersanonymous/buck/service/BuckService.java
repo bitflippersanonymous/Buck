@@ -43,7 +43,7 @@ import android.util.Log;
 public class BuckService extends Service  {
 	private final IBinder mBinder = new LocalBinder();
 	final private ArrayList<Messenger> mClients = new ArrayList<Messenger>();
-	private BuckDatabaseAdapter mDbAdapter = new BuckDatabaseAdapter(this);
+	private BuckDatabaseAdapter mDbAdapter = null;
 	private LoadTask mLoadTask = null;
 	private Map<Cut, Integer> mScribnerTable = null;
 	
@@ -57,7 +57,11 @@ public class BuckService extends Service  {
 		}
 	}
 
+	//FIXME: Rotating the phone while at the top Activity will recreate the service
+	//  		  ...and all of this will run again
 	public void onCreate() {
+		mDbAdapter = new BuckDatabaseAdapter(this);
+		
 		//TODO: Load from xml
 		mDbAdapter.recreate();
 

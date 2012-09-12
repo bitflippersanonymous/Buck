@@ -16,7 +16,7 @@ public class BuckDatabaseAdapter implements Util.DatabaseBase, Util.InsertItems 
 	private BuckDatabaseHelper mDbHelper = null;
 
 	public BuckDatabaseAdapter(Context context) {
-		mDbHelper = new BuckDatabaseHelper(context);
+		mDbHelper = BuckDatabaseHelper.getInstance(context);
 	}
 
 	public BuckDatabaseAdapter recreate() throws SQLException {
