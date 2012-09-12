@@ -10,16 +10,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
 import com.bitflippersanonymous.buck.db.BuckDatabaseAdapter;
 import com.bitflippersanonymous.buck.domain.Cut;
 import com.bitflippersanonymous.buck.domain.CutPlan;
+import com.bitflippersanonymous.buck.domain.DBItemXMLReader;
+import com.bitflippersanonymous.buck.domain.DbItem;
 import com.bitflippersanonymous.buck.domain.Job;
 import com.bitflippersanonymous.buck.domain.Mill;
 import com.bitflippersanonymous.buck.domain.Price;
 import com.bitflippersanonymous.buck.domain.Util;
 import com.bitflippersanonymous.buck.domain.Util.DatabaseBase.Tables;
 import com.bitflippersanonymous.buck.ui.BaseActivity;
-
 import android.app.Service;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -74,6 +81,9 @@ public class BuckService extends Service  {
 		}
 		
 		loadScribner();
+		
+		// Don't reuse reader until it's done, create new one for each file
+		new DBItemXMLReader(this, mDbAdapter){}.loadXML("foo.xml");
 	}
 
     @Override
@@ -200,12 +210,10 @@ public class BuckService extends Service  {
 			Log.i(getClass().getSimpleName(), "Load Complete");
 			mLoadTask = null;
 		}
-
-		@Override
-		protected void onPreExecute() {
-		}
 	}
+	
 
+	
 	//FIXME: mLoadTask may not be complete yet.
 	public int getBoardFeet(Cut cut) {
 		Cut trim = new Cut(cut.getWidth(), roundLength(cut.getLength()));

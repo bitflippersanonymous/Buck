@@ -1,5 +1,6 @@
 package com.bitflippersanonymous.buck.db;
 
+import com.bitflippersanonymous.buck.domain.Mill;
 import com.bitflippersanonymous.buck.domain.Price;
 import com.bitflippersanonymous.buck.domain.Util;
 import com.bitflippersanonymous.buck.domain.Util.DbTags;
@@ -10,7 +11,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-public class BuckDatabaseAdapter implements Util.DatabaseBase {
+public class BuckDatabaseAdapter implements Util.DatabaseBase, Util.InsertItems {
 
 	private BuckDatabaseHelper mDbHelper = null;
 
@@ -83,6 +84,21 @@ public class BuckDatabaseAdapter implements Util.DatabaseBase {
 		SQLiteDatabase database = mDbHelper.getWritableDatabase();
 		ContentValues values = item.getContentValues();
 		return database.insert(item.getTableName(), null, values);
+	}
+	
+	public long insertMill(Mill mill) {
+		SQLiteDatabase database = mDbHelper.getWritableDatabase();
+		database.beginTransaction();
+		mill.setId((int)database.insert(mill.getTableName(), null, mill.getContentValues()));
+		if ( mill.getPrices() != null ) {
+			for ( Price price : mill.getPrices() ) {
+				price.put(Price.Fields.MillId, mill.getId());
+				price.setId((int)database.insert(price.getTableName(), null, price.getContentValues()));
+			}
+		}
+		database.setTransactionSuccessful();
+		database.endTransaction();
+		return mill.getId();
 	}
 	
 }

@@ -11,6 +11,8 @@ public class Price extends DbItem<Price.Fields> {
 		new Tag(Fields.Length, DataType.integer), 
 		new Tag(Fields.Rate, DataType.integer), 
 		new Tag(Fields.Price, DataType.integer)};
+
+	public static final String PRICE = "Price";
 	
 	public static Tag[] getsTags() {
 		return sTags;

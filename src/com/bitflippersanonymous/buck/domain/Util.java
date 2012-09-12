@@ -13,6 +13,14 @@ public class Util {
 	public interface DatabaseBase {
 		public enum Tables {Mills, Jobs, Prices}
 	}
+
+	public interface InsertItems {
+		public long insertMill(Mill mill);
+	}
+
+	interface HasFields {
+		enum Fields {};
+	}
 	
 	public interface DbTags {
 		enum DataType {text, integer}

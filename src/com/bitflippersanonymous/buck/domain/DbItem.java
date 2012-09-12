@@ -8,7 +8,7 @@ public abstract class DbItem<Fields extends Enum<?>> implements Util.DbTags {
 	private final Tag[] mTags;
 	private int mId;
 	private final ContentValues mData;
-
+	
 	public Tag[] getTags() {
 		return mTags;
 	}
@@ -38,6 +38,11 @@ public abstract class DbItem<Fields extends Enum<?>> implements Util.DbTags {
 	public int getId() {
 		return mId;
 	}
+	
+
+	public void setId(int id) {
+		mId = id;
+	}
 
 	//TODO: Check that Tag matches type
 	public String getAsString(Fields field) {
@@ -48,9 +53,28 @@ public abstract class DbItem<Fields extends Enum<?>> implements Util.DbTags {
 		return mData.getAsInteger(field.name());
 	}
 	
+	public boolean put(String key, String value) {
+		for ( Tag tag : mTags ) {
+			if ( key.equals(tag.getKey()) ) {
+				switch ( tag.getValue() ) {
+				case integer:
+					mData.put(key, Integer.valueOf(value)); // Throws
+					return true;
+				case text:
+					mData.put(key, value);
+					return true;
+				default:
+					break;
+				}
+			}
+		}
+		return false;
+	}
+
 	public void put(Fields field, String value) {
 		mData.put(field.name(), value);
 	}
+	
 	public void put(Fields field, Integer value) {
 		mData.put(field.name(), value);
 	}
@@ -62,4 +86,5 @@ public abstract class DbItem<Fields extends Enum<?>> implements Util.DbTags {
 	}
 	
 	public abstract String getTableName();
+
 }

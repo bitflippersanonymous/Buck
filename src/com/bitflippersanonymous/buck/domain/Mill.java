@@ -1,10 +1,6 @@
 package com.bitflippersanonymous.buck.domain;
 
-import java.util.HashMap;
 import java.util.List;
-
-import com.bitflippersanonymous.buck.domain.Mill.Fields;
-
 import android.database.Cursor;
 
 public class Mill extends DbItem<Mill.Fields> {
@@ -12,6 +8,7 @@ public class Mill extends DbItem<Mill.Fields> {
 	private static final Tag[] sTags = {
 		new Tag(Fields.Name),
 	};
+	public static final String MILL = "Mill";
 
 	public static Tag[] getsTags() {
 		return sTags;
@@ -30,7 +27,7 @@ public class Mill extends DbItem<Mill.Fields> {
 	public String getTableName() {
 		return Util.DatabaseBase.Tables.Mills.name();
 	}
-
+	
 	public void setPrices(List<Price> prices) {
 		mPrices  = prices;
 	}
@@ -38,4 +35,5 @@ public class Mill extends DbItem<Mill.Fields> {
 	public List<Price> getPrices() {
 		return mPrices;
 	}
+	
 }

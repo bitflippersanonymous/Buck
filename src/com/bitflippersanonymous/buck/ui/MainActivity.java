@@ -110,6 +110,7 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 		switch (item.getItemId()) {
 		case R.id.menu_add:
 			Toast.makeText(this, "Add", Toast.LENGTH_SHORT).show();
+			getLoaderManager().restartLoader(0, null, this);
 			return true;
 		case R.id.menu_measure:
 			Intent intent = new Intent(this, MeasureActivity.class);

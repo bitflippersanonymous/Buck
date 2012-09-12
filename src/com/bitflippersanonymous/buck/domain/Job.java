@@ -6,6 +6,7 @@ public class Job extends DbItem<Job.Fields> {
 	private static final Tag[] sTags = {
 		new Tag(Fields.Name),
 	};
+	public static final String JOB = "Job";
 	
 	public static Tag[] getsTags() {
 		return sTags;
