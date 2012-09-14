@@ -1,6 +1,8 @@
 package com.bitflippersanonymous.buck.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import android.database.Cursor;
 
@@ -15,7 +17,7 @@ public class Mill extends DbItem<Mill.Fields> {
 		return sTags;
 	}
 
-	private List<Price> mPrices = null;
+	private List<Price> mPrices = new ArrayList<Price>();
 	
 	public Mill(Cursor cursor) {
 		super(sTags, cursor);
@@ -31,11 +33,10 @@ public class Mill extends DbItem<Mill.Fields> {
 	
 	public void setPrices(List<Price> prices) {
 		mPrices  = prices;
+		Collections.sort(mPrices, Price.getByLength());
 	}
 
 	public List<Price> getPrices() {
-		if ( mPrices == null )
-			mPrices = new ArrayList<Price>();
 		return mPrices;
 	}
 	

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -224,6 +225,13 @@ public class BuckService extends Service  {
 
 	public List<CutPlan> getCutPlans(List<Cut> cuts) {
 		List<CutPlan> plans = new ArrayList<CutPlan>();
+		Mill mill = getMill(1);
+		
+		for ( Price price : mill.getPrices() ) {
+			int length = price.getAsInteger(Price.Fields.Length);
+			
+		}
+		
 		CutPlan plan = new CutPlan(cuts);
 		plans.add(plan);
 		

@@ -1,8 +1,12 @@
 <Buck Version="1">
 	<Mill Name="We Cut Logs">
-		<Price Length="16" Rate="50" Price="500"/>
-		<Price Length="32" Price="600"/>
-		<Price Length="32" Price="900"/>
+		<Price Length="18" Price="580"/>
+		<Price Length="23" Price="580" Top="8"/>
+		<Price Length="27" Price="580"/>
+		<Price Length="33" Price="580" Top="8"/>
+		<Price Length="31" Price="580" Top="8"/>
+		<Price Length="35" Rate="60" Price="580"/>
+		<Price Length="39" Price="580" Top="8"/>
 	</Mill>
 	<Mill Name="Big Mill">
 		<Price Length="64" Rate="20" Price="300"/>
