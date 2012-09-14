@@ -1,6 +1,7 @@
 package com.bitflippersanonymous.buck.domain;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class CutPlan {
@@ -36,6 +37,17 @@ public class CutPlan {
 	
 	public int getBoardFeet() {
 		return mBoardFeet;
+	}
+	
+	private static Comparator<? super CutPlan> sByBoardFeet = null;
+	public static Comparator<? super CutPlan> getByBoardFeet() {
+		if ( sByBoardFeet == null )
+			sByBoardFeet = new Comparator<CutPlan>(){
+			@Override
+			public int compare(CutPlan lhs, CutPlan rhs) {
+				return rhs.getBoardFeet() - lhs.getBoardFeet();
+			}};
+		return sByBoardFeet;
 	}
 	
 }

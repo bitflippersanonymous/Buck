@@ -145,6 +145,8 @@ public class CutPlanner {
 		mWholeLogSize = wholeLogSize;
 
 		recCutPlan(new CutPlan(mWholeLogSize), 0);
+		Collections.sort(mPlans, CutPlan.getByBoardFeet());
+
 		return mPlans;
 	}
 }
