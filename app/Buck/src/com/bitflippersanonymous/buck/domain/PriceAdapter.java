@@ -2,18 +2,15 @@ package com.bitflippersanonymous.buck.domain;
 
 import java.util.List;
 
-import com.bitflippersanonymous.buck.R;
-import com.bitflippersanonymous.buck.domain.Price;
-import com.bitflippersanonymous.buck.domain.Price.Fields;
-
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.LayoutInflater.Filter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+
+import com.bitflippersanonymous.buck.domain.Price.Fields;
 
 
 public class PriceAdapter extends ArrayAdapter<Price> implements ListAdapter {

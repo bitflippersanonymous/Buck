@@ -1,5 +1,7 @@
 package com.bitflippersanonymous.buck.domain;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.AbstractMap;
 
 import android.content.ContentValues;
@@ -7,7 +9,8 @@ import android.content.ContentValues;
 public class Util {
 	public static final String _ID = "_id";
 	public static final String FRAGMENT = "FRAGMENT";
-	public static final String CUTS = "CUTS"; 
+	public static final String CUTS = "CUTS";
+	public static final String SCRIBNER = "scribner.csv"; 
 	
 	// Define an common interface for db classes for shared strings
 	public interface DatabaseBase {
@@ -36,10 +39,11 @@ public class Util {
 		ContentValues getContentValues();
 		String getTableName();
 	}
-	
+
 	public interface FileReader {
-		public String getFilename();
-		public void handleLine(String line);
+		void handleLine(String line);
+		InputStream getInputStream() throws IOException;
+		String getFilename();
 	}
 
 }

@@ -1,9 +1,6 @@
 package com.bitflippersanonymous.buck.ui;
 
 import java.util.ArrayList;
-import com.bitflippersanonymous.buck.R;
-import com.bitflippersanonymous.buck.domain.Util;
-import com.bitflippersanonymous.buck.domain.Cut;
 
 import android.app.ActionBar;
 import android.content.Intent;
@@ -13,17 +10,21 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
+
+import com.bitflippersanonymous.buck.R;
+import com.bitflippersanonymous.buck.domain.Dimension;
+import com.bitflippersanonymous.buck.domain.Util;
 
 public class MeasureActivity extends BaseActivity implements View.OnClickListener {
 	
-	private ArrayAdapter<Cut> mAdapter = null;
-	private ArrayList<Cut> mCuts = null;
+	private ArrayAdapter<Dimension> mAdapter = null;
+	private ArrayList<Dimension> mCuts = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -41,7 +42,7 @@ public class MeasureActivity extends BaseActivity implements View.OnClickListene
 		//Restore instance state can set mAdapter
 		ListView list = (ListView) findViewById(R.id.listViewMeasure);
 		if ( mAdapter == null) {
-			list.setAdapter(mAdapter = makeAdapter(mCuts = new ArrayList<Cut>()));
+			list.setAdapter(mAdapter = makeAdapter(mCuts = new ArrayList<Dimension>()));
 		}
 
 		EditText editText = (EditText) findViewById(R.id.editTextMeasureLength);
@@ -62,13 +63,13 @@ public class MeasureActivity extends BaseActivity implements View.OnClickListene
 	 * An adapter that holds the data for each measurement to be displayed in the ListView
 	 * Has an override to map a Cut to a View
 	 */
-	private ArrayAdapter<Cut> makeAdapter(ArrayList<Cut> cuts) {
-		ArrayAdapter<Cut> adapter = new ArrayAdapter<Cut>(this, 0, 0, cuts) {
+	private ArrayAdapter<Dimension> makeAdapter(ArrayList<Dimension> cuts) {
+		ArrayAdapter<Dimension> adapter = new ArrayAdapter<Dimension>(this, 0, 0, cuts) {
 		  @Override
 		  public View getView(int position, View convertView, ViewGroup parent) {
 		  	if ( convertView == null )
 		  		convertView = LayoutInflater.from(getContext()).inflate(R.layout.measure_entry, parent, false);
-		  	Cut cut = getItem(position);
+		  	Dimension cut = getItem(position);
 		  	TextView tv = ((TextView)convertView.findViewById(R.id.textViewWidth));
 		  	tv.setText(String.valueOf(cut.getWidth()));
 		  	tv = ((TextView)convertView.findViewById(R.id.textViewLength));
@@ -117,7 +118,7 @@ public class MeasureActivity extends BaseActivity implements View.OnClickListene
 			int width = Integer.parseInt(wedit.getText().toString());
 			EditText ledit = (EditText)findViewById(R.id.editTextMeasureLength);
 			int length = Integer.parseInt(ledit.getText().toString());
-			mAdapter.add(new Cut(width, length));
+			mAdapter.add(new Dimension(width, length));
 			ListView list = (ListView) findViewById(R.id.listViewMeasure);
 			list.setSelectionFromTop(mAdapter.getCount(), 0);
 		} catch (NumberFormatException e) {

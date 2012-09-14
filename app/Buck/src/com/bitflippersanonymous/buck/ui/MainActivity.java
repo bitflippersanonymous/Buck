@@ -1,5 +1,21 @@
 package com.bitflippersanonymous.buck.ui;
 
+import android.app.ActionBar;
+import android.app.LoaderManager;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.Loader;
+import android.content.ServiceConnection;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.CursorAdapter;
+import android.widget.Toast;
+
 import com.bitflippersanonymous.buck.R;
 import com.bitflippersanonymous.buck.db.BuckDatabaseAdapter;
 import com.bitflippersanonymous.buck.domain.JobDbAdapter;
@@ -7,21 +23,6 @@ import com.bitflippersanonymous.buck.domain.MillDbAdapter;
 import com.bitflippersanonymous.buck.domain.SimpleCursorLoader;
 import com.bitflippersanonymous.buck.domain.Util;
 import com.bitflippersanonymous.buck.domain.Util.DatabaseBase.Tables;
-import android.app.ActionBar;
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.database.Cursor;
-import android.os.Bundle;
-import android.os.IBinder;
-import android.app.LoaderManager;
-import android.content.Loader;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.CursorAdapter;
-import android.widget.Toast;
 
 public class MainActivity extends BaseActivity 
 implements ActionBar.OnNavigationListener, MainListFragment.OnItemListener, 

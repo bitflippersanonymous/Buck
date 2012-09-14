@@ -1,9 +1,9 @@
 package com.bitflippersanonymous.buck.domain;
 
+import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.content.AsyncTaskLoader;
 
 /**
  * http://stackoverflow.com/questions/7182485/usage-cursorloader-without-contentprovider/7422343#7422343

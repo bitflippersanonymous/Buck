@@ -1,15 +1,15 @@
 package com.bitflippersanonymous.buck.db;
 
-import com.bitflippersanonymous.buck.domain.Mill;
-import com.bitflippersanonymous.buck.domain.Price;
-import com.bitflippersanonymous.buck.domain.Util;
-import com.bitflippersanonymous.buck.domain.Util.DbTags;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+
+import com.bitflippersanonymous.buck.domain.Mill;
+import com.bitflippersanonymous.buck.domain.Price;
+import com.bitflippersanonymous.buck.domain.Util;
+import com.bitflippersanonymous.buck.domain.Util.DbTags;
 
 public class BuckDatabaseAdapter implements Util.DatabaseBase, Util.InsertItems {
 

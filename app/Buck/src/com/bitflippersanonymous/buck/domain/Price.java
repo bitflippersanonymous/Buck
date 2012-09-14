@@ -34,8 +34,8 @@ public class Price extends DbItem<Price.Fields> {
 		return Util.DatabaseBase.Tables.Prices.name();
 	}
 
-	private static Comparator<Price> sByLength = null;
-	public static Comparator<Price> getByLength() {
+	private static Comparator<? super Price> sByLength = null;
+	public static Comparator<? super Price> getByLength() {
 		if ( sByLength == null )
 			sByLength = new Comparator<Price>(){
 			@Override

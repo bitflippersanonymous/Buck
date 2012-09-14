@@ -1,10 +1,12 @@
 package com.bitflippersanonymous.buck.domain;
 
+import java.util.Comparator;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
 // Needs to preserve through Create/Destroy
-public class Cut implements Parcelable {
+public class Dimension implements Parcelable {
 	private int mWidth;  // FIXME: not sure if want these to be floats.
 	private int mLength;
 	
@@ -15,7 +17,7 @@ public class Cut implements Parcelable {
 	
 	@Override
 	public boolean equals(Object o) {
-		Cut that = (Cut)o;
+		Dimension that = (Dimension)o;
 		return mWidth == that.mWidth && mLength == that.mLength;
 	}
 	
@@ -29,22 +31,22 @@ public class Cut implements Parcelable {
 		dest.writeInt(mLength);
 	}
 	
-	public static final Parcelable.Creator<Cut> CREATOR = new Parcelable.Creator<Cut>() {
-		public Cut createFromParcel(Parcel in) {
-			return new Cut(in);
+	public static final Parcelable.Creator<Dimension> CREATOR = new Parcelable.Creator<Dimension>() {
+		public Dimension createFromParcel(Parcel in) {
+			return new Dimension(in);
 		}
 
-		public Cut[] newArray(int size) {
-			return new Cut[size];
+		public Dimension[] newArray(int size) {
+			return new Dimension[size];
 		}
 	};
 
-	private Cut(Parcel in) {
+	private Dimension(Parcel in) {
 		mWidth = in.readInt();
 		mLength = in.readInt();
 	}
 			
-	public Cut(int width, int length) {
+	public Dimension(int width, int length) {
 		mWidth = width;
 		mLength = length;
 	}
@@ -60,4 +62,16 @@ public class Cut implements Parcelable {
 	public void setLength(int mLength) {
 		this.mLength = mLength;
 	}
+	
+	private static Comparator<? super Dimension> sByLength = null;
+	public static Comparator<? super Dimension> getByLength() {
+		if ( sByLength == null )
+			sByLength = new Comparator<Dimension>(){
+			@Override
+			public int compare(Dimension lhs, Dimension rhs) {
+				return lhs.mLength - rhs.mLength;
+			}};
+		return sByLength;
+	}
+
 }

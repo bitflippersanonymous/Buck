@@ -1,27 +1,36 @@
 package com.bitflippersanonymous.buck.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CutPlan {
 
-	private List<Cut> mStemDimensions = null;  // Size of whole log
-	private List<Integer> mCuts = null;		// How to cut it
+	private List<Dimension> mWholeLogSize = null;  // Size of whole log
+	private List<Dimension> mCuts = null;		// How to cut it
 	private int mBoardFeet = 0;
 	
-	public CutPlan(List<Cut> stem) {
-		mStemDimensions = stem;
+	public CutPlan(CutPlan obj) {
+		mWholeLogSize = obj.mWholeLogSize;
+		mBoardFeet = obj.mBoardFeet;
+		mCuts = new ArrayList<Dimension>(obj.mCuts);
 	}
 	
-	public List<Cut> getStemDimensions() {
-		return mStemDimensions;
+	public CutPlan(List<Dimension> wholeLogSize) {
+		mWholeLogSize = wholeLogSize;
+		mCuts = new ArrayList<Dimension>();
 	}
 	
-	public CutPlan setCuts(List<Integer> cuts) {
-		mCuts = cuts;
+	public List<Dimension> getStemDimensions() {
+		return mWholeLogSize;
+	}
+	
+	public CutPlan addCut(Dimension cut, int boardFeet) {
+		mCuts.add(cut);
+		mBoardFeet += boardFeet;
 		return this;
 	}
 	
-	public List<Integer> getCuts() {
+	public List<Dimension> getCuts() {
 		return mCuts;
 	}
 	
@@ -29,9 +38,4 @@ public class CutPlan {
 		return mBoardFeet;
 	}
 	
-	public CutPlan setBoardFeet(int boardFeet) {
-		mBoardFeet = boardFeet;
-		return this;
-	}
-
 }

@@ -3,22 +3,22 @@ package com.bitflippersanonymous.buck.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bitflippersanonymous.buck.R;
-import com.bitflippersanonymous.buck.domain.Cut;
-import com.bitflippersanonymous.buck.domain.CutPlan;
-import com.bitflippersanonymous.buck.domain.CutAdapter;
-import com.bitflippersanonymous.buck.domain.Util;
-
 import android.app.ActionBar;
+import android.app.LoaderManager;
+import android.content.AsyncTaskLoader;
+import android.content.Intent;
+import android.content.Loader;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.app.LoaderManager;
-import android.content.AsyncTaskLoader;
-import android.content.Intent;
-import android.content.Loader;
+
+import com.bitflippersanonymous.buck.R;
+import com.bitflippersanonymous.buck.domain.CutAdapter;
+import com.bitflippersanonymous.buck.domain.CutPlan;
+import com.bitflippersanonymous.buck.domain.Dimension;
+import com.bitflippersanonymous.buck.domain.Util;
 
 
 
@@ -53,7 +53,7 @@ public class CutActivity extends BaseActivity
 		Loader<List<CutPlan>> loader = new AsyncTaskLoader<List<CutPlan>>(this) {
 			@Override
 			public List<CutPlan> loadInBackground() {
-                ArrayList<Cut> cuts = getIntent().getParcelableArrayListExtra(Util.CUTS);
+                ArrayList<Dimension> cuts = getIntent().getParcelableArrayListExtra(Util.CUTS);
 				return getService().getCutPlans(cuts);
 			}
 		};

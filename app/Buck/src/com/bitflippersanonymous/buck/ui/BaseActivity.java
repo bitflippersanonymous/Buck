@@ -1,6 +1,6 @@
 package com.bitflippersanonymous.buck.ui;
 
-import com.bitflippersanonymous.buck.service.BuckService;
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -10,9 +10,10 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-import android.app.Activity;
 import android.util.Log;
 import android.view.MenuItem;
+
+import com.bitflippersanonymous.buck.service.BuckService;
 
 /**
  * 

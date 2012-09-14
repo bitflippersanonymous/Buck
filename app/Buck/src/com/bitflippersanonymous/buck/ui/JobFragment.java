@@ -2,19 +2,19 @@ package com.bitflippersanonymous.buck.ui;
 
 
 
-import com.bitflippersanonymous.buck.R;
-import com.bitflippersanonymous.buck.domain.Job;
-import com.bitflippersanonymous.buck.domain.Util;
-import com.bitflippersanonymous.buck.domain.Util.DatabaseBase.Tables;
-
-import android.os.Bundle;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.bitflippersanonymous.buck.R;
+import com.bitflippersanonymous.buck.domain.Job;
+import com.bitflippersanonymous.buck.domain.Util;
+import com.bitflippersanonymous.buck.domain.Util.DatabaseBase.Tables;
 
 public class JobFragment extends Fragment {
 

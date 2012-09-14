@@ -1,31 +1,21 @@
 package com.bitflippersanonymous.buck.ui;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.bitflippersanonymous.buck.R;
-import com.bitflippersanonymous.buck.db.BuckDatabaseAdapter;
-import com.bitflippersanonymous.buck.domain.Cut;
-import com.bitflippersanonymous.buck.domain.CutPlan;
-import com.bitflippersanonymous.buck.domain.Mill;
-import com.bitflippersanonymous.buck.domain.Price;
-import com.bitflippersanonymous.buck.domain.PriceAdapter;
-import com.bitflippersanonymous.buck.domain.SimpleCursorLoader;
-import com.bitflippersanonymous.buck.domain.Util;
-import com.bitflippersanonymous.buck.domain.Util.DatabaseBase.Tables;
-import com.bitflippersanonymous.buck.service.BuckService;
-
-import android.os.Bundle;
 import android.app.ActionBar;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
 import android.content.Loader;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.bitflippersanonymous.buck.R;
+import com.bitflippersanonymous.buck.domain.Mill;
+import com.bitflippersanonymous.buck.domain.PriceAdapter;
+import com.bitflippersanonymous.buck.domain.Util;
 
 public class MillFragment extends ListFragment
 	implements LoaderManager.LoaderCallbacks<Mill> {

@@ -10,9 +10,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.bitflippersanonymous.buck.domain.Util.DatabaseBase.Tables;
-import com.bitflippersanonymous.buck.service.BuckService;
-
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;

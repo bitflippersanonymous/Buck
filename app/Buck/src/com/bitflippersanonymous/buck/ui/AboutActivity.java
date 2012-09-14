@@ -1,9 +1,10 @@
 package com.bitflippersanonymous.buck.ui;
 
-import com.bitflippersanonymous.buck.R;
 import android.app.Activity;
 import android.os.Bundle;
 import android.webkit.WebView;
+
+import com.bitflippersanonymous.buck.R;
 
 public class AboutActivity extends Activity {
 

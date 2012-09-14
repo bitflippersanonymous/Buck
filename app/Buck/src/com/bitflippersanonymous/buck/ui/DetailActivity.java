@@ -1,12 +1,12 @@
 package com.bitflippersanonymous.buck.ui;
 
+import android.app.ActionBar;
+import android.app.Fragment;
+import android.os.Bundle;
+import android.util.Log;
+
 import com.bitflippersanonymous.buck.R;
 import com.bitflippersanonymous.buck.domain.Util;
-
-import android.app.ActionBar;
-import android.os.Bundle;
-import android.app.Fragment;
-import android.util.Log;
 
 public class DetailActivity extends BaseActivity {
 

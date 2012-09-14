@@ -1,8 +1,7 @@
 package com.bitflippersanonymous.buck.test;
 
-import com.bitflippersanonymous.buck.domain.Cut;
-import com.bitflippersanonymous.buck.domain.Mill;
-import com.bitflippersanonymous.buck.service.BuckService;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -14,6 +13,11 @@ import android.os.Message;
 import android.os.Messenger;
 import android.test.ServiceTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
+
+import com.bitflippersanonymous.buck.domain.CutPlan;
+import com.bitflippersanonymous.buck.domain.Dimension;
+import com.bitflippersanonymous.buck.domain.Mill;
+import com.bitflippersanonymous.buck.service.BuckService;
 
 
 public class Smoketest extends ServiceTestCase<BuckService> {
@@ -87,7 +91,7 @@ public class Smoketest extends ServiceTestCase<BuckService> {
 		assertTrue(mill.getPrices().size() > 0);
 		
 		// Check scribner.csv loaded
-		Cut cut = new Cut(0, 0);
+		Dimension cut = new Dimension(0, 0);
 		for ( int w = 4; w <= 30; w++ ) {
 			for ( int l = 6; l <= 40; l++ ) {
 				if ( w <= 4 && l <= 7 ) continue;
@@ -97,6 +101,17 @@ public class Smoketest extends ServiceTestCase<BuckService> {
 				assertTrue(bf > 0);
 			}
 		}
-
+	}
+	
+	@MediumTest
+	public void testCutPlan() {
+		List<Dimension> dimensions = new ArrayList<Dimension>();
+		dimensions.add(new Dimension(30, 90));
+		List<CutPlan> cutPlans = mService.getCutPlans(dimensions);
+		
+		for ( CutPlan plan : cutPlans ) {
+			int bf = plan.getBoardFeet();
+			assertTrue(bf > 500 && bf < 5000);
+		}
 	}
 }
