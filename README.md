@@ -39,3 +39,7 @@ Notes:
 	finally {
 		db.endTransaction();
 	}
+
+	RenamingDelegatingContext 
+	provides a Context in which most functions are handled by an existing Context, but file and database operations are handled by a IsolatedContext. The isolated part uses a test directory and creates special file and directory names. You can control the naming yourself, or let the constructor determine it automatically.
+
