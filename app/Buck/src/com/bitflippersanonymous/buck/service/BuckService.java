@@ -154,7 +154,7 @@ public class BuckService extends Service  {
 			 else {
 				 // FIXME: Check for nulls here, table may be incomplete
 				 for ( int i = 1; i < ints.size(); i++ )
-					 mScribnerTable.put(new Cut(mWidths.get(i), ints.get(0)*12), ints.get(i));
+					 mScribnerTable.put(new Cut(mWidths.get(i), ints.get(0)), ints.get(i));
 			 }
 		}
 
@@ -213,22 +213,13 @@ public class BuckService extends Service  {
 	
 	//FIXME: mLoadTask may not be complete yet.
 	public int getBoardFeet(Cut cut) {
-		Cut trim = new Cut(cut.getWidth(), roundLength(cut.getLength()));
+		Cut trim = new Cut(cut.getWidth(), cut.getLength());
 		Integer bf = mScribnerTable.get(trim);
 		if ( bf != null )
 			return bf;
 		
 		Log.e(getClass().getSimpleName(), "Scribner Table Incomplete: " + cut);
 		return 0;
-	}
-
-	/**
-	 * Round length down to nearest foot. Doesn't round according to 'official_Rules_Revised.pdf' yet.
-	 * @param length Length in inches
-	 * @return Length in inches rounded down according to log scaling rules
-	 */
-	private int roundLength(int length) {
-		return length - length % 12;
 	}
 
 	public List<CutPlan> getCutPlans(List<Cut> cuts) {
