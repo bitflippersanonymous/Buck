@@ -20,9 +20,9 @@ import com.bitflippersanonymous.buck.R;
 import com.bitflippersanonymous.buck.db.BuckDatabaseAdapter;
 import com.bitflippersanonymous.buck.domain.JobDbAdapter;
 import com.bitflippersanonymous.buck.domain.MillDbAdapter;
-import com.bitflippersanonymous.buck.domain.SimpleCursorLoader;
 import com.bitflippersanonymous.buck.domain.Util;
 import com.bitflippersanonymous.buck.domain.Util.DatabaseBase.Tables;
+import com.bitflippersanonymous.buck.service.SimpleCursorLoader;
 
 public class MainActivity extends BaseActivity 
 implements ActionBar.OnNavigationListener, MainListFragment.OnItemListener, 

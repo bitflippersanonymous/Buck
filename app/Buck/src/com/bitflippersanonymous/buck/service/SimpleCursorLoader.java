@@ -1,4 +1,4 @@
-package com.bitflippersanonymous.buck.domain;
+package com.bitflippersanonymous.buck.service;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;

@@ -1,4 +1,4 @@
-package com.bitflippersanonymous.buck.domain;
+package com.bitflippersanonymous.buck.service;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,6 +9,13 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import com.bitflippersanonymous.buck.domain.DbItem;
+import com.bitflippersanonymous.buck.domain.Job;
+import com.bitflippersanonymous.buck.domain.Mill;
+import com.bitflippersanonymous.buck.domain.Price;
+import com.bitflippersanonymous.buck.domain.Util;
+import com.bitflippersanonymous.buck.domain.Util.InsertItems;
 
 import android.content.Context;
 import android.content.res.AssetManager;
