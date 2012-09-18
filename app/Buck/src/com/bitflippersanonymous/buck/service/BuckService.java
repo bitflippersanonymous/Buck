@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Service;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Binder;
@@ -133,6 +134,13 @@ public class BuckService extends Service  {
 
 	public int getBoardFeet(Dimension dim) {
 		return mCutPlanner.getBoardFeet(dim);
+	}
+
+	public void setMillEnabled(int rowId, boolean checked) {
+		ContentValues values = new ContentValues();
+		values.put(Mill.Fields.Enabled.name(), checked ? "1" : "0");
+		getDbAdapter().updateTable(Tables.Mills.name(), rowId, values);
+		sendUpdate();
 	}
 
 }

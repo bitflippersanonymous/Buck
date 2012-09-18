@@ -12,6 +12,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CursorAdapter;
 import android.widget.Toast;
@@ -166,13 +167,15 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 	 *  @see MainListFragment#onListItemClick(android.widget.ListView, android.view.View, int, long)
 	 */
 	@Override
-	public void onItemSelected(Object item) {
+	public void onItemSelected(Object item, View view) {
 		if (!( item instanceof Cursor) ) {
 			Log.e(getClass().getSimpleName(), "onItemSelected: item is not a Cursor");
 		}
-		Class<?> fragmentClass = MillFragment.class;
+		Class<?> fragmentClass = null;
 		if ( getActionBar().getSelectedNavigationIndex() == JOB_IDX )
 			fragmentClass = JobFragment.class;
+		else
+			fragmentClass = MillFragment.class;
 		Cursor cursor = (Cursor)item;
 		Intent intent = new Intent(this, DetailActivity.class);
 		intent.putExtra(Util.FRAGMENT, fragmentClass);

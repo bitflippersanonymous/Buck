@@ -24,5 +24,6 @@
     <string name="measure_add">Add</string>
 
     <string name="no_data">No Data</string>
+    <string name="mill_enabled">Enabled</string>
     
 </resources>

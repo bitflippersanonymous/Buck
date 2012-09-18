@@ -10,17 +10,16 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.os.AsyncTask;
+import android.util.Log;
+
 import com.bitflippersanonymous.buck.domain.DbItem;
 import com.bitflippersanonymous.buck.domain.Job;
 import com.bitflippersanonymous.buck.domain.Mill;
 import com.bitflippersanonymous.buck.domain.Price;
 import com.bitflippersanonymous.buck.domain.Util;
-import com.bitflippersanonymous.buck.domain.Util.InsertItems;
-
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.os.AsyncTask;
-import android.util.Log;
 
 // FIXME: Have a leak here if service is restarted while task is running
 public class DBItemXMLReader {

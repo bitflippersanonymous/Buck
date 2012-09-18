@@ -22,6 +22,10 @@ public class MillDbAdapter extends CursorAdapter implements ListAdapter {
 		String millName = cursor.getString(columnIndex);
 		TextView textView = (TextView) view.findViewById(android.R.id.text1);
 		textView.setText(millName);
+		int drawable = 0;
+		if ( cursor.getInt(cursor.getColumnIndex(Mill.Fields.Enabled.name())) > 0 )
+			drawable = android.R.drawable.star_on;
+		textView.setCompoundDrawablesWithIntrinsicBounds(drawable, 0, 0, 0);
 	}
 
 	@Override

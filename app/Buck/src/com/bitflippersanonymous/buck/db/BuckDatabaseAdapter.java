@@ -99,5 +99,9 @@ public class BuckDatabaseAdapter implements Util.DatabaseBase, Util.InsertItems 
 		return mill.getId();
 	}
 
+	public int updateTable(String table, long rowId, ContentValues values) throws SQLException {
+		return mDbHelper.getWritableDatabase().update(table, values, 
+				Util._ID + "=?", new String[]{String.valueOf(rowId)});
+	}
 	
 }

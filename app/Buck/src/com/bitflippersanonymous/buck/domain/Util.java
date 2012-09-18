@@ -21,7 +21,11 @@ public class Util {
 		public long insertMill(Mill mill);
 	}
 
-	interface HasFields {
+	public interface Update {
+		void update();
+	}
+	
+	public interface HasFields {
 		enum Fields {};
 	}
 	
