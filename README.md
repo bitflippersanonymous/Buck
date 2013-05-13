@@ -3,6 +3,7 @@ Buck
 Timber Bucking program for Android
 Copyright 2012 Ryan Henderson All rights reserved.
 
+Branch: develop
 
 Notes:
 	Use this to storage location for temp downloaded files
