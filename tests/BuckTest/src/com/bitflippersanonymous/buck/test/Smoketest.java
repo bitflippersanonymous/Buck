@@ -15,8 +15,10 @@ import android.test.ServiceTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
 
 import com.bitflippersanonymous.buck.domain.CutPlan;
+import com.bitflippersanonymous.buck.domain.CutPlanner;
 import com.bitflippersanonymous.buck.domain.Dimension;
 import com.bitflippersanonymous.buck.domain.Mill;
+import com.bitflippersanonymous.buck.domain.Util;
 import com.bitflippersanonymous.buck.service.BuckService;
 
 
@@ -107,11 +109,18 @@ public class Smoketest extends ServiceTestCase<BuckService> {
 	public void testCutPlan() {
 		List<Dimension> dimensions = new ArrayList<Dimension>();
 		dimensions.add(new Dimension(30, 90));
+		dimensions.add(new Dimension(20, 0));
 		List<CutPlan> cutPlans = mService.getCutPlans(dimensions);
 		
 		for ( CutPlan plan : cutPlans ) {
 			int bf = plan.getBoardFeet();
 			assertTrue(bf > 500 && bf < 5000);
 		}
+	}
+	
+	@MediumTest
+	public void testCutPlanner() {
+		CutPlanner planner = new CutPlanner(getContext(), Util.SCRIBNER);
+		planner.widthAtPosition(0);
 	}
 }

@@ -11,6 +11,7 @@ import java.util.Map;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
+import static java.lang.Math.*;
 
 import com.bitflippersanonymous.buck.service.LoadTask;
 
@@ -109,11 +110,23 @@ public class CutPlanner {
 		}
 	}
 
+	private double CosineInterpolate(double y1, double y2, double mu) {
+		double mu2 = (1-cos(mu*PI))/2;
+		return y1*(1-mu2)+y2*mu2;
+	}
+
+	// Need to find points before and after position to interpolate width
 	private int widthAtPosition(int position) {
-		Collections.sort(mWholeLogSize, Dimension.getByLength());
-		Dimension start = mWholeLogSize.get(0);
-		Dimension end = mWholeLogSize.get(mWholeLogSize.size()-1);
-		int width = start.getWidth() - (int)(((float)start.getWidth() / (float)(end.getLength() * 12)) * (position * 12));
+		int i = 0;
+		int iL = 0;
+		while ( i < mWholeLogSize.size() && position > iL) {
+			iL += mWholeLogSize.get(i++).getLength();
+		}
+		Dimension d1 = mWholeLogSize.get(i-1);
+		Dimension d2 = mWholeLogSize.get(min(i, mWholeLogSize.size()-1));
+		
+		double mu = (double)(iL - d1.getLength() + position) / d1.getLength();
+		int width = (int)round(CosineInterpolate(d1.getWidth(), d2.getWidth(), mu));
 		return width;
 	}
 	

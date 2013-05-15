@@ -73,5 +73,16 @@ public class Dimension implements Parcelable {
 			}};
 		return sByLength;
 	}
+	
+	private static Comparator<? super Dimension> sByWidth = null;
+	public static Comparator<? super Dimension> getByWidth() {
+		if ( sByWidth == null )
+			sByWidth = new Comparator<Dimension>(){
+			@Override
+			public int compare(Dimension lhs, Dimension rhs) {
+				return lhs.mWidth - rhs.mWidth;
+			}};
+		return sByWidth;
+	}
 
 }
