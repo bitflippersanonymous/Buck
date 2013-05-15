@@ -52,7 +52,7 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 		actionBar.setListNavigationCallbacks(
 				// Specify a SpinnerAdapter to populate the dropdown list.
 				new ArrayAdapter<String>(
-						actionBar.getThemedContext(),
+						getBaseContext(),
 						android.R.layout.simple_list_item_1,
 						android.R.id.text1,
 						navigation_items

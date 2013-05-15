@@ -1,5 +1,9 @@
 package com.bitflippersanonymous.buck.test;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,18 +11,19 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.AssetManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.test.ServiceTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
+import android.util.Log;
 
 import com.bitflippersanonymous.buck.domain.CutPlan;
 import com.bitflippersanonymous.buck.domain.CutPlanner;
 import com.bitflippersanonymous.buck.domain.Dimension;
 import com.bitflippersanonymous.buck.domain.Mill;
-import com.bitflippersanonymous.buck.domain.Util;
 import com.bitflippersanonymous.buck.service.BuckService;
 
 
@@ -26,7 +31,7 @@ public class Smoketest extends ServiceTestCase<BuckService> {
 	static BuckService mService = null;
 	static boolean mBound = false;
 	static Boolean mReady = false;
-
+	static Context mTestContext = null;
 
 	public Smoketest() {
 		super(BuckService.class);
@@ -62,6 +67,8 @@ public class Smoketest extends ServiceTestCase<BuckService> {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
+		mTestContext = getContext().createPackageContext("com.bitflippersanonymous.buck.test",
+        Context.CONTEXT_IGNORE_SECURITY);
 		Intent startIntent = new Intent();
 		startIntent.setClass(getContext(), BuckService.class);
 		boolean bound = getContext().bindService(startIntent, mServiceConnection, Context.BIND_AUTO_CREATE);
@@ -80,7 +87,7 @@ public class Smoketest extends ServiceTestCase<BuckService> {
 	@Override
 	protected void tearDown() throws Exception {
 	}
-
+	
 	/**
 	 * Test Service init. Files were read and db populated
 	 */
@@ -117,28 +124,81 @@ public class Smoketest extends ServiceTestCase<BuckService> {
 			assertTrue(bf > 500 && bf < 5000);
 		}
 	}
-	
-	@MediumTest
-	public void testCutPlanner() {
-		List<Dimension> dimensions = new ArrayList<Dimension>();
-		dimensions.add(new Dimension(30, 90));
-		dimensions.add(new Dimension(20, 0));
 
-		assertTrue(CutPlanner.widthAtPosition(dimensions, 0) == 30);
-		assertTrue(CutPlanner.widthAtPosition(dimensions, 45) == 25);
-		assertTrue(CutPlanner.widthAtPosition(dimensions, 90) == 20);
-		assertTrue(CutPlanner.widthAtPosition(dimensions, 100) == 0);
+	class DataReader {
+		private InputStream mInstream = null;
+		private BufferedReader mBuffreader = null;
+		private String mFilename;
 		
-		dimensions.clear();
-		dimensions.add(new Dimension(40, 10));
-		dimensions.add(new Dimension(30, 10)); 
-		dimensions.add(new Dimension(20, 10));
-		dimensions.add(new Dimension(8, 0));
+		public DataReader(Context context, String filename) {
+			mFilename = filename;
+			try {
+				AssetManager am = context.getAssets();
+				mInstream = am.open(mFilename);
+				mBuffreader = new BufferedReader(new InputStreamReader(mInstream));
+			} catch (java.io.FileNotFoundException e) {
+				Log.e(getClass().getSimpleName(), "File not found: " + mFilename);
+			} catch (IOException e) {
+				Log.e(getClass().getSimpleName(), "Error reading: " + mFilename);
+			}
+		}
 		
-		assertTrue(CutPlanner.widthAtPosition(dimensions, 5) == 35);
-		assertTrue(CutPlanner.widthAtPosition(dimensions, 12) == 29);
-		assertTrue(CutPlanner.widthAtPosition(dimensions, 28) == 9);
-		assertTrue(CutPlanner.widthAtPosition(dimensions, 100) == 0);
+		public List<Integer> handleLine(String line) {
+			List<Integer> retVal = new ArrayList<Integer>();
+			for ( String s : line.split("\\s*,\\s*")) {
+				retVal.add(Integer.parseInt(s));
+			}
+			return retVal;
+		}
+
+		public List<Integer> readLine() {
+			try {
+				if ( mBuffreader != null ) {
+					String line = mBuffreader.readLine();
+					if ( line != null)
+						return handleLine(line);
+				}
+			} catch (IOException e) {
+				Log.e(getClass().getSimpleName(), "Error reading: " + mFilename);
+			}
+			return null;
+		}
+
+		public void close() {
+			if ( mInstream == null ) return;
+
+			try {
+				mInstream.close();
+			} catch (IOException e) {
+				Log.e(getClass().getSimpleName(), "Error closing: " + mFilename);
+			}
+		}
 		
+	}
+	
+
+	/* Directly test widthAtPosition. Format of data file:
+	 * measured width, length
+	 * test length, expected width
+	*/
+	@MediumTest
+	public void testCutPlanner() throws IOException {
+		List<Dimension> dimensions = new ArrayList<Dimension>();
+		DataReader dataReader = new DataReader(mTestContext, "test_cut_planner.csv");
+		
+		List<Integer> data = dataReader.readLine();
+		assertNotNull(data);
+		while ( data != null ) {
+			dimensions.clear();
+			for (int i = 0; i+1 < data.size(); i+=2 ) {
+				dimensions.add(new Dimension(data.get(i), data.get(i+1)));
+			}
+			data = dataReader.readLine();
+			for (int i = 0; i+1 < data.size(); i+=2 ) {
+				assertSame(CutPlanner.widthAtPosition(dimensions, data.get(i)), data.get(i+1));
+			}
+			data = dataReader.readLine();
+		}
+		dataReader.close();
 	}
 }
