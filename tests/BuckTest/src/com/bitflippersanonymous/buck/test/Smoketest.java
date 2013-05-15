@@ -120,7 +120,25 @@ public class Smoketest extends ServiceTestCase<BuckService> {
 	
 	@MediumTest
 	public void testCutPlanner() {
-		CutPlanner planner = new CutPlanner(getContext(), Util.SCRIBNER);
-		planner.widthAtPosition(0);
+		List<Dimension> dimensions = new ArrayList<Dimension>();
+		dimensions.add(new Dimension(30, 90));
+		dimensions.add(new Dimension(20, 0));
+
+		assertTrue(CutPlanner.widthAtPosition(dimensions, 0) == 30);
+		assertTrue(CutPlanner.widthAtPosition(dimensions, 45) == 25);
+		assertTrue(CutPlanner.widthAtPosition(dimensions, 90) == 20);
+		assertTrue(CutPlanner.widthAtPosition(dimensions, 100) == 0);
+		
+		dimensions.clear();
+		dimensions.add(new Dimension(40, 10));
+		dimensions.add(new Dimension(30, 10)); 
+		dimensions.add(new Dimension(20, 10));
+		dimensions.add(new Dimension(8, 0));
+		
+		assertTrue(CutPlanner.widthAtPosition(dimensions, 5) == 35);
+		assertTrue(CutPlanner.widthAtPosition(dimensions, 12) == 29);
+		assertTrue(CutPlanner.widthAtPosition(dimensions, 28) == 9);
+		assertTrue(CutPlanner.widthAtPosition(dimensions, 100) == 0);
+		
 	}
 }

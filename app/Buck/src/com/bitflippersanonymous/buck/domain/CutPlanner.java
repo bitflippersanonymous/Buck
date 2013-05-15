@@ -19,7 +19,6 @@ import com.bitflippersanonymous.buck.service.LoadTask;
 public class CutPlanner {
 	private static final Integer mMinWidth = 4; // Get from prefs?
 	private Map<Dimension, Integer> mScribnerTable = new HashMap<Dimension, Integer>();
-	private Mill mMill = null;
 	private List<CutPlan> mPlans = new ArrayList<CutPlan>();
 	private List<Dimension> mWholeLogSize = null;
 	private Object mLock = new Object();
@@ -110,32 +109,36 @@ public class CutPlanner {
 		}
 	}
 
-	private double CosineInterpolate(double y1, double y2, double mu) {
+	private static double CosineInterpolate(double y1, double y2, double mu) {
 		double mu2 = (1-cos(mu*PI))/2;
 		return y1*(1-mu2)+y2*mu2;
 	}
 
 	// Need to find points before and after position to interpolate width
-	private int widthAtPosition(int position) {
+	public static int widthAtPosition(List<Dimension> wholeLogSize, int position) {
+		if ( position == 0 )
+			return wholeLogSize.get(0).getWidth();
+		
 		int i = 0;
 		int iL = 0;
-		while ( i < mWholeLogSize.size() && position > iL) {
-			iL += mWholeLogSize.get(i++).getLength();
+		while ( i < wholeLogSize.size() && position > iL) {
+			iL += wholeLogSize.get(i++).getLength();
 		}
-		Dimension d1 = mWholeLogSize.get(i-1);
-		Dimension d2 = mWholeLogSize.get(min(i, mWholeLogSize.size()-1));
+		Dimension d1 = wholeLogSize.get(i-1);
+		Dimension d2 = wholeLogSize.get(min(i, wholeLogSize.size()-1));
 		
 		double mu = (double)(iL - d1.getLength() + position) / d1.getLength();
-		int width = (int)round(CosineInterpolate(d1.getWidth(), d2.getWidth(), mu));
+		int width = (int)CosineInterpolate(d1.getWidth(), d2.getWidth(), mu);
 		return width;
 	}
 	
-	private void recCutPlan(CutPlan plan, int position) {
+	private void recCutPlan(Mill mill, List<Dimension> wholeLogSize, 
+			CutPlan plan, int position) {
 		
-		for ( Price price : mMill.getPrices() ) {
+		for ( Price price : mill.getPrices() ) {
 			int length = price.getAsInteger(Price.Fields.Length);
 			int newPosition = position+length;
-			int width = widthAtPosition(newPosition);
+			int width = widthAtPosition(wholeLogSize, newPosition);
 			Integer minWidth = price.getAsInteger(Price.Fields.Top);
 			if ( minWidth == null )
 				minWidth = mMinWidth;
@@ -144,22 +147,16 @@ public class CutPlanner {
 				Dimension dimension = new Dimension(width, length);
 				plan.addCut(dimension, getBoardFeet(dimension));
 				mPlans.add(plan);
-				recCutPlan(new CutPlan(plan), newPosition);
+				recCutPlan(mill, wholeLogSize, new CutPlan(plan), newPosition);
 			}				
 		}
-		
 	}
 		
 	public List<CutPlan> getCutPlans(Mill mill, List<Dimension> wholeLogSize) {
 		waitTillReady();
-
 		mPlans.clear();
-		mMill = mill;
-		mWholeLogSize = wholeLogSize;
-
-		recCutPlan(new CutPlan(mWholeLogSize), 0);
+		recCutPlan(mill, wholeLogSize, new CutPlan(mWholeLogSize), 0);
 		Collections.sort(mPlans, CutPlan.getByBoardFeet());
-
 		return mPlans;
 	}
 }
