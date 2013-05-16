@@ -19,8 +19,11 @@ import com.bitflippersanonymous.buck.service.LoadTask;
 public class CutPlanner {
 	private static final Integer mMinWidth = 4; // Get from prefs?
 	private Map<Dimension, Integer> mScribnerTable = new HashMap<Dimension, Integer>();
+	private CutNode mCutRoot;
+	private List<CutNode> mCutNodes;
 	private List<CutPlan> mPlans = new ArrayList<CutPlan>();
 	private List<Dimension> mWholeLogSize = null;
+	private Mill mMill = null;
 	private Object mLock = new Object();
 	private boolean mReady = false;
 	
@@ -132,31 +135,31 @@ public class CutPlanner {
 		return width;
 	}
 	
-	private void recCutPlan(Mill mill, List<Dimension> wholeLogSize, 
-			CutPlan plan, int position) {
-		
-		for ( Price price : mill.getPrices() ) {
+	private void recCutPlan(CutNode parent, int position) {
+		for ( Price price : mMill.getPrices() ) {
 			int length = price.getAsInteger(Price.Fields.Length);
-			int newPosition = position+length;
-			int width = widthAtPosition(wholeLogSize, newPosition);
+			position += length;
 			Integer minWidth = price.getAsInteger(Price.Fields.Top);
 			if ( minWidth == null )
 				minWidth = mMinWidth;
+			int width = widthAtPosition(mWholeLogSize, position);
 			
 			if ( width > minWidth ) {
-				Dimension dimension = new Dimension(width, length);
-				plan.addCut(dimension, getBoardFeet(dimension));
-				mPlans.add(plan);
-				recCutPlan(mill, wholeLogSize, new CutPlan(plan), newPosition);
-			}				
+				CutNode newNode = new CutNode(new Dimension(width, length));
+				parent.addChild(newNode);
+				recCutPlan(newNode, position);
+			} else {
+				mCutNodes.add(parent);
+			}
 		}
 	}
 		
-	public List<CutPlan> getCutPlans(Mill mill, List<Dimension> wholeLogSize) {
+	public List<CutNode> getCutPlans(Mill mill, List<Dimension> wholeLogSize) {
 		waitTillReady();
-		mPlans.clear();
-		recCutPlan(mill, wholeLogSize, new CutPlan(mWholeLogSize), 0);
-		Collections.sort(mPlans, CutPlan.getByBoardFeet());
-		return mPlans;
+		mCutRoot = new CutNode();
+		mCutNodes = new ArrayList<CutNode>();
+		mMill = mill; mWholeLogSize = wholeLogSize;
+		recCutPlan(mCutRoot, 0);
+		return mCutNodes;
 	}
 }

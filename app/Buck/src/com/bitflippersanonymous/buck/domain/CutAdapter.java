@@ -13,24 +13,23 @@ import android.widget.TextView;
 import com.bitflippersanonymous.buck.R;
 
 
-public class CutAdapter extends ArrayAdapter<CutPlan> implements ListAdapter {
+public class CutAdapter extends ArrayAdapter<CutNode> implements ListAdapter {
 
-	public CutAdapter(Context context, int textViewResourceId,
-			List<CutPlan> objects) {
+	public CutAdapter(Context context, int textViewResourceId, List<CutNode> objects) {
 		super(context, textViewResourceId, objects);
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		CutPlan plan = getItem(position);
+		CutNode node = getItem(position);
 		if ( convertView == null )
 			convertView = LayoutInflater.from(parent.getContext()).inflate(
 					R.layout.cut_entry, parent, false);
 
 		TextView tc = (TextView)convertView.findViewById(R.id.textViewCutCuts);
-		tc.setText(makeCutString(plan.getCuts()));
+		tc.setText(makeCutString(node.getCuts()));
 		TextView tv = (TextView)convertView.findViewById(R.id.textViewCutValue);
-		tv.setText(Integer.valueOf(plan.getBoardFeet()).toString());
+		tv.setText(Integer.valueOf(node.getBoardFeet()).toString());
 		return convertView;
 	}
 

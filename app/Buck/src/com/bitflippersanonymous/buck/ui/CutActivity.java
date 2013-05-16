@@ -16,6 +16,7 @@ import android.widget.ListView;
 
 import com.bitflippersanonymous.buck.R;
 import com.bitflippersanonymous.buck.domain.CutAdapter;
+import com.bitflippersanonymous.buck.domain.CutNode;
 import com.bitflippersanonymous.buck.domain.CutPlan;
 import com.bitflippersanonymous.buck.domain.Dimension;
 import com.bitflippersanonymous.buck.domain.Util;
@@ -23,7 +24,7 @@ import com.bitflippersanonymous.buck.domain.Util;
 
 
 public class CutActivity extends BaseActivity 
-	implements LoaderManager.LoaderCallbacks<List<CutPlan>>,
+	implements LoaderManager.LoaderCallbacks<List<CutNode>>,
 		OnItemClickListener {
 
 	private CutAdapter mAdapter = null;
@@ -40,7 +41,7 @@ public class CutActivity extends BaseActivity
 		actionBar.setTitle(R.string.title_activity_cut);
 		
 		ListView list = (ListView) findViewById(R.id.listViewCut);
-		list.setAdapter(mAdapter = new CutAdapter(this, 0, new ArrayList<CutPlan>()));
+		list.setAdapter(mAdapter = new CutAdapter(this, 0, new ArrayList<CutNode>()));
 		list.setOnItemClickListener(this);
 		
 		findViewById(R.id.listViewCut).setVisibility(View.GONE);
@@ -49,10 +50,10 @@ public class CutActivity extends BaseActivity
 	}
 
 	@Override
-	public Loader<List<CutPlan>> onCreateLoader(int id, Bundle args) {
-		Loader<List<CutPlan>> loader = new AsyncTaskLoader<List<CutPlan>>(this) {
+	public Loader<List<CutNode>> onCreateLoader(int id, Bundle args) {
+		Loader<List<CutNode>> loader = new AsyncTaskLoader<List<CutNode>>(this) {
 			@Override
-			public List<CutPlan> loadInBackground() {
+			public List<CutNode> loadInBackground() {
                 ArrayList<Dimension> cuts = getIntent().getParcelableArrayListExtra(Util.CUTS);
 				return getService().getCutPlans(cuts);
 			}
@@ -62,15 +63,15 @@ public class CutActivity extends BaseActivity
 	}
 
 	@Override
-	public void onLoadFinished(Loader<List<CutPlan>> loader, List<CutPlan> cutPlans) {
-		mAdapter.addAll(cutPlans);
+	public void onLoadFinished(Loader<List<CutNode>> loader, List<CutNode> cutPlans) {
+		mAdapter.addAll(cutPlans); //@@@ Makes copy of array
 		mAdapter.notifyDataSetChanged();
 		findViewById(R.id.listViewCut).setVisibility(View.VISIBLE);
 		findViewById(R.id.progressBarCut).setVisibility(View.GONE);
 	}
 
 	@Override
-	public void onLoaderReset(Loader<List<CutPlan>> loader) {
+	public void onLoaderReset(Loader<List<CutNode>> loader) {
 		mAdapter.clear();
 	}
 

@@ -15,6 +15,7 @@ import android.os.Messenger;
 import android.util.Log;
 
 import com.bitflippersanonymous.buck.db.BuckDatabaseAdapter;
+import com.bitflippersanonymous.buck.domain.CutNode;
 import com.bitflippersanonymous.buck.domain.CutPlan;
 import com.bitflippersanonymous.buck.domain.CutPlanner;
 import com.bitflippersanonymous.buck.domain.Dimension;
@@ -107,7 +108,7 @@ public class BuckService extends Service  {
 		}
 	}
 	
-	public void savePick(CutPlan item) {
+	public void savePick(CutNode item) {
 		Log.e(getClass().getSimpleName(), "Store CutPlan in db");
 	}
 
@@ -128,7 +129,7 @@ public class BuckService extends Service  {
 		return prices;
 	}
 
-	public List<CutPlan> getCutPlans(List<Dimension> dimensions) {
+	public List<CutNode> getCutPlans(List<Dimension> dimensions) {
 		return mCutPlanner.getCutPlans(getMill(1), dimensions);
 	}
 

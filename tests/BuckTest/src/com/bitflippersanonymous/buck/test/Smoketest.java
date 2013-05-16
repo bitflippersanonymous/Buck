@@ -20,6 +20,7 @@ import android.test.ServiceTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
 import android.util.Log;
 
+import com.bitflippersanonymous.buck.domain.CutNode;
 import com.bitflippersanonymous.buck.domain.CutPlan;
 import com.bitflippersanonymous.buck.domain.CutPlanner;
 import com.bitflippersanonymous.buck.domain.Dimension;
@@ -117,10 +118,10 @@ public class Smoketest extends ServiceTestCase<BuckService> {
 		List<Dimension> dimensions = new ArrayList<Dimension>();
 		dimensions.add(new Dimension(30, 90));
 		dimensions.add(new Dimension(20, 0));
-		List<CutPlan> cutPlans = mService.getCutPlans(dimensions);
+		List<CutNode> cutNodes = mService.getCutPlans(dimensions);
 		
-		for ( CutPlan plan : cutPlans ) {
-			int bf = plan.getBoardFeet();
+		for ( CutNode node : cutNodes ) {
+			int bf = node.getBoardFeet();
 			assertTrue(bf > 500 && bf < 5000);
 		}
 	}
@@ -195,7 +196,7 @@ public class Smoketest extends ServiceTestCase<BuckService> {
 			}
 			data = dataReader.readLine();
 			for (int i = 0; i+1 < data.size(); i+=2 ) {
-				assertSame(CutPlanner.widthAtPosition(dimensions, data.get(i)), data.get(i+1));
+				assertEquals(CutPlanner.widthAtPosition(dimensions, data.get(i)), (int)data.get(i+1));
 			}
 			data = dataReader.readLine();
 		}
