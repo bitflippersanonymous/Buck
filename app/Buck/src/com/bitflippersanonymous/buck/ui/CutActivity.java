@@ -17,7 +17,6 @@ import android.widget.ListView;
 import com.bitflippersanonymous.buck.R;
 import com.bitflippersanonymous.buck.domain.CutAdapter;
 import com.bitflippersanonymous.buck.domain.CutNode;
-import com.bitflippersanonymous.buck.domain.CutPlan;
 import com.bitflippersanonymous.buck.domain.Dimension;
 import com.bitflippersanonymous.buck.domain.Util;
 

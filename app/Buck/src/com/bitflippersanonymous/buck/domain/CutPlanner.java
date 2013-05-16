@@ -21,7 +21,6 @@ public class CutPlanner {
 	private Map<Dimension, Integer> mScribnerTable = new HashMap<Dimension, Integer>();
 	private CutNode mCutRoot;
 	private List<CutNode> mCutNodes;
-	private List<CutPlan> mPlans = new ArrayList<CutPlan>();
 	private List<Dimension> mWholeLogSize = null;
 	private Mill mMill = null;
 	private Object mLock = new Object();

@@ -21,7 +21,6 @@ import android.test.suitebuilder.annotation.MediumTest;
 import android.util.Log;
 
 import com.bitflippersanonymous.buck.domain.CutNode;
-import com.bitflippersanonymous.buck.domain.CutPlan;
 import com.bitflippersanonymous.buck.domain.CutPlanner;
 import com.bitflippersanonymous.buck.domain.Dimension;
 import com.bitflippersanonymous.buck.domain.Mill;
