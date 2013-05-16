@@ -19,12 +19,12 @@ import com.bitflippersanonymous.buck.service.LoadTask;
 public class CutPlanner {
 	private static final Integer mMinWidth = 4; // Get from prefs?
 	private Map<Dimension, Integer> mScribnerTable = new HashMap<Dimension, Integer>();
-	private CutNode mCutRoot;
 	private List<CutNode> mCutNodes;
 	private List<Dimension> mWholeLogSize = null;
 	private Mill mMill = null;
 	private Object mLock = new Object();
 	private boolean mReady = false;
+	private Map<Integer, CutNode> mTotalValueToNode;
 	
 	public CutPlanner(Context context, String filename) {
 		loadScribner(context, filename);
@@ -143,27 +143,46 @@ public class CutPlanner {
 			int width = widthAtPosition(mWholeLogSize, position+length);
 
 			if ( width > minWidth ) {
+				//@@@ Maybe should just set price on CutNode, then will have
+				// Ref to mill.  Need to check not null
+				Integer dollars = price.getAsInteger(Price.Fields.Price);
 				Dimension dim = new Dimension(width, length);
-				CutNode newNode = new CutNode(dim, getBoardFeet(dim));
+				int boardFeet = getBoardFeet(dim);
+				CutNode newNode = new CutNode(dim, boardFeet, dollars);
 				parent.addChild(newNode);
-				mCutNodes.add(newNode);
+				
 				recCutPlan(newNode, position+length);
+				
+				if ( newNode.getChildren().size() == 0 ) {
+					int totalValue = newNode.getTotalValue();
+					CutNode sameValue = mTotalValueToNode.get(totalValue);
+					if ( sameValue == null || sameValue.getTotalLength() > newNode.getTotalLength() ) {
+						mTotalValueToNode.remove(totalValue);
+						mTotalValueToNode.put(totalValue, newNode);
+					}
+				}
 			}
 		}
 	}
-		
+	
+	// Doesn't cleanup unneeded nodes in the tree
+	// needs to better handle same value nodes wrt price run rate. May be
+	// hiding options
 	public List<CutNode> getCutPlans(Mill mill, List<Dimension> wholeLogSize) {
 		waitTillReady();
-		mCutRoot = new CutNode();
 		mCutNodes = new ArrayList<CutNode>();
+		mTotalValueToNode = new HashMap<Integer, CutNode>();
 		mMill = mill; mWholeLogSize = wholeLogSize;
 		
 		// Assume end of log is mWinWidth
 		if ( mWholeLogSize.size() == 1 )
 			mWholeLogSize.add(new Dimension(mMinWidth, 0));
 			
-		recCutPlan(mCutRoot, 0);
-		Collections.sort(mCutNodes, CutNode.getByTotalBoardFeet());
+		recCutPlan(new CutNode(), 0);
+		
+		mCutNodes.addAll(mTotalValueToNode.values());
+		mTotalValueToNode = null;
+		Collections.sort(mCutNodes, CutNode.getByTotalValue());
 		return mCutNodes;
 	}
 }
