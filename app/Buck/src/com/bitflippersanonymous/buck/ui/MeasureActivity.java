@@ -117,7 +117,9 @@ public class MeasureActivity extends BaseActivity implements View.OnClickListene
 			EditText wedit = (EditText)findViewById(R.id.editTextMeasureWidth);
 			int width = Integer.parseInt(wedit.getText().toString());
 			EditText ledit = (EditText)findViewById(R.id.editTextMeasureLength);
-			int length = Integer.parseInt(ledit.getText().toString());
+			int length = 0;
+			if ( ledit.getText().length() != 0 )
+				length = Integer.parseInt(ledit.getText().toString());
 			mAdapter.add(new Dimension(width, length));
 			ListView list = (ListView) findViewById(R.id.listViewMeasure);
 			list.setSelectionFromTop(mAdapter.getCount(), 0);

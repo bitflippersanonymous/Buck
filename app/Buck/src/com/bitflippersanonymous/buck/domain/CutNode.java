@@ -39,11 +39,16 @@ public class CutNode {
 	public List<CutNode> getChildren() {
 		return mChildren;
 	}
-	
+
+	public Dimension getDimension() {
+		return mDimension;
+	}
+
 	public int getTotalBoardFeet() {
 		int total = 0;
 		for ( CutNode node = this; node.mDimension != null; node = node.mParent ) {
-			total += node.mBoardFeet;
+			if ( node.mPrice > 0 )
+				total += node.mBoardFeet;
 		}
 		return total;
 	}
@@ -57,14 +62,23 @@ public class CutNode {
 		return ret;
 	}
 
+	public int getValue() {
+		if ( mPrice == null ) return 0;
+		return (int)(mBoardFeet * ((float)mPrice / 1000));
+	}
+	
 	public int getTotalValue() {
-		return (int)(getTotalBoardFeet() * ((float)mPrice / 1000));
+		int total = 0;
+		for ( CutNode node = this; node.mDimension != null; node = node.mParent ) {
+			total += node.getValue();
+		}
+		return total;
 	}
 
-	public int getTotalLength() {
+	public int getTotalLength(int kerfFeet) {
 		int total = 0;
 		for ( Dimension dim : getTotalCuts() )
-			total += dim.getLength();
+			total += dim.getLength() + kerfFeet;
 		return total;
 	}
 	
@@ -91,6 +105,8 @@ public class CutNode {
 			}};
 		return sByTotalValue;
 	}
+
+
 
 
 

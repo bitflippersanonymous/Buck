@@ -17,14 +17,18 @@ import com.bitflippersanonymous.buck.service.LoadTask;
 
 
 public class CutPlanner {
-	private static final Integer mMinWidth = 4; // Get from prefs?
+  //TODO: Get from prefs
+	private static final Integer mMinWidth = 4; // Min assumed top size
+	private static final int mKerfFeet = 1; // Padding between cuts
+	
 	private Map<Dimension, Integer> mScribnerTable = new HashMap<Dimension, Integer>();
 	private List<CutNode> mCutNodes;
 	private List<Dimension> mWholeLogSize = null;
 	private Mill mMill = null;
 	private Object mLock = new Object();
 	private boolean mReady = false;
-	private Map<Integer, CutNode> mTotalValueToNode;
+	//private Map<Integer, CutNode> mTotalValueToNode;
+	private int mTotalLogLength;
 	
 	public CutPlanner(Context context, String filename) {
 		loadScribner(context, filename);
@@ -133,6 +137,25 @@ public class CutPlanner {
 		int width = (int)CosineInterpolate(d1.getWidth(), d2.getWidth(), mu);
 		return width;
 	}
+
+	/* Hide duplicates by value
+	int totalValue = newNode.getTotalValue();
+	CutNode sameValue = mTotalValueToNode.get(totalValue);
+	if ( sameValue == null || sameValue.getTotalLength(mKerfFeet) > newNode.getTotalLength(mKerfFeet) ) {
+		mTotalValueToNode.remove(totalValue);
+		mTotalValueToNode.put(totalValue, newNode);
+	}*/
+	/*
+	if ( newNode.getChildren().size() == 0 ) {
+		// Also save size of scrap, adds to bf, but with 0 value
+		int scrapLength = mTotalLogLength - position;
+		int scrapWidth = widthAtPosition(mWholeLogSize, mTotalLogLength);
+		Dimension scrapDim = new Dimension(scrapWidth, scrapLength);
+		CutNode scrapNode = new CutNode(scrapDim, getBoardFeet(scrapDim), 0);
+		newNode.addChild(scrapNode);
+		mCutNodes.add(scrapNode);
+	}
+	*/
 	
 	private void recCutPlan(CutNode parent, int position) {
 		for ( Price price : mMill.getPrices() ) {
@@ -140,7 +163,9 @@ public class CutPlanner {
 			Integer minWidth = price.getAsInteger(Price.Fields.Top);
 			if ( minWidth == null )
 				minWidth = mMinWidth;
-			int width = widthAtPosition(mWholeLogSize, position+length);
+			
+			int newPosition = position + length + mKerfFeet;
+			int width = widthAtPosition(mWholeLogSize, newPosition);
 
 			if ( width > minWidth ) {
 				//@@@ Maybe should just set price on CutNode, then will have
@@ -151,18 +176,27 @@ public class CutPlanner {
 				CutNode newNode = new CutNode(dim, boardFeet, dollars);
 				parent.addChild(newNode);
 				
-				recCutPlan(newNode, position+length);
-				
-				if ( newNode.getChildren().size() == 0 ) {
-					int totalValue = newNode.getTotalValue();
-					CutNode sameValue = mTotalValueToNode.get(totalValue);
-					if ( sameValue == null || sameValue.getTotalLength() > newNode.getTotalLength() ) {
-						mTotalValueToNode.remove(totalValue);
-						mTotalValueToNode.put(totalValue, newNode);
-					}
-				}
+				recCutPlan(newNode, newPosition);
 			}
 		}
+
+		// Couldn't add any more, so we're at a leaf. Rest is firewood.
+		if ( parent.getChildren().size() == 0 ) {
+			int scrapLength = mTotalLogLength - position;
+			int scrapWidth = widthAtPosition(mWholeLogSize, mTotalLogLength);
+			Dimension scrapDim = new Dimension(scrapWidth, scrapLength);
+			CutNode scrapNode = new CutNode(scrapDim, getBoardFeet(scrapDim), 0);
+			parent.addChild(scrapNode);
+			mCutNodes.add(scrapNode);
+		}
+	}
+
+	private static int sumLogLength(List<Dimension> dims) {
+		int total = 0;
+		for ( Dimension dim : dims ) {
+			total += dim.getLength();
+		}
+		return total;
 	}
 	
 	// Doesn't cleanup unneeded nodes in the tree
@@ -171,17 +205,19 @@ public class CutPlanner {
 	public List<CutNode> getCutPlans(Mill mill, List<Dimension> wholeLogSize) {
 		waitTillReady();
 		mCutNodes = new ArrayList<CutNode>();
-		mTotalValueToNode = new HashMap<Integer, CutNode>();
-		mMill = mill; mWholeLogSize = wholeLogSize;
-		
+		//mTotalValueToNode = new HashMap<Integer, CutNode>();
+		mMill = mill; 
+		mWholeLogSize = wholeLogSize;
+		mTotalLogLength = sumLogLength(mWholeLogSize);
+	
 		// Assume end of log is mWinWidth
 		if ( mWholeLogSize.size() == 1 )
 			mWholeLogSize.add(new Dimension(mMinWidth, 0));
 			
 		recCutPlan(new CutNode(), 0);
 		
-		mCutNodes.addAll(mTotalValueToNode.values());
-		mTotalValueToNode = null;
+		//mCutNodes.addAll(mTotalValueToNode.values());
+		//mTotalValueToNode = null;
 		Collections.sort(mCutNodes, CutNode.getByTotalValue());
 		return mCutNodes;
 	}

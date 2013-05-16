@@ -27,22 +27,26 @@ public class CutAdapter extends ArrayAdapter<CutNode> implements ListAdapter {
 					R.layout.cut_entry, parent, false);
 
 		TextView tc = (TextView)convertView.findViewById(R.id.textViewCutCuts);
-		tc.setText(makeCutString(node.getTotalCuts()));
+		StringBuilder cutString = new StringBuilder();
+		makeCutString(node, cutString);
+		tc.setText(cutString);
+		TextView tb = (TextView)convertView.findViewById(R.id.textViewCutBf);
+		tb.setText(Integer.valueOf(node.getTotalBoardFeet()).toString());
 		TextView tv = (TextView)convertView.findViewById(R.id.textViewCutValue);
 		tv.setText("$"+Integer.valueOf(node.getTotalValue()).toString());
 		return convertView;
 	}
 
-	private String makeCutString(List<Dimension> cuts) {
-		String cutString = new String();
-		if ( cuts.size() == 0 ) {
-			cutString = "Ship It"; // FIXME: get from R.strings
-		} else {
-			for ( int i = 0 ; i < cuts.size(); i++) {
-				cutString +=  cuts.get(i).getLength();
-				if ( i < cuts.size() - 1 ) cutString += ", ";
-			}
-		}
-		return cutString;
+	private void makeCutString(CutNode node, StringBuilder cutString) {
+		if ( node.getParent().mDimension != null )
+			makeCutString(node.getParent(), cutString);
+		
+		// Scrap
+		if ( node.getValue() == 0 )
+			cutString.append("+");
+
+		cutString.append(node.getDimension().getLength());
+		if ( node.getChildren().size() != 0 )
+			cutString.append(", ");
 	}
 }
