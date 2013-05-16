@@ -121,62 +121,10 @@ public class Smoketest extends ServiceTestCase<BuckService> {
 		List<CutNode> cutNodes = mService.getCutPlans(dimensions);
 		
 		for ( CutNode node : cutNodes ) {
-			int bf = node.getBoardFeet();
+			int bf = node.getTotalBoardFeet();
 			assertTrue(bf > 500 && bf < 5000);
 		}
 	}
-
-	class DataReader {
-		private InputStream mInstream = null;
-		private BufferedReader mBuffreader = null;
-		private String mFilename;
-		
-		public DataReader(Context context, String filename) {
-			mFilename = filename;
-			try {
-				AssetManager am = context.getAssets();
-				mInstream = am.open(mFilename);
-				mBuffreader = new BufferedReader(new InputStreamReader(mInstream));
-			} catch (java.io.FileNotFoundException e) {
-				Log.e(getClass().getSimpleName(), "File not found: " + mFilename);
-			} catch (IOException e) {
-				Log.e(getClass().getSimpleName(), "Error reading: " + mFilename);
-			}
-		}
-		
-		public List<Integer> handleLine(String line) {
-			List<Integer> retVal = new ArrayList<Integer>();
-			for ( String s : line.split("\\s*,\\s*")) {
-				retVal.add(Integer.parseInt(s));
-			}
-			return retVal;
-		}
-
-		public List<Integer> readLine() {
-			try {
-				if ( mBuffreader != null ) {
-					String line = mBuffreader.readLine();
-					if ( line != null)
-						return handleLine(line);
-				}
-			} catch (IOException e) {
-				Log.e(getClass().getSimpleName(), "Error reading: " + mFilename);
-			}
-			return null;
-		}
-
-		public void close() {
-			if ( mInstream == null ) return;
-
-			try {
-				mInstream.close();
-			} catch (IOException e) {
-				Log.e(getClass().getSimpleName(), "Error closing: " + mFilename);
-			}
-		}
-		
-	}
-	
 
 	/* Directly test widthAtPosition. Format of data file:
 	 * measured width, length

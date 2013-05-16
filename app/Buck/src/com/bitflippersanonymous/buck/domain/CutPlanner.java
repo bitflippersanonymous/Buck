@@ -138,18 +138,17 @@ public class CutPlanner {
 	private void recCutPlan(CutNode parent, int position) {
 		for ( Price price : mMill.getPrices() ) {
 			int length = price.getAsInteger(Price.Fields.Length);
-			position += length;
 			Integer minWidth = price.getAsInteger(Price.Fields.Top);
 			if ( minWidth == null )
 				minWidth = mMinWidth;
-			int width = widthAtPosition(mWholeLogSize, position);
-			
+			int width = widthAtPosition(mWholeLogSize, position+length);
+
 			if ( width > minWidth ) {
-				CutNode newNode = new CutNode(new Dimension(width, length));
+				Dimension dim = new Dimension(width, length);
+				CutNode newNode = new CutNode(dim, getBoardFeet(dim));
 				parent.addChild(newNode);
-				recCutPlan(newNode, position);
-			} else {
-				mCutNodes.add(parent);
+				mCutNodes.add(newNode);
+				recCutPlan(newNode, position+length);
 			}
 		}
 	}
@@ -159,7 +158,13 @@ public class CutPlanner {
 		mCutRoot = new CutNode();
 		mCutNodes = new ArrayList<CutNode>();
 		mMill = mill; mWholeLogSize = wholeLogSize;
+		
+		// Assume end of log is mWinWidth
+		if ( mWholeLogSize.size() == 1 )
+			mWholeLogSize.add(new Dimension(mMinWidth, 0));
+			
 		recCutPlan(mCutRoot, 0);
+		Collections.sort(mCutNodes, CutNode.getByTotalBoardFeet());
 		return mCutNodes;
 	}
 }

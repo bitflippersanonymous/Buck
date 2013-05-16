@@ -27,9 +27,9 @@ public class CutAdapter extends ArrayAdapter<CutNode> implements ListAdapter {
 					R.layout.cut_entry, parent, false);
 
 		TextView tc = (TextView)convertView.findViewById(R.id.textViewCutCuts);
-		tc.setText(makeCutString(node.getCuts()));
+		tc.setText(makeCutString(node.getTotalCuts()));
 		TextView tv = (TextView)convertView.findViewById(R.id.textViewCutValue);
-		tv.setText(Integer.valueOf(node.getBoardFeet()).toString());
+		tv.setText(Integer.valueOf(node.getTotalBoardFeet()).toString());
 		return convertView;
 	}
 
