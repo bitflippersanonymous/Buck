@@ -19,6 +19,8 @@ import com.bitflippersanonymous.buck.domain.CutPlanner;
 import com.bitflippersanonymous.buck.domain.Dimension;
 import com.bitflippersanonymous.buck.domain.Mill;
 import com.bitflippersanonymous.buck.service.BuckService;
+import com.bitflippersanonymous.buck.test.CutPlanReader.CutPlan;
+import com.bitflippersanonymous.buck.test.CutPlanReader.Values;
 
 
 public class Smoketest extends ServiceTestCase<BuckService> {
@@ -130,23 +132,26 @@ public class Smoketest extends ServiceTestCase<BuckService> {
 		}
 		dataReader.close();
 	}
+
+
+	private static boolean match(CutNode cutNode, List<Values> vals) {
+		int bf = cutNode.getTotalBoardFeet();
+		int value = cutNode.getTotalValue();
+		for ( CutPlanReader.Values val : vals ) {
+			 return val.mBoardFeet == bf && val.mValue == value;
+		}
+		return false;
+	}
 	
 	@MediumTest
 	public void testCutPlanner() {
-		DataReader dataReader = new DataReader(mTestContext, "test_cut_planner");
-		
-
-
-		List<Dimension> dimensions = new ArrayList<Dimension>();
-		dimensions.add(new Dimension(30, 90));
-		dimensions.add(new Dimension(20, 0));
-		List<CutNode> cutNodes = mService.getCutPlans(dimensions);
-		
-		for ( CutNode node : cutNodes ) {
-			int bf = node.getTotalBoardFeet();
-			assertTrue(bf > 500 && bf < 5000);
-		}
-		dataReader.close();
+		CutPlanReader cutPlanReader = new CutPlanReader(mTestContext, "test_cut_planner");
+		for ( CutPlan cutPlan : cutPlanReader.getCutPlans() ) {
+			List<CutNode> cutNodes = mService.getCutPlans(cutPlan.mDims);
+			for ( CutNode cutNode : cutNodes ) {
+				assertTrue(match(cutNode, cutPlan.mVals));
+			}
+		}	
 	}
 
 }
