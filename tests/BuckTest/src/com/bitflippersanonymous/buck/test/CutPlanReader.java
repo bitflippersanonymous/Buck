@@ -64,15 +64,15 @@ public class CutPlanReader {
 	    		   cutPlan.mDims.add(Dimension.readJson(reader));
 	    	   }
 	    	   reader.endArray();
-	       } if (name.equals("vals")) {
+	       } else if (name.equals("vals")) {
 	    	   reader.beginArray();
 	    	   while ( reader.hasNext() ) {
-	    		   reader.beginObject();
+	    		   reader.beginArray();
 	    		   Values vals = new Values();
 	    		   vals.mBoardFeet = reader.nextInt();
 	    		   vals.mValue = reader.nextInt();
 	    		   cutPlan.mVals.add(vals);
-	    		   reader.beginObject();
+	    		   reader.endArray();
 	    	   }
 	    	   reader.endArray();
 	       } else {

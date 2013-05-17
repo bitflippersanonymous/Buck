@@ -133,7 +133,8 @@ public class Smoketest extends ServiceTestCase<BuckService> {
 		dataReader.close();
 	}
 
-
+	//TODO: May want to reverse order here (lookup val in cutNodes) to allow
+	// partial list of results in datafile
 	private static boolean match(CutNode cutNode, List<Values> vals) {
 		int bf = cutNode.getTotalBoardFeet();
 		int value = cutNode.getTotalValue();
@@ -146,7 +147,9 @@ public class Smoketest extends ServiceTestCase<BuckService> {
 	@MediumTest
 	public void testCutPlanner() {
 		CutPlanReader cutPlanReader = new CutPlanReader(mTestContext, "test_cut_planner");
-		for ( CutPlan cutPlan : cutPlanReader.getCutPlans() ) {
+		List<CutPlan> cutPlans = cutPlanReader.getCutPlans();
+		assertNotNull(cutPlans);
+		for ( CutPlan cutPlan : cutPlans ) {
 			List<CutNode> cutNodes = mService.getCutPlans(cutPlan.mDims);
 			for ( CutNode cutNode : cutNodes ) {
 				assertTrue(match(cutNode, cutPlan.mVals));
