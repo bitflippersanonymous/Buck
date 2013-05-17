@@ -1,14 +1,36 @@
 package com.bitflippersanonymous.buck.domain;
 
+import java.io.IOException;
 import java.util.Comparator;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.JsonWriter;
+import android.util.JsonReader;
+
 
 // Needs to preserve through Create/Destroy
 public class Dimension implements Parcelable {
 	private int mWidth;  // FIXME: not sure if want these to be floats.
 	private int mLength;
+	
+	public Dimension(int width, int length) {
+		mWidth = width;
+		mLength = length;
+	}
+	
+	public int getWidth() {
+		return mWidth;
+	}
+	public void setWidth(int mWidth) {
+		this.mWidth = mWidth;
+	}
+	public int getLength() {
+		return mLength;
+	}
+	public void setLength(int mLength) {
+		this.mLength = mLength;
+	}
 	
 	@Override
 	public int hashCode() {
@@ -40,29 +62,27 @@ public class Dimension implements Parcelable {
 			return new Dimension[size];
 		}
 	};
-
+	
 	private Dimension(Parcel in) {
 		mWidth = in.readInt();
 		mLength = in.readInt();
 	}
-			
-	public Dimension(int width, int length) {
-		mWidth = width;
-		mLength = length;
-	}
-	public int getWidth() {
-		return mWidth;
-	}
-	public void setWidth(int mWidth) {
-		this.mWidth = mWidth;
-	}
-	public int getLength() {
-		return mLength;
-	}
-	public void setLength(int mLength) {
-		this.mLength = mLength;
-	}
 	
+  public void writeJson(JsonWriter writer) throws IOException {
+    writer.beginArray();
+  	writer.value(mWidth);
+    writer.value(mLength);
+    writer.endArray();
+  }
+  
+  public static Dimension readJson(JsonReader reader) throws IOException {
+    reader.beginArray();
+  	int width = reader.nextInt();
+    int length = reader.nextInt();
+    reader.endArray();
+    return new Dimension(width, length);
+  }
+				
 	private static Comparator<? super Dimension> sByLength = null;
 	public static Comparator<? super Dimension> getByLength() {
 		if ( sByLength == null )

@@ -1,9 +1,6 @@
 package com.bitflippersanonymous.buck.test;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,15 +8,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.res.AssetManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.test.ServiceTestCase;
 import android.test.suitebuilder.annotation.MediumTest;
-import android.util.Log;
-
 import com.bitflippersanonymous.buck.domain.CutNode;
 import com.bitflippersanonymous.buck.domain.CutPlanner;
 import com.bitflippersanonymous.buck.domain.Dimension;
@@ -112,27 +106,14 @@ public class Smoketest extends ServiceTestCase<BuckService> {
 		}
 	}
 	
-	@MediumTest
-	public void testCutPlan() {
-		List<Dimension> dimensions = new ArrayList<Dimension>();
-		dimensions.add(new Dimension(30, 90));
-		dimensions.add(new Dimension(20, 0));
-		List<CutNode> cutNodes = mService.getCutPlans(dimensions);
-		
-		for ( CutNode node : cutNodes ) {
-			int bf = node.getTotalBoardFeet();
-			assertTrue(bf > 500 && bf < 5000);
-		}
-	}
-
 	/* Directly test widthAtPosition. Format of data file:
 	 * measured width, length
 	 * test length, expected width
 	*/
 	@MediumTest
-	public void testCutPlanner() throws IOException {
+	public void testWidthAtPosition() throws IOException {
 		List<Dimension> dimensions = new ArrayList<Dimension>();
-		DataReader dataReader = new DataReader(mTestContext, "test_cut_planner.csv");
+		DataReader dataReader = new DataReader(mTestContext, "test_width_interp.csv");
 		
 		List<Integer> data = dataReader.readLine();
 		assertNotNull(data);
@@ -149,4 +130,23 @@ public class Smoketest extends ServiceTestCase<BuckService> {
 		}
 		dataReader.close();
 	}
+	
+	@MediumTest
+	public void testCutPlanner() {
+		DataReader dataReader = new DataReader(mTestContext, "test_cut_planner");
+		
+
+
+		List<Dimension> dimensions = new ArrayList<Dimension>();
+		dimensions.add(new Dimension(30, 90));
+		dimensions.add(new Dimension(20, 0));
+		List<CutNode> cutNodes = mService.getCutPlans(dimensions);
+		
+		for ( CutNode node : cutNodes ) {
+			int bf = node.getTotalBoardFeet();
+			assertTrue(bf > 500 && bf < 5000);
+		}
+		dataReader.close();
+	}
+
 }

@@ -55,8 +55,13 @@ class DataReader {
 
 		try {
 			mInstream.close();
+			mInstream = null;
 		} catch (IOException e) {
 			Log.e(getClass().getSimpleName(), "Error closing: " + mFilename);
 		}
+	}
+	
+	public void finalize() {
+		close();
 	}
 }
