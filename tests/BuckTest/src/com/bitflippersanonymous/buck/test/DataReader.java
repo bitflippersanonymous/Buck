@@ -40,9 +40,12 @@ class DataReader {
 	public List<Integer> readLine() {
 		try {
 			if ( mBuffreader != null ) {
-				String line = mBuffreader.readLine();
-				if ( line != null)
+				String line;
+				while ( (line = mBuffreader.readLine()) != null ) {
+					if ( line.matches("^\\s*#.*|^\\s*$") ) continue;
 					return handleLine(line);
+				}
+				return null;
 			}
 		} catch (IOException e) {
 			Log.e(getClass().getSimpleName(), "Error reading: " + mFilename);

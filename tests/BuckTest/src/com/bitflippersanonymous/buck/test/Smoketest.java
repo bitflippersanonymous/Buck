@@ -186,8 +186,13 @@ public class Smoketest extends ServiceTestCase<BuckService> {
 				expecteds.add(new Expected(data.get(i), data.get(i+1)));
 			}
 			
-			for ( CutNode cutNode : cutNodes ) {
-				assertTrue((new Match()).match(cutNode, expecteds));
+			assertTrue(cutNodes.size() == expecteds.size());
+			for ( int i=0; i<cutNodes.size(); i++ ) {
+				int bf = cutNodes.get(i).getTotalBoardFeet();
+				int value = cutNodes.get(i).getTotalValue();
+				Expected x = expecteds.get(i);
+				if ( x.mBoardFeet != bf || x.mValue != value )
+					fail();
 			}
 			data = dataReader.readLine();
 		}

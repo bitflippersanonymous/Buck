@@ -41,7 +41,7 @@ public class CutPlanner {
 		if ( bf != null )
 			return bf;
 		
-		Log.e(getClass().getSimpleName(), "Scribner Table Incomplete: " + dim);
+		Log.e(getClass().getSimpleName(), "Scribner Table Incomplete: " + dim.toString());
 		return 0;
 	}
 
@@ -126,14 +126,18 @@ public class CutPlanner {
 			return wholeLogSize.get(0).getWidth();
 		
 		int i = 0;
-		int iL = 0;
-		while ( i < wholeLogSize.size() && position > iL) {
-			iL += wholeLogSize.get(i++).getLength();
+		int totalLength = 0;
+		while ( i < wholeLogSize.size() && position > totalLength) {
+			totalLength += wholeLogSize.get(i++).getLength();
 		}
+		
+		if ( position > totalLength )
+			return 0;
+		
 		Dimension d1 = wholeLogSize.get(i-1);
 		Dimension d2 = wholeLogSize.get(min(i, wholeLogSize.size()-1));
 		
-		double mu = (double)(iL - d1.getLength() + position) / d1.getLength();
+		double mu = (double)(totalLength - d1.getLength() + position) / d1.getLength();
 		int width = (int)CosineInterpolate(d1.getWidth(), d2.getWidth(), mu);
 		return width;
 	}
@@ -158,9 +162,6 @@ public class CutPlanner {
 	*/
 	
 	private void recCutPlan(CutNode parent, int position) {
-
-		if ( position > mTotalLogLength )
-			return;
 		
 		for ( Price price : mMill.getPrices() ) {
 			int length = price.getAsInteger(Price.Fields.Length);
@@ -171,7 +172,7 @@ public class CutPlanner {
 			int newPosition = position + length + mKerfFeet;
 			int width = widthAtPosition(mWholeLogSize, newPosition);
 
-			if ( width > minWidth ) {
+			if ( width >= minWidth ) {
 				//@@@ Maybe should just set price on CutNode, then will have
 				// Ref to mill.  Need to check not null
 				Integer dollars = price.getAsInteger(Price.Fields.Price);
@@ -186,13 +187,18 @@ public class CutPlanner {
 
 		// Couldn't add any more, so we're at a leaf. Rest is firewood.
 		if ( parent.getChildren().size() == 0 ) {
-			int scrapLength = mTotalLogLength - position;
-			int scrapWidth = widthAtPosition(mWholeLogSize, mTotalLogLength);
-			Dimension scrapDim = new Dimension(scrapWidth, scrapLength);
-			CutNode scrapNode = new CutNode(scrapDim, getBoardFeet(scrapDim), 0);
+			CutNode scrapNode = calcScrapNode(position);
 			parent.addChild(scrapNode);
 			mCutNodes.add(scrapNode);
 		}
+	}
+
+	private CutNode calcScrapNode(int position) {
+		int scrapLength = mTotalLogLength - position;
+		int scrapWidth = widthAtPosition(mWholeLogSize, mTotalLogLength);
+		Dimension scrapDim = new Dimension(scrapWidth, scrapLength);
+		CutNode scrapNode = new CutNode(scrapDim, 0, 0);
+		return scrapNode;
 	}
 
 	private static int sumLogLength(List<Dimension> dims) {
