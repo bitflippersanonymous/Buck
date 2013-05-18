@@ -1,13 +1,11 @@
 package com.bitflippersanonymous.buck.test;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bitflippersanonymous.buck.domain.CutNode;
 import com.bitflippersanonymous.buck.domain.Dimension;
 
 import android.content.Context;
@@ -15,6 +13,10 @@ import android.content.res.AssetManager;
 import android.util.JsonReader;
 import android.util.Log;
 
+/*
+ * Read lists of dimensions and expected bf/values from json. 
+ * Abandoned, but saved.
+ */
 public class CutPlanReader {
 	
 	public class Values {

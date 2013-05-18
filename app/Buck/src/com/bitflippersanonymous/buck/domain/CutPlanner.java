@@ -158,6 +158,10 @@ public class CutPlanner {
 	*/
 	
 	private void recCutPlan(CutNode parent, int position) {
+
+		if ( position > mTotalLogLength )
+			return;
+		
 		for ( Price price : mMill.getPrices() ) {
 			int length = price.getAsInteger(Price.Fields.Length);
 			Integer minWidth = price.getAsInteger(Price.Fields.Top);

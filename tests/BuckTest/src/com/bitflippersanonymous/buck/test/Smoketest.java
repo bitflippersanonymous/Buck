@@ -133,28 +133,65 @@ public class Smoketest extends ServiceTestCase<BuckService> {
 		dataReader.close();
 	}
 
-	//TODO: May want to reverse order here (lookup val in cutNodes) to allow
-	// partial list of results in datafile
-	private static boolean match(CutNode cutNode, List<Values> vals) {
-		int bf = cutNode.getTotalBoardFeet();
-		int value = cutNode.getTotalValue();
-		for ( CutPlanReader.Values val : vals ) {
-			 return val.mBoardFeet == bf && val.mValue == value;
-		}
-		return false;
-	}
-	
 	@MediumTest
 	public void testCutPlanner() {
-		CutPlanReader cutPlanReader = new CutPlanReader(mTestContext, "test_cut_planner");
-		List<CutPlan> cutPlans = cutPlanReader.getCutPlans();
-		assertNotNull(cutPlans);
-		for ( CutPlan cutPlan : cutPlans ) {
-			List<CutNode> cutNodes = mService.getCutPlans(cutPlan.mDims);
-			for ( CutNode cutNode : cutNodes ) {
-				assertTrue(match(cutNode, cutPlan.mVals));
+		class Expected {
+			public int mBoardFeet;
+			public int mValue;
+			public Expected(int bf, int value) {
+				mBoardFeet = bf;
+				mValue = value;
 			}
-		}	
+		}
+		
+		class Match {
+			//TODO: May want to reverse order here (lookup val in cutNodes) to allow
+			// partial list of results in datafile
+			// Why can't I make this function static???
+			boolean match(CutNode cutNode, List<Expected> vals) {
+				for ( Expected val : vals ) {
+					int bf = cutNode.getTotalBoardFeet();
+					int value = cutNode.getTotalValue();
+					if ( val.mBoardFeet == bf && val.mValue == value )
+						return true;
+				}
+				return false;
+			}
+		}
+		
+		List<Expected> expecteds = new ArrayList<Expected>();
+		List<Dimension> dimensions = new ArrayList<Dimension>();
+		DataReader dataReader = new DataReader(mTestContext, "test_cut_planner.csv");
+
+		List<Integer> data = dataReader.readLine();
+		assertNotNull(data);
+		while ( data != null ) {
+			dimensions.clear();
+			for (int i = 0; i+1 < data.size(); i+=2 ) {
+				dimensions.add(new Dimension(data.get(i), data.get(i+1)));
+			}
+			List<CutNode> cutNodes = mService.getCutPlans(dimensions);
+
+			// Build up line for data file so we can generate these
+			StringBuilder str = new StringBuilder();
+			for ( CutNode cutNode : cutNodes ) {
+				int bf = cutNode.getTotalBoardFeet();
+				int value = cutNode.getTotalValue();
+				str.append(bf).append(", ").append(value).append(", ");
+			}
+
+			expecteds.clear();
+			data = dataReader.readLine();
+			for (int i = 0; i+1 < data.size(); i+=2 ) {
+				expecteds.add(new Expected(data.get(i), data.get(i+1)));
+			}
+			
+			for ( CutNode cutNode : cutNodes ) {
+				assertTrue((new Match()).match(cutNode, expecteds));
+			}
+			data = dataReader.readLine();
+		}
+		dataReader.close();
 	}
 
 }
