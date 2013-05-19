@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/LayoutCutEntry"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" >
 
 
     <!--  Should be setting some sort of style here that's common to measure_entry.xml -->
+
     <TextView
         android:id="@+id/textViewCutCuts"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight=".5"
+        android:layout_weight=".3"
         android:gravity="left"
         android:paddingLeft="2sp"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
+        android:textAppearance="?android:attr/textAppearanceLarge" />
     
     <TextView
         android:id="@+id/textViewCutBf"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight=".5"
-        android:gravity="left"
+        android:gravity="right"
         android:paddingLeft="2sp"
         android:textAppearance="?android:attr/textAppearanceLarge"/>
     
@@ -30,7 +32,6 @@
         android:layout_weight=".5"
         android:gravity="right"
         android:paddingLeft="2sp"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
-
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </LinearLayout>

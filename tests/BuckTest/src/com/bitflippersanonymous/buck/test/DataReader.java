@@ -6,12 +6,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
 
 class DataReader {
+	private final static Pattern sCommaSplit = Pattern.compile("\\s*,\\s*");
+	private final static Pattern sCommentMatch = Pattern.compile("^\\s*#.*|^\\s*$");
 	private InputStream mInstream = null;
 	private BufferedReader mBuffreader = null;
 	private String mFilename;
@@ -31,7 +34,7 @@ class DataReader {
 	
 	public List<Integer> handleLine(String line) {
 		List<Integer> retVal = new ArrayList<Integer>();
-		for ( String s : line.split("\\s*,\\s*")) {
+		for ( String s : sCommaSplit.split(line)) {
 			retVal.add(Integer.parseInt(s));
 		}
 		return retVal;
@@ -42,7 +45,7 @@ class DataReader {
 			if ( mBuffreader != null ) {
 				String line;
 				while ( (line = mBuffreader.readLine()) != null ) {
-					if ( line.matches("^\\s*#.*|^\\s*$") ) continue;
+					if ( sCommentMatch.matcher(line).matches() ) continue;
 					return handleLine(line);
 				}
 				return null;

@@ -9,10 +9,18 @@
     tools:context=".ui.CutActivity" >
     <ProgressBar android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:id="@+id/progressBarCut"/>
+
+   <include
+       android:id="@+id/header_cutlist"
+       android:layout_width="fill_parent"
+       android:layout_height="wrap_content"
+       android:layout_weight=".1"
+       layout="@layout/cut_entry" />
+
     <ListView
         android:id="@+id/listViewCut"
         android:layout_width="match_parent"
-        android:layout_height="0dip"
+        android:layout_height="fill_parent"
         android:layout_weight=".75"
         android:footerDividersEnabled="true" >
     </ListView>    

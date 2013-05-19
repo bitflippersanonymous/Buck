@@ -26,4 +26,8 @@
     <string name="no_data">No Data</string>
     <string name="mill_enabled">Enabled</string>
     
+    <string name="cutheader_cuts">Cuts</string>
+    <string name="cutheader_bf">FBM</string>
+    <string name="cutheader_value">Value</string>
+    
 </resources>

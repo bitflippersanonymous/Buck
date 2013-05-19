@@ -8,11 +8,14 @@ import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.bitflippersanonymous.buck.R;
 import com.bitflippersanonymous.buck.domain.CutAdapter;
@@ -26,6 +29,8 @@ public class CutActivity extends BaseActivity
 	implements LoaderManager.LoaderCallbacks<List<CutNode>>,
 		OnItemClickListener {
 
+	enum ViewState { LOADING, LOADED };
+	
 	private CutAdapter mAdapter = null;
 
 	@Override
@@ -38,14 +43,37 @@ public class CutActivity extends BaseActivity
 		actionBar.setDisplayShowTitleEnabled(true);
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setTitle(R.string.title_activity_cut);
-		
+
+		populate_header();
+
 		ListView list = (ListView) findViewById(R.id.listViewCut);
 		list.setAdapter(mAdapter = new CutAdapter(this, 0, new ArrayList<CutNode>()));
 		list.setOnItemClickListener(this);
 		
-		findViewById(R.id.listViewCut).setVisibility(View.GONE);
-		findViewById(R.id.progressBarCut).setVisibility(View.VISIBLE);
+		setViewState(ViewState.LOADING);
 		getLoaderManager().initLoader(0, null, this);
+	}
+
+	private void setViewState(ViewState loading) {
+		switch ( loading ) {
+		case LOADING:
+			findViewById(R.id.header_cutlist).setVisibility(View.GONE);
+			findViewById(R.id.listViewCut).setVisibility(View.GONE);
+			findViewById(R.id.progressBarCut).setVisibility(View.VISIBLE);		
+			return;
+		case LOADED:
+			findViewById(R.id.header_cutlist).setVisibility(View.VISIBLE);
+			findViewById(R.id.listViewCut).setVisibility(View.VISIBLE);
+			findViewById(R.id.progressBarCut).setVisibility(View.GONE);
+			return;
+		}
+	}
+
+	private void populate_header() {
+		final Resources res = getResources();
+		((TextView)findViewById(R.id.textViewCutCuts)).setText(res.getString(R.string.cutheader_cuts));
+		((TextView)findViewById(R.id.textViewCutBf)).setText(res.getString(R.string.cutheader_bf));
+		((TextView)findViewById(R.id.textViewCutValue)).setText(res.getString(R.string.cutheader_value));
 	}
 
 	@Override
@@ -65,8 +93,7 @@ public class CutActivity extends BaseActivity
 	public void onLoadFinished(Loader<List<CutNode>> loader, List<CutNode> cutPlans) {
 		mAdapter.addAll(cutPlans); //@@@ Makes copy of array
 		mAdapter.notifyDataSetChanged();
-		findViewById(R.id.listViewCut).setVisibility(View.VISIBLE);
-		findViewById(R.id.progressBarCut).setVisibility(View.GONE);
+		setViewState(ViewState.LOADED);
 	}
 
 	@Override
