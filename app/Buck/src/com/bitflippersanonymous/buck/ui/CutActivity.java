@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bitflippersanonymous.buck.R;
 import com.bitflippersanonymous.buck.domain.CutAdapter;
@@ -109,6 +110,7 @@ public class CutActivity extends BaseActivity
 				Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(intent);
 		getService().savePick(mAdapter.getItem(position));
+		Toast.makeText(this, "Add to Database", Toast.LENGTH_SHORT).show();
 		finish();
 	}
 }
