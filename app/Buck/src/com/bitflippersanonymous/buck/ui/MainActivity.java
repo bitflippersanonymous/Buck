@@ -1,6 +1,7 @@
 package com.bitflippersanonymous.buck.ui;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -9,6 +10,8 @@ import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,6 +45,8 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+		
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
@@ -129,7 +134,7 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 			startActivity(new Intent(this, AboutActivity.class));
 			return true;
 		case R.id.menu_settings:
-			Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
+			startActivity(new Intent(this, SettingsActivity.class));
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

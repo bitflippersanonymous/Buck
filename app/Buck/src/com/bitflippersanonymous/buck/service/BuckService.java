@@ -23,6 +23,7 @@ import com.bitflippersanonymous.buck.domain.Mill;
 import com.bitflippersanonymous.buck.domain.Price;
 import com.bitflippersanonymous.buck.domain.Util;
 import com.bitflippersanonymous.buck.domain.Util.DatabaseBase.Tables;
+import com.bitflippersanonymous.buck.ui.SettingsActivity;
 
 public class BuckService extends Service  {
 	private final IBinder mBinder = new LocalBinder();
@@ -129,7 +130,8 @@ public class BuckService extends Service  {
 	}
 
 	public List<CutNode> getCutPlans(List<Dimension> dimensions) {
-		return mCutPlanner.getCutPlans(getMill(1), dimensions);
+		getSharedPreferences(, mode).something(SettingsActivity.KEY_PREF_KERF, 1);
+		return mCutPlanner.getCutPlans(getMill(1), dimensions, kerfLength);
 	}
 
 	public int getBoardFeet(Dimension dim) {

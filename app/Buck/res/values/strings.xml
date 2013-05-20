@@ -30,4 +30,8 @@
     <string name="cutheader_bf">FBM</string>
     <string name="cutheader_value">Value</string>
     
+    <string name="pref_kerf">pref_kerf</string>
+    <string name="kerf_title">Kerf</string>
+    <string name="kerf_desc">\' trim length</string>
+    
 </resources>

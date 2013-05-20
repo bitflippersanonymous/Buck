@@ -19,7 +19,6 @@ import com.bitflippersanonymous.buck.service.LoadTask;
 public class CutPlanner {
   //TODO: Get from prefs
 	private static final Integer mMinWidth = 4; // Min assumed top size
-	private static final int mKerfFeet = 1; // Padding between cuts
 	
 	private Map<Dimension, Integer> mScribnerTable = new HashMap<Dimension, Integer>();
 	private List<CutNode> mCutNodes;
@@ -29,6 +28,7 @@ public class CutPlanner {
 	private boolean mReady = false;
 	//private Map<Integer, CutNode> mTotalValueToNode;
 	private int mTotalLogLength;
+	private int mKerfLength;
 	
 	public CutPlanner(Context context, String filename) {
 		loadScribner(context, filename);
@@ -169,7 +169,7 @@ public class CutPlanner {
 			if ( minWidth == null )
 				minWidth = mMinWidth;
 			
-			int newPosition = position + length + mKerfFeet;
+			int newPosition = position + length + mKerfLength;
 			int width = widthAtPosition(mWholeLogSize, newPosition);
 
 			if ( width >= minWidth ) {
@@ -212,13 +212,14 @@ public class CutPlanner {
 	// Doesn't cleanup unneeded nodes in the tree
 	// needs to better handle same value nodes wrt price run rate. May be
 	// hiding options
-	public List<CutNode> getCutPlans(Mill mill, List<Dimension> wholeLogSize) {
+	public List<CutNode> getCutPlans(Mill mill, List<Dimension> wholeLogSize, int kerfLength) {
 		waitTillReady();
 		mCutNodes = new ArrayList<CutNode>();
 		//mTotalValueToNode = new HashMap<Integer, CutNode>();
 		mMill = mill; 
 		mWholeLogSize = wholeLogSize;
 		mTotalLogLength = sumLogLength(mWholeLogSize);
+		mKerfLength = kerfLength;
 	
 		// Assume end of log is mWinWidth
 		if ( mWholeLogSize.size() == 1 )
