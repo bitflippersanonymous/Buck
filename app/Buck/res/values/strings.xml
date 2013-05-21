@@ -30,8 +30,9 @@
     <string name="cutheader_bf">FBM</string>
     <string name="cutheader_value">Value</string>
     
-    <string name="pref_kerf">pref_kerf</string>
     <string name="kerf_title">Kerf</string>
     <string name="kerf_desc">\' trim length</string>
+    <string name="top_title">Min Top</string>
+    <string name="top_desc">\"" minimum default top diameter</string>
     
 </resources>

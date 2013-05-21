@@ -6,4 +6,10 @@
         android:numeric="integer"
         android:summary="@string/kerf_desc"
         android:title="@string/kerf_title" />
+    <EditTextPreference
+        android:defaultValue="4"
+        android:key="pref_top"
+        android:numeric="integer"
+        android:summary="@string/top_desc"
+        android:title="@string/top_title" />
 </PreferenceScreen>

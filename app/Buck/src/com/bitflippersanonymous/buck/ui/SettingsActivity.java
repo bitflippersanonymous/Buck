@@ -10,6 +10,7 @@ import com.bitflippersanonymous.buck.R;
 public class SettingsActivity extends Activity {
 
 	public final static String KEY_PREF_KERF = "pref_kerf";
+	public final static String KEY_PREF_TOP = "pref_top";
 	
 	public static class SettingsFragment extends PreferenceFragment
 		implements OnSharedPreferenceChangeListener {
@@ -20,20 +21,23 @@ public class SettingsActivity extends Activity {
 	    
 	        // Would be nice to notify all automatically
 	        SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
-	        setKerfSummary(sharedPreferences, KEY_PREF_KERF);
+	        setSummary(sharedPreferences, KEY_PREF_KERF, R.string.kerf_desc);
+	        setSummary(sharedPreferences, KEY_PREF_TOP, R.string.top_desc);
 	    }
 	    
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             if (key.equals(KEY_PREF_KERF)) {
-                setKerfSummary(sharedPreferences, key);
+                setSummary(sharedPreferences, key, R.string.kerf_desc);
+            } else if (key.equals(KEY_PREF_KERF)) {
+                setSummary(sharedPreferences, key, R.string.top_desc);
             }
         }
 
-		private void setKerfSummary(SharedPreferences sharedPreferences, String key) {
+		private void setSummary(SharedPreferences sharedPreferences, String key, int desc) {
 			StringBuilder summary = new StringBuilder(); 
 			summary.append(Integer.valueOf(sharedPreferences.getString(key, "1")))
-				.append(getResources().getString(R.string.kerf_desc));
+				.append(getResources().getString(desc));
 			findPreference(key).setSummary(summary);
 		}	        
 

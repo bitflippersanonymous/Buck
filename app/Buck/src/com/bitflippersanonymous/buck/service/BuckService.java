@@ -7,11 +7,13 @@ import java.util.List;
 import android.app.Service;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.bitflippersanonymous.buck.db.BuckDatabaseAdapter;
@@ -130,10 +132,16 @@ public class BuckService extends Service  {
 	}
 
 	public List<CutNode> getCutPlans(List<Dimension> dimensions) {
-		getSharedPreferences(, mode).something(SettingsActivity.KEY_PREF_KERF, 1);
-		return mCutPlanner.getCutPlans(getMill(1), dimensions, kerfLength);
+		return mCutPlanner.getCutPlans(getMill(1), dimensions,
+				getIntPref(SettingsActivity.KEY_PREF_KERF), 
+				getIntPref(SettingsActivity.KEY_PREF_TOP));
 	}
 
+	public int getIntPref(String key) {
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		return Integer.parseInt(sharedPref.getString(key, "-1"));
+	}
+	
 	public int getBoardFeet(Dimension dim) {
 		return mCutPlanner.getBoardFeet(dim);
 	}
