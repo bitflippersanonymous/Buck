@@ -7,6 +7,8 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -45,6 +47,10 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		// Clear prefs
+		Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+		editor.clear().apply();
+		
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 		
 		// Set up the action bar.

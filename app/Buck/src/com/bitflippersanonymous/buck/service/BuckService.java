@@ -132,14 +132,10 @@ public class BuckService extends Service  {
 	}
 
 	public List<CutNode> getCutPlans(List<Dimension> dimensions) {
-		return mCutPlanner.getCutPlans(getMill(1), dimensions,
-				getIntPref(SettingsActivity.KEY_PREF_KERF), 
-				getIntPref(SettingsActivity.KEY_PREF_TOP));
-	}
-
-	public int getIntPref(String key) {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-		return Integer.parseInt(sharedPref.getString(key, "-1"));
+		int kerf = Integer.parseInt(sharedPref.getString(SettingsActivity.KEY_PREF_KERF, "0"));
+		int minTop = Integer.parseInt(sharedPref.getString(SettingsActivity.KEY_PREF_TOP, "0"));
+		return mCutPlanner.getCutPlans(getMill(1), dimensions, kerf, minTop); 
 	}
 	
 	public int getBoardFeet(Dimension dim) {
