@@ -9,14 +9,17 @@ import java.util.Collections;
 public class CutNode {
 	private CutNode mParent;
 	private List<CutNode> mChildren = new ArrayList<CutNode>();
-	Dimension mDimension;
-	int mBoardFeet;
-	Integer mPrice;
+	private Mill mMill = null;
+	private Dimension mDimension = null;
+	private int mBoardFeet = 0;
+	private int mPrice = 0;
 	
-	// Root node has null mDimension
-	public CutNode() {}
+	// Root node has null mDimension, but ref to mill
+	public CutNode(Mill mill) {
+		mMill = mill;
+	}
 	
-	public CutNode(Dimension dimension, int boardFeet, Integer price) {
+	public CutNode(Dimension dimension, int boardFeet, int price) {
 		mDimension = dimension;
 		mBoardFeet = boardFeet;
 		mPrice = price;
@@ -63,7 +66,6 @@ public class CutNode {
 	}
 
 	public int getValue() {
-		if ( mPrice == null ) return 0;
 		return (int)(mBoardFeet * ((float)mPrice / 1000));
 	}
 	

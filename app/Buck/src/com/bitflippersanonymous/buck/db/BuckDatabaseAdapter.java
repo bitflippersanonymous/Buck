@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.bitflippersanonymous.buck.domain.CutNode;
+import com.bitflippersanonymous.buck.domain.Job;
 import com.bitflippersanonymous.buck.domain.Mill;
 import com.bitflippersanonymous.buck.domain.Price;
 import com.bitflippersanonymous.buck.domain.Util;
@@ -102,6 +104,11 @@ public class BuckDatabaseAdapter implements Util.DatabaseBase, Util.InsertItems 
 	public int updateTable(String table, long rowId, ContentValues values) throws SQLException {
 		return mDbHelper.getWritableDatabase().update(table, values, 
 				Util._ID + "=?", new String[]{String.valueOf(rowId)});
+	}
+
+	public void addPieceToJob(CutNode item, Job job) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

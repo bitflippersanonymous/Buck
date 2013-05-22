@@ -141,25 +141,9 @@ public class CutPlanner {
 		return width;
 	}
 
-	/* Hide duplicates by value
-	int totalValue = newNode.getTotalValue();
-	CutNode sameValue = mTotalValueToNode.get(totalValue);
-	if ( sameValue == null || sameValue.getTotalLength(mKerfFeet) > newNode.getTotalLength(mKerfFeet) ) {
-		mTotalValueToNode.remove(totalValue);
-		mTotalValueToNode.put(totalValue, newNode);
-	}*/
 	/*
-	if ( newNode.getChildren().size() == 0 ) {
-		// Also save size of scrap, adds to bf, but with 0 value
-		int scrapLength = mTotalLogLength - position;
-		int scrapWidth = widthAtPosition(mWholeLogSize, mTotalLogLength);
-		Dimension scrapDim = new Dimension(scrapWidth, scrapLength);
-		CutNode scrapNode = new CutNode(scrapDim, getBoardFeet(scrapDim), 0);
-		newNode.addChild(scrapNode);
-		mCutNodes.add(scrapNode);
-	}
-	*/
-	
+	 * price.getAsInteger is slow, but convenient on the db side.  Need to optimize
+	 */
 	private void recCutPlan(CutNode parent, int position) {
 		
 		for ( Price price : mMill.getPrices() ) {
@@ -172,12 +156,9 @@ public class CutPlanner {
 			int width = widthAtPosition(mWholeLogSize, newPosition);
 
 			if ( width >= minWidth ) {
-				//@@@ Maybe should just set price on CutNode, then will have
-				// Ref to mill.  Need to check not null
-				Integer dollars = price.getAsInteger(Price.Fields.Price);
 				Dimension dim = new Dimension(width, length);
-				int boardFeet = getBoardFeet(dim);
-				CutNode newNode = new CutNode(dim, boardFeet, dollars);
+				CutNode newNode = new CutNode(dim, getBoardFeet(dim), 
+						price.getAsInteger(Price.Fields.Price));
 				parent.addChild(newNode);
 				
 				recCutPlan(newNode, newPosition);
@@ -226,7 +207,7 @@ public class CutPlanner {
 		if ( mWholeLogSize.size() == 1 )
 			mWholeLogSize.add(new Dimension(mMinTopDiameter, 0));
 			
-		recCutPlan(new CutNode(), 0);
+		recCutPlan(new CutNode(mMill), 0);
 		
 		//mCutNodes.addAll(mTotalValueToNode.values());
 		//mTotalValueToNode = null;

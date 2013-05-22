@@ -110,7 +110,8 @@ public class BuckService extends Service  {
 		}
 	}
 	
-	public void savePick(CutNode item) {
+	public void addPieceToJob(CutNode item, Job job) {
+		getDbAdapter().addPieceToJob(item, job);
 		Log.e(getClass().getSimpleName(), "Store CutPlan in db");
 	}
 

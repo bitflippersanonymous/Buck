@@ -109,7 +109,7 @@ public class CutActivity extends BaseActivity
 				Intent.FLAG_ACTIVITY_CLEAR_TOP |
 				Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(intent);
-		getService().savePick(mAdapter.getItem(position));
+		getService().addPieceToJob(mAdapter.getItem(position));
 		Toast.makeText(this, "Add to Database", Toast.LENGTH_SHORT).show();
 		finish();
 	}
