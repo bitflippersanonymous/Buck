@@ -26,21 +26,24 @@ public class SettingsActivity extends Activity {
 	    public void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
 	        addPreferencesFromResource(R.xml.preferences);
-	    
-	        findPreference(KEY_PREF_KERF).setOnPreferenceChangeListener(this);
-	        findPreference(KEY_PREF_TOP).setOnPreferenceChangeListener(this);
-	        
-	        // Would be nice to notify all automatically
-	        SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
-	        setSummary(sharedPreferences, KEY_PREF_KERF, R.string.kerf_desc);
-	        setSummary(sharedPreferences, KEY_PREF_TOP, R.string.top_desc);
+
+	        setupOnChangeListeners();
 	    }
+
+		private void setupOnChangeListeners() {
+			final String keys[] = {KEY_PREF_KERF, KEY_PREF_TOP};
+	        final int descs[] = {R.string.kerf_desc, R.string.top_desc};
+	        SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
+	        for ( int i = 0; i < keys.length; i++ ) {
+		        findPreference(keys[i]).setOnPreferenceChangeListener(this);
+	        	setSummary(findPreference(keys[i]), sharedPreferences.getString(keys[i], "0"), descs[i]);
+	        }
+		}
 	    
-		private void setSummary(SharedPreferences sharedPreferences, String key, int desc) {
+		private void setSummary(Preference preference, String newValue, int desc) {
 			StringBuilder summary = new StringBuilder(); 
-			summary.append(Integer.parseInt(sharedPreferences.getString(key, "0")))
-				.append(getResources().getString(desc));
-			findPreference(key).setSummary(summary);
+			summary.append(newValue).append(getResources().getString(desc));
+			preference.setSummary(summary);
 		}	        
 
 		@Override
@@ -49,11 +52,11 @@ public class SettingsActivity extends Activity {
 			if ( key.equals(KEY_PREF_KERF) ) {
 				if (Integer.parseInt((String)newValue) < KERF_MIN ) 
 					return false;
-		        setSummary(newValue, R.string.kerf_desc);
+		        setSummary(preference, (String)newValue, R.string.kerf_desc);
             } else if ( key.equals(KEY_PREF_TOP) ) {
 				if (Integer.parseInt((String)newValue) < TOP_MIN ) 
 					return false;
-		        setSummary(newValue, R.string.top_desc);
+		        setSummary(preference, (String)newValue, R.string.top_desc);
 			}
 			return true;
 		}
