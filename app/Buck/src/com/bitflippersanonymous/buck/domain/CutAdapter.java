@@ -38,7 +38,7 @@ public class CutAdapter extends ArrayAdapter<CutNode> implements ListAdapter {
 	}
 
 	private void makeCutString(CutNode node, StringBuilder cutString) {
-		if ( node.getParent().mDimension != null )
+		if ( node.getParent().getDimension() != null )
 			makeCutString(node.getParent(), cutString);
 		
 		// Scrap

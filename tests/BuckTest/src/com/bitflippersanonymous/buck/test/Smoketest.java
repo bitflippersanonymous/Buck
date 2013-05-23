@@ -144,21 +144,6 @@ public class Smoketest extends ServiceTestCase<BuckService> {
 			}
 		}
 		
-		class Match {
-			//TODO: May want to reverse order here (lookup val in cutNodes) to allow
-			// partial list of results in datafile
-			// Why can't I make this function static???
-			boolean match(CutNode cutNode, List<Expected> vals) {
-				for ( Expected val : vals ) {
-					int bf = cutNode.getTotalBoardFeet();
-					int value = cutNode.getTotalValue();
-					if ( val.mBoardFeet == bf && val.mValue == value )
-						return true;
-				}
-				return false;
-			}
-		}
-		
 		List<Expected> expecteds = new ArrayList<Expected>();
 		List<Dimension> dimensions = new ArrayList<Dimension>();
 		DataReader dataReader = new DataReader(mTestContext, "test_cut_planner.csv");

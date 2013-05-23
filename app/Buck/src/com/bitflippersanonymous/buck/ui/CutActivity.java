@@ -22,6 +22,7 @@ import com.bitflippersanonymous.buck.R;
 import com.bitflippersanonymous.buck.domain.CutAdapter;
 import com.bitflippersanonymous.buck.domain.CutNode;
 import com.bitflippersanonymous.buck.domain.Dimension;
+import com.bitflippersanonymous.buck.domain.Job;
 import com.bitflippersanonymous.buck.domain.Util;
 
 
@@ -109,7 +110,8 @@ public class CutActivity extends BaseActivity
 				Intent.FLAG_ACTIVITY_CLEAR_TOP |
 				Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(intent);
-		getService().addPieceToJob(mAdapter.getItem(position));
+		Job job = null; //FIXME: Get from args bundle?  Passed to this activity?
+		getService().addPieceToJob(mAdapter.getItem(position), job);
 		Toast.makeText(this, "Add to Database", Toast.LENGTH_SHORT).show();
 		finish();
 	}
