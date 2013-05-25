@@ -19,8 +19,6 @@ import com.bitflippersanonymous.buck.domain.CutPlanner;
 import com.bitflippersanonymous.buck.domain.Dimension;
 import com.bitflippersanonymous.buck.domain.Mill;
 import com.bitflippersanonymous.buck.service.BuckService;
-import com.bitflippersanonymous.buck.test.CutPlanReader.CutPlan;
-import com.bitflippersanonymous.buck.test.CutPlanReader.Values;
 
 
 public class Smoketest extends ServiceTestCase<BuckService> {

@@ -8,11 +8,15 @@ import android.content.AsyncTaskLoader;
 import android.content.Loader;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bitflippersanonymous.buck.R;
 import com.bitflippersanonymous.buck.domain.Mill;
@@ -22,8 +26,14 @@ import com.bitflippersanonymous.buck.domain.Util;
 public class MillFragment extends ListFragment
 	implements LoaderManager.LoaderCallbacks<Mill>, OnClickListener, Util.Update {
 	private Mill mMill = null;
-
-	public MillFragment() {	}
+	
+	public MillFragment() {}
+	
+    @Override 
+    public  void  onCreate(Bundle savedInstanceState) { 
+        super.onCreate(savedInstanceState); 
+		setHasOptionsMenu(true);
+    }
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,6 +82,22 @@ public class MillFragment extends ListFragment
 	public void update() {
 		getLoaderManager().restartLoader(0, null, this);
 	}
+	
+	@Override
+	public void onCreateOptionsMenu (Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menu_add:
+			Toast.makeText(this.getActivity(), "foo", Toast.LENGTH_SHORT).show();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
 
 	@Override
 	public void onClick(View view) {

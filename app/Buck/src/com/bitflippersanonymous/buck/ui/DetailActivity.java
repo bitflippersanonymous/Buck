@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.bitflippersanonymous.buck.R;
 import com.bitflippersanonymous.buck.domain.Util;
@@ -49,5 +50,13 @@ public class DetailActivity extends BaseActivity {
 	public void update() {
 		if ( mFragment instanceof Util.Update )
 			((Util.Update)mFragment).update();
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 }

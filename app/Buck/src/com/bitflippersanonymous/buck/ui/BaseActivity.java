@@ -11,8 +11,10 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 
+import com.bitflippersanonymous.buck.R;
 import com.bitflippersanonymous.buck.service.BuckService;
 
 /**
@@ -89,8 +91,20 @@ public abstract class BaseActivity extends Activity	implements ServiceConnection
 	}
 
 	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.base_menu, menu);
+		return true;
+	}
+	
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case R.id.menu_about:
+			startActivity(new Intent(this, AboutActivity.class));
+			return true;
+		case R.id.menu_settings:
+			startActivity(new Intent(this, SettingsActivity.class));
+			return true;
 		case android.R.id.home:
 			// This is called when the Home (Up) button is pressed
 			// in the Action Bar.

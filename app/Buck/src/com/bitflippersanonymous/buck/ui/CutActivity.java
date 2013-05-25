@@ -11,7 +11,6 @@ import android.content.Loader;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;

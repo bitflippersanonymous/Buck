@@ -10,11 +10,7 @@ import java.util.Map;
 
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.util.Log;
-import static java.lang.Math.*;
-
 import com.bitflippersanonymous.buck.service.LoadTask;
-
 
 public class CutPlanner {
   //TODO: Get from prefs
@@ -39,9 +35,10 @@ public class CutPlanner {
 		Integer bf = mScribnerTable.get(dim);
 		if ( bf != null )
 			return bf;
-		
-		Log.e(getClass().getSimpleName(), "Scribner Table Incomplete: " + dim.toString());
-		return 0;
+
+		double D = dim.getWidth();
+		double L = dim.getLength();
+		return (int) ((Math.pow(0.79 * D, 2) - 2D - 4) * (L / 16));
 	}
 
 	public void waitTillReady() {
@@ -115,7 +112,7 @@ public class CutPlanner {
 	}
 
 	private static double CosineInterpolate(double y1, double y2, double mu) {
-		double mu2 = (1-cos(mu*PI))/2;
+		double mu2 = (1-Math.cos(mu*Math.PI))/2;
 		return y1*(1-mu2)+y2*mu2;
 	}
 
@@ -134,7 +131,7 @@ public class CutPlanner {
 			return 0;
 		
 		Dimension d1 = wholeLogSize.get(i-1);
-		Dimension d2 = wholeLogSize.get(min(i, wholeLogSize.size()-1));
+		Dimension d2 = wholeLogSize.get(Math.min(i, wholeLogSize.size()-1));
 		
 		double mu = (double)(totalLength - d1.getLength() + position) / d1.getLength();
 		int width = (int)CosineInterpolate(d1.getWidth(), d2.getWidth(), mu);
@@ -196,21 +193,22 @@ public class CutPlanner {
 			int kerfLength, int minTopDiameter) {
 		waitTillReady();
 		mCutNodes = new ArrayList<CutNode>();
-		//mTotalValueToNode = new HashMap<Integer, CutNode>();
+
 		mMill = mill; 
 		mWholeLogSize = wholeLogSize;
 		mTotalLogLength = sumLogLength(mWholeLogSize);
 		mKerfLength = kerfLength;
 		mMinTopDiameter = minTopDiameter;
 		
-		// Assume end of log is mWinWidth
-		if ( mWholeLogSize.size() == 1 )
+		switch ( mWholeLogSize.size() ) {
+		case 0:
+			return mCutNodes;
+		case 1:
 			mWholeLogSize.add(new Dimension(mMinTopDiameter, 0));
+		}
 			
 		recCutPlan(new CutNode(mMill), 0);
 		
-		//mCutNodes.addAll(mTotalValueToNode.values());
-		//mTotalValueToNode = null;
 		Collections.sort(mCutNodes, CutNode.getByTotalValue());
 		return mCutNodes;
 	}

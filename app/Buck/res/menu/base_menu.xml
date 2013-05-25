@@ -13,12 +13,6 @@
     <item
         android:id="@+id/menu_add"
         android:icon="@android:drawable/ic_menu_add"
-        android:showAsAction="ifRoom|withText"
-        android:title="@string/menu_add"/>
-    <item
-        android:id="@+id/menu_measure"
-        android:icon="@drawable/hand_saw"
         android:showAsAction="always|withText"
-        android:title="@string/menu_measure"/>
-
+        android:title="@string/menu_add"/>
 </menu>

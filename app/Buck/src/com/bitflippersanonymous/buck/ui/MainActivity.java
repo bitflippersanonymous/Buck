@@ -1,18 +1,14 @@
 package com.bitflippersanonymous.buck.ui;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -20,8 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CursorAdapter;
-import android.widget.Toast;
-
 import com.bitflippersanonymous.buck.R;
 import com.bitflippersanonymous.buck.db.BuckDatabaseAdapter;
 import com.bitflippersanonymous.buck.domain.JobDbAdapter;
@@ -47,12 +41,8 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		// Clear prefs
-		Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
-		editor.clear().apply();
-		
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-		
+
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
@@ -118,35 +108,17 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 		int idx = getActionBar().getSelectedNavigationIndex();
 		getLoaderManager().restartLoader(idx, null, this);
 	}
-	
-	//FIXME: I wonder if I can call through to super and append option menus
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_main, menu);
-		return true;
-	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.menu_add:
-			Toast.makeText(this, "Add", Toast.LENGTH_SHORT).show();
-			return true;
-		case R.id.menu_measure:
-			Intent intent = new Intent(this, MeasureActivity.class);
-			startActivity(intent);
-			return true;
-		case R.id.menu_about:
-			startActivity(new Intent(this, AboutActivity.class));
-			return true;
-		case R.id.menu_settings:
-			startActivity(new Intent(this, SettingsActivity.class));
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
+		return super.onOptionsItemSelected(item);
 	}
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		return super.onCreateOptionsMenu(menu);
+	}
+	
 	/**
 	 * Called when switching view between Mills/Jobs.  Restarts Loader to re-query db.
 	 * Create a new bundle with the position args to tell the MainListFragment what we're
@@ -163,7 +135,7 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 		.replace(R.id.container, fragment)
 		.commit();
 		fragment.setOnItemListener(this); // May need to do this in onCreate and onResume
-
+		
 		(mAdapter = mAdapters[position]).swapCursor(null);
 		fragment.setListAdapter(mAdapter);
 		getLoaderManager().initLoader(position, args, this); 
