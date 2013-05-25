@@ -23,8 +23,10 @@ import com.bitflippersanonymous.buck.domain.Dimension;
 import com.bitflippersanonymous.buck.domain.Job;
 import com.bitflippersanonymous.buck.domain.Mill;
 import com.bitflippersanonymous.buck.domain.Price;
+import com.bitflippersanonymous.buck.domain.JobSummary;
 import com.bitflippersanonymous.buck.domain.Util;
 import com.bitflippersanonymous.buck.domain.Util.DatabaseBase.Tables;
+import com.bitflippersanonymous.buck.ui.BaseActivity;
 import com.bitflippersanonymous.buck.ui.SettingsActivity;
 
 public class BuckService extends Service  {
@@ -122,6 +124,19 @@ public class BuckService extends Service  {
 		return mill;
 	}
 
+	public Job getJob(int jobId) {
+		Cursor cursor = getDbAdapter().fetchEntry(Tables.Jobs, jobId);
+		Job job = new Job(cursor);
+		job.setSummary(getSummary(jobId));
+		return job;
+	}
+
+	
+	private List<JobSummary> getSummary(int jobId) {
+		List<JobSummary> summary = new ArrayList<JobSummary>();
+		return summary;
+	}
+
 	private List<Price> getPrices(int millId) {
 		List<Price > prices = new ArrayList<Price>();
 		Cursor cursor =  getDbAdapter().fetchPrices(millId);
@@ -151,5 +166,6 @@ public class BuckService extends Service  {
 		getDbAdapter().updateTable(Tables.Mills.name(), rowId, values);
 		sendUpdate();
 	}
+
 
 }

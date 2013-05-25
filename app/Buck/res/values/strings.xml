@@ -9,8 +9,8 @@
     <string name="title_activity_cut">Cut</string>
     
     <string-array name="navigation_items">
-        <item name="mill">Mill</item>
         <item name="job">Job</item>
+        <item name="mill">Mill</item>
     </string-array>
     <string name="about_url">file:///android_asset/html/about.html</string>
     <string name="menu_measure">Measure</string>

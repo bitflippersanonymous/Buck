@@ -38,9 +38,9 @@ public class MillFragment extends ListFragment
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		ActionBar actionBar = getActivity().getActionBar();
-		actionBar.setDisplayShowTitleEnabled(true);
+
 		getLoaderManager().initLoader(0, null, this);
+		
 		View view = inflater.inflate(R.layout.fragment_mill, container, false);
 		view.findViewById(R.id.checkBoxMillEnabled).setOnClickListener(this);
 		return view;
@@ -64,6 +64,10 @@ public class MillFragment extends ListFragment
 		String millName = mill.getAsString(Mill.Fields.Name);
 		TextView t = (TextView)getView().findViewById(R.id.textViewMill);
 		t.setText(millName);
+
+		ActionBar actionBar = getActivity().getActionBar();
+		actionBar.setDisplayShowTitleEnabled(true);
+		actionBar.setTitle(millName);
 		
 		CheckBox checkBox = (CheckBox)getView().findViewById(R.id.checkBoxMillEnabled);
 		Integer enabled = mill.getAsInteger(Mill.Fields.Enabled);
@@ -85,6 +89,7 @@ public class MillFragment extends ListFragment
 	
 	@Override
 	public void onCreateOptionsMenu (Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.add_menu, menu);
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 	

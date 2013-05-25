@@ -28,8 +28,8 @@ public class MainActivity extends BaseActivity
 implements ActionBar.OnNavigationListener, MainListFragment.OnItemListener, 
 LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 
-	private static final int MILL_IDX = 0;
-	private static final int JOB_IDX = 1;
+	private static final int JOB_IDX = 0;
+	private static final int MILL_IDX = 1;
 	
 	private CursorAdapter mAdapter = null; // This cursor populates the mainlistfragment (ie, list of mills)
 	private static CursorAdapter[] mAdapters = {null, null};
@@ -60,8 +60,8 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 						),
 						this);
 		
-		mAdapters[MILL_IDX] = new MillDbAdapter(this, null, 0); 
 		mAdapters[JOB_IDX] = new JobDbAdapter(this, null, 0);
+		mAdapters[MILL_IDX] = new MillDbAdapter(this, null, 0); 
 
 		//Possibly .unregisterListener(listener) to prevent callback before have service
 		//How is this the correct idx?
@@ -171,11 +171,13 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 		return new SimpleCursorLoader(this, args) {
 			@Override
 			public Cursor loadInBackground() {
-				Tables table = Tables.Mills;
+				Tables table = Tables.Jobs;
+
 				Bundle args = getArgs();
-				if ( args != null && args.getInt(MainListFragment.ARG_SECTION_NUMBER) == JOB_IDX )
-					table = Tables.Jobs;
-				BuckDatabaseAdapter db = getService().getDbAdapter();
+				if ( args != null && args.getInt(MainListFragment.ARG_SECTION_NUMBER) == MILL_IDX )
+					table = Tables.Mills;
+
+					BuckDatabaseAdapter db = getService().getDbAdapter();
 				return db.fetchAll(table);
 			}
 		};
