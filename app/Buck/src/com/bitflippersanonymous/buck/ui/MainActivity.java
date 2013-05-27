@@ -1,10 +1,11 @@
 package com.bitflippersanonymous.buck.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.ActionBar;
-import android.app.LoaderManager;
 import android.content.ComponentName;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -17,25 +18,23 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CursorAdapter;
 import com.bitflippersanonymous.buck.R;
-import com.bitflippersanonymous.buck.db.BuckDatabaseAdapter;
 import com.bitflippersanonymous.buck.domain.JobDbAdapter;
 import com.bitflippersanonymous.buck.domain.MillDbAdapter;
 import com.bitflippersanonymous.buck.domain.Util;
 import com.bitflippersanonymous.buck.domain.Util.DatabaseBase.Tables;
-import com.bitflippersanonymous.buck.service.SimpleCursorLoader;
+import com.bitflippersanonymous.buck.service.CursorLoaderAdapter;
 
 public class MainActivity extends BaseActivity 
-implements ActionBar.OnNavigationListener, MainListFragment.OnItemListener, 
-LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
+implements ActionBar.OnNavigationListener, MainListFragment.OnItemListener, ServiceConnection {
 
 	private static final int JOB_IDX = 0;
 	private static final int MILL_IDX = 1;
 	
-	private CursorAdapter mAdapter = null; // This cursor populates the mainlistfragment (ie, list of mills)
-	private static CursorAdapter[] mAdapters = {null, null};
-
+	private CursorLoaderAdapter mCursorLoaderAdapter;
+	private List<CursorAdapter> mAdapters;
+	
 	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
-	//private static Class<?>[] mChildActivities = {MillActivity.class, JobActivity.class};
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -60,13 +59,13 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 						),
 						this);
 		
-		mAdapters[JOB_IDX] = new JobDbAdapter(this, null, 0);
-		mAdapters[MILL_IDX] = new MillDbAdapter(this, null, 0); 
+		mAdapters = new ArrayList<CursorAdapter>(2);
+		mAdapters.add(JOB_IDX, new JobDbAdapter(this, null, 0));
+		mAdapters.add(MILL_IDX, new MillDbAdapter(this, null, 0));
 
-		//Possibly .unregisterListener(listener) to prevent callback before have service
-		//How is this the correct idx?
 		int idx = getActionBar().getSelectedNavigationIndex();
-		getLoaderManager().initLoader(idx, null, this);
+		mCursorLoaderAdapter = new CursorLoaderAdapter(this, mAdapters, getService().getDbAdapter());
+		getLoaderManager().initLoader(idx, null, mCursorLoaderAdapter);
 	}
 
 	@Override
@@ -106,7 +105,7 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 		super.update();
 		// Should update all of them?
 		int idx = getActionBar().getSelectedNavigationIndex();
-		getLoaderManager().restartLoader(idx, null, this);
+		getLoaderManager().restartLoader(idx, null, mCursorLoaderAdapter);
 	}
 
 	@Override
@@ -122,7 +121,7 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 	/**
 	 * Called when switching view between Mills/Jobs.  Restarts Loader to re-query db.
 	 * Create a new bundle with the position args to tell the MainListFragment what we're
-	 * showing, though it's currently unused.
+	 * showing.
 	 */
 	@Override
 	public boolean onNavigationItemSelected(int position, long id) {
@@ -136,10 +135,12 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 		.commit();
 		fragment.setOnItemListener(this); // May need to do this in onCreate and onResume
 		
-		(mAdapter = mAdapters[position]).swapCursor(null);
-		fragment.setListAdapter(mAdapter);
-		getLoaderManager().initLoader(position, args, this); 
-		//Possibly .unregisterListener(listener) to prevent callback before have service
+		CursorAdapter adapter = mAdapters.get(position);
+		adapter.swapCursor(null);
+		fragment.setListAdapter(adapter);
+		
+		args.putSerializable(Util.TABLE, Tables.values()[position]);
+		getLoaderManager().initLoader(position, args, mCursorLoaderAdapter); 
 		return true;
 	}
 
@@ -164,38 +165,6 @@ LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 		intent.putExtra(Util.FRAGMENT, fragmentClass);
 		intent.putExtra(Util._ID, cursor.getInt(0));
 		startActivity(intent);
-	}
-
-	@Override
-	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		return new SimpleCursorLoader(this, args) {
-			@Override
-			public Cursor loadInBackground() {
-				Tables table = Tables.Jobs;
-
-				Bundle args = getArgs();
-				if ( args != null && args.getInt(MainListFragment.ARG_SECTION_NUMBER) == MILL_IDX )
-					table = Tables.Mills;
-
-					BuckDatabaseAdapter db = getService().getDbAdapter();
-				return db.fetchAll(table);
-			}
-		};
-	}
-
-	/**
-	 * Called when loader async task has finished and cursor has a new data for the adapter 
-	 * mAdapter is null on return to activity where onServiceConnected is called as activity is unpaused.  
-	 */
-	@Override
-	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-		if ( mAdapter != null )
-			mAdapter.swapCursor(data);
-	}
-
-	@Override
-	public void onLoaderReset(Loader<Cursor> loader) {
-		mAdapter.swapCursor(null);
 	}
 
 	/**

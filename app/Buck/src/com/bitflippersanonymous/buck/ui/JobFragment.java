@@ -3,13 +3,11 @@ package com.bitflippersanonymous.buck.ui;
 
 
 import android.app.ActionBar;
-import android.app.Fragment;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
 import android.content.Intent;
 import android.content.Loader;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,11 +19,8 @@ import android.widget.ArrayAdapter;
 
 import com.bitflippersanonymous.buck.R;
 import com.bitflippersanonymous.buck.domain.Job;
-import com.bitflippersanonymous.buck.domain.Mill;
-import com.bitflippersanonymous.buck.domain.PriceAdapter;
 import com.bitflippersanonymous.buck.domain.JobSummary;
 import com.bitflippersanonymous.buck.domain.Util;
-import com.bitflippersanonymous.buck.domain.Util.DatabaseBase.Tables;
 
 public class JobFragment extends ListFragment 
 	implements LoaderManager.LoaderCallbacks<Job>, Util.Update {
