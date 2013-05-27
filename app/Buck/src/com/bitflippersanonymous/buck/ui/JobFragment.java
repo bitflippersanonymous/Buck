@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CursorAdapter;
 
 import com.bitflippersanonymous.buck.R;
 import com.bitflippersanonymous.buck.domain.Job;

@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.ActionBar;
+import android.app.LoaderManager;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -22,18 +24,17 @@ import com.bitflippersanonymous.buck.domain.JobDbAdapter;
 import com.bitflippersanonymous.buck.domain.MillDbAdapter;
 import com.bitflippersanonymous.buck.domain.Util;
 import com.bitflippersanonymous.buck.domain.Util.DatabaseBase.Tables;
-import com.bitflippersanonymous.buck.service.CursorLoaderAdapter;
+import com.bitflippersanonymous.buck.service.SimpleCursorLoader;
 
 public class MainActivity extends BaseActivity 
-implements ActionBar.OnNavigationListener, MainListFragment.OnItemListener, ServiceConnection {
+implements ActionBar.OnNavigationListener, MainListFragment.OnItemListener, 
+	LoaderManager.LoaderCallbacks<Cursor>, ServiceConnection {
 
 	private static final int JOB_IDX = 0;
 	private static final int MILL_IDX = 1;
-	
-	private CursorLoaderAdapter mCursorLoaderAdapter;
-	private List<CursorAdapter> mAdapters;
-	
 	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
+
+	private List<CursorAdapter> mAdapters;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -64,8 +65,7 @@ implements ActionBar.OnNavigationListener, MainListFragment.OnItemListener, Serv
 		mAdapters.add(MILL_IDX, new MillDbAdapter(this, null, 0));
 
 		int idx = getActionBar().getSelectedNavigationIndex();
-		mCursorLoaderAdapter = new CursorLoaderAdapter(this, mAdapters, getService().getDbAdapter());
-		getLoaderManager().initLoader(idx, null, mCursorLoaderAdapter);
+		getLoaderManager().initLoader(idx, null, this);
 	}
 
 	@Override
@@ -105,7 +105,7 @@ implements ActionBar.OnNavigationListener, MainListFragment.OnItemListener, Serv
 		super.update();
 		// Should update all of them?
 		int idx = getActionBar().getSelectedNavigationIndex();
-		getLoaderManager().restartLoader(idx, null, mCursorLoaderAdapter);
+		getLoaderManager().restartLoader(idx, null, this);
 	}
 
 	@Override
@@ -140,7 +140,7 @@ implements ActionBar.OnNavigationListener, MainListFragment.OnItemListener, Serv
 		fragment.setListAdapter(adapter);
 		
 		args.putSerializable(Util.TABLE, Tables.values()[position]);
-		getLoaderManager().initLoader(position, args, mCursorLoaderAdapter); 
+		getLoaderManager().initLoader(position, args, this); 
 		return true;
 	}
 
@@ -174,5 +174,32 @@ implements ActionBar.OnNavigationListener, MainListFragment.OnItemListener, Serv
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder service) {
 		super.onServiceConnected(name, service);
+	}
+
+	@Override
+	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+		return new SimpleCursorLoader(this, args) {
+			@Override
+			public Cursor loadInBackground() {
+				Tables table = (Tables)getArgs().getSerializable(Util.TABLE);
+				return BaseActivity.getService().getDbAdapter().fetchAll(table);
+			}
+		};
+	}
+
+	/**
+	 * Called when loader async task has finished and cursor has a new data for the adapter 
+	 * mAdapter is null on return to activity where onServiceConnected is called as activity is unpaused.  
+	 */
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+		int id = loader.getId();
+		if ( mAdapters.get(id) != null )
+			mAdapters.get(id).swapCursor(data);
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> loader) {
+		mAdapters.get(loader.getId()).swapCursor(null);
 	}
 }
