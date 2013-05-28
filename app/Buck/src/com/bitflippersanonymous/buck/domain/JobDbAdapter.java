@@ -10,6 +10,7 @@ import android.widget.CursorAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+// TODO: Don't need this. Could just use SimpleCursorAdapter
 public class JobDbAdapter extends CursorAdapter implements ListAdapter {
 	public JobDbAdapter(Context context, Cursor c, int flags) {
 		super(context, c, flags);

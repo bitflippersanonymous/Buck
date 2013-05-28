@@ -1,5 +1,6 @@
 package com.bitflippersanonymous.buck.ui;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,9 +64,20 @@ implements ActionBar.OnNavigationListener, MainListFragment.OnItemListener,
 		mAdapters = new ArrayList<CursorAdapter>(2);
 		mAdapters.add(JOB_IDX, new JobDbAdapter(this, null, 0));
 		mAdapters.add(MILL_IDX, new MillDbAdapter(this, null, 0));
-
+		
 		int idx = getActionBar().getSelectedNavigationIndex();
 		getLoaderManager().initLoader(idx, null, this);
+	}
+
+	private Tables getTableFromIdx(int idx) {
+		switch ( idx ) {
+		case JOB_IDX:
+			return Tables.Jobs;
+		case MILL_IDX:
+			return Tables.Mills;
+		}
+		Log.e(getClass().getSimpleName(), "Error in getTableFromIndex");
+		return null;
 	}
 
 	@Override
@@ -139,8 +151,7 @@ implements ActionBar.OnNavigationListener, MainListFragment.OnItemListener,
 		adapter.swapCursor(null);
 		fragment.setListAdapter(adapter);
 		
-		args.putSerializable(Util.TABLE, Tables.values()[position]);
-		getLoaderManager().initLoader(position, args, this); 
+		getLoaderManager().initLoader(position, null, this); 
 		return true;
 	}
 
@@ -181,8 +192,14 @@ implements ActionBar.OnNavigationListener, MainListFragment.OnItemListener,
 		return new SimpleCursorLoader(this, args) {
 			@Override
 			public Cursor loadInBackground() {
-				Tables table = (Tables)getArgs().getSerializable(Util.TABLE);
-				return BaseActivity.getService().getDbAdapter().fetchAll(table);
+				Tables table = getTableFromIdx(getId());				
+				Cursor ret = null;
+				try {
+					ret = BaseActivity.getService().getDbAdapter().fetchAll(table);
+				} catch (Exception e) {
+					Log.e(getClass().getSimpleName(), "DB Exception");
+				}
+				return ret;
 			}
 		};
 	}
@@ -193,9 +210,7 @@ implements ActionBar.OnNavigationListener, MainListFragment.OnItemListener,
 	 */
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-		int id = loader.getId();
-		if ( mAdapters.get(id) != null )
-			mAdapters.get(id).swapCursor(data);
+		mAdapters.get(loader.getId()).swapCursor(data);
 	}
 
 	@Override
