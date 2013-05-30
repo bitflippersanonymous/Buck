@@ -11,15 +11,14 @@
     <Spinner
         android:id="@+id/spinnerCurrentMill"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight=".1"  />
+        android:layout_height="wrap_content"  />
 
     <include
         android:id="@+id/header_cutlist"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight=".1"
-        layout="@layout/cut_entry" />
+        layout="@layout/cut_entry" 
+        android:paddingBottom="5dp" />
 
     <ProgressBar
         android:id="@+id/progressBarCut"
@@ -29,8 +28,8 @@
     <ListView
         android:id="@+id/listViewCut"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight=".75"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:footerDividersEnabled="true" 
         android:paddingTop="5dp" />
 

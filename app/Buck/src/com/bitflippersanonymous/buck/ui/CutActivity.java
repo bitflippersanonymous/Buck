@@ -59,24 +59,27 @@ public class CutActivity extends BaseActivity
 
 		populate_header();
 		setupMillSpinner();
+		setViewState(ViewState.LOADING);
 
 		ListView list = (ListView) findViewById(R.id.listViewCut);
 		list.setAdapter(mAdapter = new CutAdapter(this, 0, new ArrayList<CutNode>()));
 		list.setOnItemClickListener(this);
 				
-		getLoaderManager().initLoader(Loaders.LOADER_CUTS.ordinal(), null, this);
 		mCursorLoader = new CursorLoader();
 	}
 
 	private void setViewState(ViewState loading) {
+		Spinner currentMill = (Spinner) findViewById(R.id.spinnerCurrentMill);
 		switch ( loading ) {
 		case LOADING:
-			findViewById(R.id.listViewCut).setVisibility(View.GONE);
-			findViewById(R.id.progressBarCut).setVisibility(View.VISIBLE);		
+			findViewById(R.id.listViewCut).setVisibility(View.INVISIBLE);
+			findViewById(R.id.progressBarCut).setVisibility(View.VISIBLE);	
+			currentMill.setEnabled(false);
 			return;
 		case LOADED:
 			findViewById(R.id.listViewCut).setVisibility(View.VISIBLE);
 			findViewById(R.id.progressBarCut).setVisibility(View.GONE);
+			currentMill.setEnabled(true);
 			return;
 		}
 	}
@@ -104,6 +107,12 @@ public class CutActivity extends BaseActivity
 	}
 
 	@Override
+	public void onDestroy() {
+		getLoaderManager().destroyLoader(Loaders.LOADER_CUTS.ordinal());
+		super.onDestroy();
+	}
+	
+	@Override
 	public Loader<List<CutNode>> onCreateLoader(int id, Bundle args) {
 		Loader<List<CutNode>> loader = new AsyncTaskLoader<List<CutNode>>(this) {
 			@Override
@@ -118,6 +127,7 @@ public class CutActivity extends BaseActivity
 
 	@Override
 	public void onLoadFinished(Loader<List<CutNode>> loader, List<CutNode> cutPlans) {
+		mAdapter.clear();
 		mAdapter.addAll(cutPlans); //@@@ Makes copy of array
 		mAdapter.notifyDataSetChanged();
 		setViewState(ViewState.LOADED);
@@ -147,6 +157,8 @@ public class CutActivity extends BaseActivity
 	  Spinner spinner = (Spinner) parent;
     switch ( spinner.getId() ) {
     case R.id.spinnerCurrentMill:
+  		mAdapter.clear();
+  		setViewState(ViewState.LOADING);
 			mMillId = ((Cursor) parent.getItemAtPosition(pos)).getInt(0);
 			getLoaderManager().restartLoader(Loaders.LOADER_CUTS.ordinal(), null, this);
 			break;
