@@ -88,6 +88,7 @@ public class Smoketest extends ServiceTestCase<BuckService> {
 	@MediumTest
 	public void testDBInit() {
 		// Check database_init.xml loaded
+		assertNotNull(mService);
 		Mill mill = mService.getMill(1);
 		String name = mill.getAsString(Mill.Fields.Name);
 		assertNotNull(name);

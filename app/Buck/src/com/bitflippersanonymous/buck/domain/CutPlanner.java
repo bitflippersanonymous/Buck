@@ -18,7 +18,6 @@ public class CutPlanner {
 	private Map<Dimension, Integer> mScribnerTable = new HashMap<Dimension, Integer>();
 	private List<CutNode> mCutNodes;
 	private List<Dimension> mWholeLogSize = null;
-	private Mill mMill = null;
 	private Object mLock = new Object();
 	private boolean mReady = false;
 	private int mTotalLogLength;
@@ -138,15 +137,12 @@ public class CutPlanner {
 		return width;
 	}
 
-	/*
-	 * price.getAsInteger is slow, but convenient on the db side.  Need to optimize
-	 */
-	private void recCutPlan(CutNode parent, int position) {
+	private void recCutPlan(CutNode parent, int position, List<Price> prices) {
 		
-		for ( Price price : mMill.getPrices() ) {
-			int length = price.getAsInteger(Price.Fields.Length);
-			Integer minWidth = price.getAsInteger(Price.Fields.Top);
-			if ( minWidth == null )
+		for ( Price price : prices ) {
+			int length = price.getLength();
+			int minWidth = price.getTop();
+			if ( minWidth == -1 )
 				minWidth = mMinTopDiameter;
 			
 			int newPosition = position + length + mKerfLength;
@@ -155,10 +151,10 @@ public class CutPlanner {
 			if ( width >= minWidth ) {
 				Dimension dim = new Dimension(width, length);
 				CutNode newNode = new CutNode(dim, getBoardFeet(dim), 
-						price.getAsInteger(Price.Fields.Price));
+						price.getPrice());
 				parent.addChild(newNode);
 				
-				recCutPlan(newNode, newPosition);
+				recCutPlan(newNode, newPosition, prices);
 			}
 		}
 
@@ -193,8 +189,7 @@ public class CutPlanner {
 			int kerfLength, int minTopDiameter) {
 		waitTillReady();
 		mCutNodes = new ArrayList<CutNode>();
-
-		mMill = mill; 
+		
 		mWholeLogSize = wholeLogSize;
 		mTotalLogLength = sumLogLength(mWholeLogSize);
 		mKerfLength = kerfLength;
@@ -207,7 +202,7 @@ public class CutPlanner {
 			mWholeLogSize.add(new Dimension(mMinTopDiameter, 0));
 		}
 			
-		recCutPlan(new CutNode(mMill), 0);
+		recCutPlan(new CutNode(mill), 0, mill.getPrices());
 		
 		Collections.sort(mCutNodes, CutNode.getByTotalValue());
 		return mCutNodes;

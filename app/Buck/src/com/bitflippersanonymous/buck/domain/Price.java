@@ -6,6 +6,10 @@ import android.database.Cursor;
 
 
 public class Price extends DbItem<Price.Fields> {
+
+	private int mLength;
+	private int mTop;
+	private int mPrice;
 	
 	public enum Fields {MillId, Length, Rate, Top, Price};
 	private static final Tag[] sTags = {
@@ -23,10 +27,29 @@ public class Price extends DbItem<Price.Fields> {
 
 	public Price(Cursor cursor) {
 		super(sTags, cursor);
+		mLength = getAsInteger(Price.Fields.Length);
+		Integer top = getAsInteger(Price.Fields.Top);
+		if ( top != null )
+			mTop = top;
+		else
+			mTop = -1;
+		mPrice = getAsInteger(Price.Fields.Price);
 	}
 
 	public Price(int i) {
 		super(sTags, i);
+	}
+
+	public int getLength() {
+		return mLength;
+	}
+
+	public int getTop() {
+		return mTop;
+	}
+
+	public int getPrice() {
+		return mPrice;
 	}
 
 	@Override
