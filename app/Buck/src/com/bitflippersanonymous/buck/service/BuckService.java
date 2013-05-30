@@ -147,13 +147,13 @@ public class BuckService extends Service  {
 		return prices;
 	}
 
-	public List<CutNode> getCutPlans(List<Dimension> dimensions) {
+	public List<CutNode> getCutPlans(List<Dimension> dimensions, int millId) {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 		int kerf = Integer.parseInt(sharedPref.getString(SettingsActivity.KEY_PREF_KERF, "0"));
 		int minTop = Integer.parseInt(sharedPref.getString(SettingsActivity.KEY_PREF_TOP, "0"));
 		if ( kerf <= 0 || minTop <= 0 )
 			Log.e(getClass().getSimpleName(), "error getting kerf, minTop in getCutPlans");
-		return mCutPlanner.getCutPlans(getMill(1), dimensions, kerf, minTop); 
+		return mCutPlanner.getCutPlans(getMill(millId), dimensions, kerf, minTop); 
 	}
 	
 	public int getBoardFeet(Dimension dim) {

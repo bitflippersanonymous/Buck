@@ -12,6 +12,7 @@ public class Util {
 	public static final String CUTS = "CUTS";
 	public static final String SCRIBNER = "scribner.csv"; 
 	public static final String TABLE = "TABLE";
+	public static final String MILL = "MILL";
 	
 	// Define an common interface for db classes for shared strings
 	public interface DatabaseBase {

@@ -153,7 +153,7 @@ public class Smoketest extends ServiceTestCase<BuckService> {
 			for (int i = 0; i+1 < data.size(); i+=2 ) {
 				dimensions.add(new Dimension(data.get(i), data.get(i+1)));
 			}
-			List<CutNode> cutNodes = mService.getCutPlans(dimensions);
+			List<CutNode> cutNodes = mService.getCutPlans(dimensions, 1);
 
 			// Build up line for data file so we can generate these
 			StringBuilder str = new StringBuilder();

@@ -7,21 +7,31 @@
     android:gravity="top"
     android:orientation="vertical"
     tools:context=".ui.CutActivity" >
-    <ProgressBar android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/progressBarCut"/>
 
-   <include
-       android:id="@+id/header_cutlist"
-       android:layout_width="fill_parent"
-       android:layout_height="wrap_content"
-       android:layout_weight=".1"
-       layout="@layout/cut_entry" />
+    <Spinner
+        android:id="@+id/spinnerCurrentMill"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight=".1"  />
+
+    <include
+        android:id="@+id/header_cutlist"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight=".1"
+        layout="@layout/cut_entry" />
+
+    <ProgressBar
+        android:id="@+id/progressBarCut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <ListView
         android:id="@+id/listViewCut"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:layout_weight=".75"
-        android:footerDividersEnabled="true" >
-    </ListView>    
+        android:footerDividersEnabled="true" 
+        android:paddingTop="5dp" />
+
 </LinearLayout>

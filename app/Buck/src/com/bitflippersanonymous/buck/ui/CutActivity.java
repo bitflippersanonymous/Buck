@@ -9,36 +9,48 @@ import android.content.AsyncTaskLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bitflippersanonymous.buck.R;
+import com.bitflippersanonymous.buck.db.BuckDatabaseAdapter;
 import com.bitflippersanonymous.buck.domain.CutAdapter;
 import com.bitflippersanonymous.buck.domain.CutNode;
 import com.bitflippersanonymous.buck.domain.Dimension;
 import com.bitflippersanonymous.buck.domain.Job;
+import com.bitflippersanonymous.buck.domain.Mill;
 import com.bitflippersanonymous.buck.domain.Util;
+import com.bitflippersanonymous.buck.domain.Util.DatabaseBase.Tables;
+import com.bitflippersanonymous.buck.service.SimpleCursorLoader;
 
 
 
 public class CutActivity extends BaseActivity 
 	implements LoaderManager.LoaderCallbacks<List<CutNode>>,
-		OnItemClickListener {
+		OnItemClickListener, OnItemSelectedListener {
 
 	enum ViewState { LOADING, LOADED };
+	enum Loaders { LOADER_CUTS, LOADER_MILLS };
 	
 	private CutAdapter mAdapter = null;
+	private SimpleCursorAdapter mCurrentMillAdapter;
+	private int mMillId;
+	CursorLoader mCursorLoader = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_cut);
-		
+
 		// TODO: This code is common to all BaseActivity derived classes... move it up
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayShowTitleEnabled(true);
@@ -46,30 +58,44 @@ public class CutActivity extends BaseActivity
 		actionBar.setTitle(R.string.title_activity_cut);
 
 		populate_header();
+		setupMillSpinner();
 
 		ListView list = (ListView) findViewById(R.id.listViewCut);
 		list.setAdapter(mAdapter = new CutAdapter(this, 0, new ArrayList<CutNode>()));
 		list.setOnItemClickListener(this);
-		
-		setViewState(ViewState.LOADING);
-		getLoaderManager().initLoader(0, null, this);
+				
+		getLoaderManager().initLoader(Loaders.LOADER_CUTS.ordinal(), null, this);
+		mCursorLoader = new CursorLoader();
 	}
 
 	private void setViewState(ViewState loading) {
 		switch ( loading ) {
 		case LOADING:
-			findViewById(R.id.header_cutlist).setVisibility(View.GONE);
 			findViewById(R.id.listViewCut).setVisibility(View.GONE);
 			findViewById(R.id.progressBarCut).setVisibility(View.VISIBLE);		
 			return;
 		case LOADED:
-			findViewById(R.id.header_cutlist).setVisibility(View.VISIBLE);
 			findViewById(R.id.listViewCut).setVisibility(View.VISIBLE);
 			findViewById(R.id.progressBarCut).setVisibility(View.GONE);
 			return;
 		}
 	}
 
+	private void setupMillSpinner() {
+		mCurrentMillAdapter = new SimpleCursorAdapter(
+				this, android.R.layout.simple_spinner_item, 
+				null, 
+				new String[]{Mill.Fields.Name.name()}, 
+				new int[]{android.R.id.text1}, 
+				0);
+		mCurrentMillAdapter.setDropDownViewResource(
+				android.R.layout.simple_spinner_dropdown_item);
+		
+		Spinner currentMill = (Spinner) findViewById(R.id.spinnerCurrentMill);
+		currentMill.setAdapter(mCurrentMillAdapter);
+		currentMill.setOnItemSelectedListener(this);
+	}
+	
 	private void populate_header() {
 		final Resources res = getResources();
 		((TextView)findViewById(R.id.textViewCutCuts)).setText(res.getString(R.string.cutheader_cuts));
@@ -82,8 +108,8 @@ public class CutActivity extends BaseActivity
 		Loader<List<CutNode>> loader = new AsyncTaskLoader<List<CutNode>>(this) {
 			@Override
 			public List<CutNode> loadInBackground() {
-                ArrayList<Dimension> cuts = getIntent().getParcelableArrayListExtra(Util.CUTS);
-				return getService().getCutPlans(cuts);
+				ArrayList<Dimension> cuts = getIntent().getParcelableArrayListExtra(Util.CUTS);
+				return getService().getCutPlans(cuts, mMillId);
 			}
 		};
 		loader.forceLoad();
@@ -100,6 +126,7 @@ public class CutActivity extends BaseActivity
 	@Override
 	public void onLoaderReset(Loader<List<CutNode>> loader) {
 		mAdapter.clear();
+		setViewState(ViewState.LOADING);
 	}
 
 	@Override
@@ -114,4 +141,50 @@ public class CutActivity extends BaseActivity
 		Toast.makeText(this, "Add to Database", Toast.LENGTH_SHORT).show();
 		finish();
 	}
+	
+	@Override
+  public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+	  Spinner spinner = (Spinner) parent;
+    switch ( spinner.getId() ) {
+    case R.id.spinnerCurrentMill:
+			mMillId = ((Cursor) parent.getItemAtPosition(pos)).getInt(0);
+			getLoaderManager().restartLoader(Loaders.LOADER_CUTS.ordinal(), null, this);
+			break;
+    }
+	}
+	
+	@Override
+	public void onNothingSelected(AdapterView<?> parent) { }
+	
+	private class CursorLoader implements LoaderManager.LoaderCallbacks<Cursor> {
+
+		public CursorLoader() {
+			getLoaderManager().initLoader(Loaders.LOADER_MILLS.ordinal(), null, this);
+		}
+
+		@Override
+		public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+			Loader<Cursor> loader; 
+			final BuckDatabaseAdapter dB = BaseActivity.getService().getDbAdapter();
+			loader = new SimpleCursorLoader(CutActivity.this, args) {
+				@Override
+				public Cursor loadInBackground() {
+					return dB.fetchAll(Tables.Mills);
+				};
+			};
+			loader.forceLoad();
+			return loader;
+		}
+				
+		@Override
+		public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+				mCurrentMillAdapter.swapCursor(cursor);
+		}
+		
+		@Override
+		public void onLoaderReset(Loader<Cursor> loader) {
+				mCurrentMillAdapter.swapCursor(null);
+		}
+	};
+
 }

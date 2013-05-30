@@ -18,6 +18,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.CursorAdapter;
 import android.widget.SimpleCursorAdapter;
@@ -37,36 +39,22 @@ public class JobFragment extends ListFragment
 	implements LoaderManager.LoaderCallbacks<Cursor>, Util.Update {
 
 	private static final int JOB_LOADER = 0;
-	private static final int MILLS_LOADER = 1;
-	
 	private Job mJob = null;
-	private SimpleCursorAdapter mCurrentMillAdapter;
 	
 	public JobFragment() {}
 	
-    @Override 
-    public  void  onCreate(Bundle savedInstanceState) { 
-        super.onCreate(savedInstanceState); 
+	@Override 
+	public  void  onCreate(Bundle savedInstanceState) { 
+		super.onCreate(savedInstanceState); 
 		setHasOptionsMenu(true);
-		getLoaderManager().initLoader(0, null, this);
 		//setListAdapter(new CursorAdapter(getActivity(), null));
-		mCurrentMillAdapter = new SimpleCursorAdapter(
-				getActivity(), android.R.layout.simple_spinner_item, 
-				null, 
-				new String[]{Mill.Fields.Name.name()}, 
-				new int[]{android.R.id.text1}, 
-				0);
-		mCurrentMillAdapter.setDropDownViewResource(
-				android.R.layout.simple_spinner_dropdown_item);
-    }
+		getLoaderManager().initLoader(JOB_LOADER, null, this);
+	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-
 		View view = inflater.inflate(R.layout.fragment_job, container, false);
-		Spinner currentMill = (Spinner) view.findViewById(R.id.spinnerCurrentMill);
-		currentMill.setAdapter(mCurrentMillAdapter);
 		return view;
 	}
 	
@@ -98,8 +86,6 @@ public class JobFragment extends ListFragment
 				switch ( getId() ) {
 				case JOB_LOADER:
 					return dB.fetchEntry(Tables.Jobs, getArguments().getInt(Util._ID));
-				case MILLS_LOADER:
-					return dB.fetchAll(Tables.Mills);
 				}
 				return null;
 			};
@@ -118,9 +104,6 @@ public class JobFragment extends ListFragment
 			actionBar.setDisplayShowTitleEnabled(true);
 			actionBar.setTitle(jobName);
 			break;
-		case MILLS_LOADER:
-			mCurrentMillAdapter.swapCursor(cursor);
-			break;
 		}
 		//getListAdapter().swapCursor(cursor);
 	}
@@ -131,15 +114,12 @@ public class JobFragment extends ListFragment
 		case JOB_LOADER:
 			mJob = null;
 			break;
-		case MILLS_LOADER:
-			mCurrentMillAdapter.swapCursor(null);
-			break;
 		}
 	}
 	
 	@Override
 	public void update() {
-		getLoaderManager().restartLoader(0, null, this);
+		getLoaderManager().restartLoader(JOB_LOADER, null, this);
 	}
 	
 }

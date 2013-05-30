@@ -155,6 +155,7 @@ public class MeasureActivity extends BaseActivity implements View.OnClickListene
 		case R.id.menu_done:
 			Intent intent = new Intent(this, CutActivity.class);
 			intent.putParcelableArrayListExtra(Util.CUTS, mCuts);
+			intent.putExtra(Util.MILL, getIntent().getIntExtra(Util.MILL, -1));
 			startActivity(intent);
 			clearTextEdits();
 			return true;
