@@ -10,6 +10,8 @@ import java.util.Map;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.util.SparseIntArray;
+
 import com.bitflippersanonymous.buck.service.LoadTask;
 
 public class CutPlanner {
@@ -23,18 +25,22 @@ public class CutPlanner {
 	private int mTotalLogLength;
 	private int mKerfLength;
 	private int mMinTopDiameter;
+	private SparseIntArray mWidthCache;
 	
 	public CutPlanner(Context context, String filename) {
 		loadScribner(context, filename);
 	}
 	
+	
 	public int getBoardFeet(Dimension dim) {
 		waitTillReady();
 
+		// Hashmap lookup here is slow. Would be better as 2D array.
 		Integer bf = mScribnerTable.get(dim);
 		if ( bf != null )
 			return bf;
 
+		// Untested
 		double D = dim.getWidth();
 		double L = dim.getLength();
 		return (int) ((Math.pow(0.79 * D, 2) - 2D - 4) * (L / 16));
@@ -115,6 +121,15 @@ public class CutPlanner {
 		return y1*(1-mu2)+y2*mu2;
 	}
 
+	public int widthAtPosition(int position) {
+		int width = mWidthCache.get(position, -1);
+		if ( width != -1 )
+			return width;
+		width = widthAtPosition(mWholeLogSize, position);
+		mWidthCache.put(position, width);
+		return width;
+	}
+	
 	// Need to find points before and after position to interpolate width
 	public static int widthAtPosition(List<Dimension> wholeLogSize, int position) {
 		if ( position == 0 )
@@ -122,17 +137,19 @@ public class CutPlanner {
 		
 		int i = 0;
 		int totalLength = 0;
-		while ( i < wholeLogSize.size() && position > totalLength) {
+		int size = wholeLogSize.size();
+		while ( i < size && position > totalLength) {
 			totalLength += wholeLogSize.get(i++).getLength();
 		}
 		
 		if ( position > totalLength )
 			return 0;
 		
-		Dimension d1 = wholeLogSize.get(i-1);
-		Dimension d2 = wholeLogSize.get(Math.min(i, wholeLogSize.size()-1));
+		final Dimension d1 = wholeLogSize.get(i-1);
+		final	Dimension d2 = wholeLogSize.get(Math.min(i, size-1));
+		final int d1Length = d1.getLength();
 		
-		double mu = (double)(totalLength - d1.getLength() + position) / d1.getLength();
+		double mu = (double)(totalLength - d1Length + position) / d1Length;
 		int width = (int)CosineInterpolate(d1.getWidth(), d2.getWidth(), mu);
 		return width;
 	}
@@ -146,7 +163,7 @@ public class CutPlanner {
 				minWidth = mMinTopDiameter;
 			
 			int newPosition = position + length + mKerfLength;
-			int width = widthAtPosition(mWholeLogSize, newPosition);
+			int width = widthAtPosition(newPosition);
 
 			if ( width >= minWidth ) {
 				Dimension dim = new Dimension(width, length);
@@ -168,7 +185,7 @@ public class CutPlanner {
 
 	private CutNode calcScrapNode(int position) {
 		int scrapLength = mTotalLogLength - position;
-		int scrapWidth = widthAtPosition(mWholeLogSize, mTotalLogLength);
+		int scrapWidth = widthAtPosition(mTotalLogLength);
 		Dimension scrapDim = new Dimension(scrapWidth, scrapLength);
 		CutNode scrapNode = new CutNode(scrapDim, 0, 0);
 		return scrapNode;
@@ -194,6 +211,7 @@ public class CutPlanner {
 		mTotalLogLength = sumLogLength(mWholeLogSize);
 		mKerfLength = kerfLength;
 		mMinTopDiameter = minTopDiameter;
+		mWidthCache = new SparseIntArray(mTotalLogLength);
 		
 		switch ( mWholeLogSize.size() ) {
 		case 0:
