@@ -34,12 +34,12 @@ public abstract class BaseActivity extends Activity	implements ServiceConnection
 
 	public static BuckService getService() { 
 		//TODO: If service not bound, bind it and wait until it's bound, then return it
-		while ( mService == null || mService.getDbAdapter() == null ) {
+		while ( mService == null || !mService.ready() ) {
 			try { Thread.sleep(1000); } catch(InterruptedException e){ }
 			if ( mService == null )
 				Log.e(BaseActivity.class.getName(), "Service not started");
-			if ( mService.getDbAdapter() == null )
-				Log.e(BaseActivity.class.getName(), "DB not started");
+			if ( !mService.ready() )
+				Log.e(BaseActivity.class.getName(), "Service not ready");
 		}
 		return mService; 
 	}

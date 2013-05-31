@@ -24,7 +24,7 @@ import android.widget.Toast;
 
 import com.bitflippersanonymous.buck.R;
 import com.bitflippersanonymous.buck.db.BuckDatabaseAdapter;
-import com.bitflippersanonymous.buck.domain.CutAdapter;
+import com.bitflippersanonymous.buck.domain.CutNodeAdapter;
 import com.bitflippersanonymous.buck.domain.CutNode;
 import com.bitflippersanonymous.buck.domain.Dimension;
 import com.bitflippersanonymous.buck.domain.Job;
@@ -40,7 +40,7 @@ public class CutActivity extends BaseActivity
 	enum ViewState { LOADING, LOADED };
 	enum Loaders { LOADER_CUTS, LOADER_MILLS };
 	
-	private CutAdapter mAdapter = null;
+	private CutNodeAdapter mAdapter = null;
 	private SimpleCursorAdapter mCurrentMillAdapter;
 	private int mMillId;
 	CursorLoader mCursorLoader = null;
@@ -61,7 +61,7 @@ public class CutActivity extends BaseActivity
 		setViewState(ViewState.LOADING);
 
 		ListView list = (ListView) findViewById(R.id.listViewCut);
-		list.setAdapter(mAdapter = new CutAdapter(this, 0, new ArrayList<CutNode>()));
+		list.setAdapter(mAdapter = new CutNodeAdapter(this, 0, new ArrayList<CutNode>()));
 		list.setOnItemClickListener(this);
 				
 		mCursorLoader = new CursorLoader();
@@ -177,11 +177,10 @@ public class CutActivity extends BaseActivity
 		@Override
 		public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 			Loader<Cursor> loader; 
-			final BuckDatabaseAdapter dB = BaseActivity.getService().getDbAdapter();
 			loader = new SimpleCursorLoader(CutActivity.this, args) {
 				@Override
 				public Cursor loadInBackground() {
-					return dB.fetchAll(Tables.Mills);
+					return BaseActivity.getService().getAllItems(Tables.Mills);
 				};
 			};
 			loader.forceLoad();

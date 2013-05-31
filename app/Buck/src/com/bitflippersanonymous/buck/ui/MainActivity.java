@@ -195,7 +195,7 @@ implements ActionBar.OnNavigationListener, MainListFragment.OnItemListener,
 				Tables table = getTableFromIdx(getId());				
 				Cursor ret = null;
 				try {
-					ret = BaseActivity.getService().getDbAdapter().fetchAll(table);
+					ret = BaseActivity.getService().getAllItems(table);
 				} catch (Exception e) {
 					Log.e(getClass().getSimpleName(), "DB Exception");
 				}

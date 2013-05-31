@@ -13,9 +13,9 @@ import android.widget.TextView;
 import com.bitflippersanonymous.buck.R;
 
 
-public class CutAdapter extends ArrayAdapter<CutNode> implements ListAdapter {
+public class CutNodeAdapter extends ArrayAdapter<CutNode> implements ListAdapter {
 
-	public CutAdapter(Context context, int textViewResourceId, List<CutNode> objects) {
+	public CutNodeAdapter(Context context, int textViewResourceId, List<CutNode> objects) {
 		super(context, textViewResourceId, objects);
 	}
 

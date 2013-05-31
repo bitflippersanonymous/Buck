@@ -154,6 +154,7 @@ public class MeasureActivity extends BaseActivity implements View.OnClickListene
 		switch (item.getItemId()) {
 		case R.id.menu_done:
 			Intent intent = new Intent(this, CutActivity.class);
+			intent.putExtra(Util.JOB, getIntent().getIntExtra(Util.JOB, -1));
 			intent.putParcelableArrayListExtra(Util.CUTS, mCuts);
 			intent.putExtra(Util.MILL, getIntent().getIntExtra(Util.MILL, -1));
 			startActivity(intent);

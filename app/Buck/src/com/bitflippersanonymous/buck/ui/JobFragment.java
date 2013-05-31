@@ -13,19 +13,24 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CursorAdapter;
 
 import com.bitflippersanonymous.buck.R;
-import com.bitflippersanonymous.buck.db.BuckDatabaseAdapter;
+import com.bitflippersanonymous.buck.domain.CutDbAdapter;
 import com.bitflippersanonymous.buck.domain.Job;
 import com.bitflippersanonymous.buck.domain.Util;
 import com.bitflippersanonymous.buck.domain.Util.DatabaseBase.Tables;
+import com.bitflippersanonymous.buck.service.BuckService;
 import com.bitflippersanonymous.buck.service.SimpleCursorLoader;
 
 public class JobFragment extends ListFragment 
 	implements LoaderManager.LoaderCallbacks<Cursor>, Util.Update {
 
-	private static final int JOB_LOADER = 0;
+	private static final int LOADER_JOB = 0;
+	private static final int LOADER_CUTS = 1;
+	
 	private Job mJob = null;
+	private CursorAdapter mCutsAdapter;
 	
 	public JobFragment() {}
 	
@@ -33,8 +38,9 @@ public class JobFragment extends ListFragment
 	public  void  onCreate(Bundle savedInstanceState) { 
 		super.onCreate(savedInstanceState); 
 		setHasOptionsMenu(true);
-		//setListAdapter(new CursorAdapter(getActivity(), null));
-		getLoaderManager().initLoader(JOB_LOADER, null, this);
+		getLoaderManager().initLoader(LOADER_JOB, null, this);
+		getLoaderManager().initLoader(LOADER_CUTS, null, this);
+		setListAdapter(mCutsAdapter = new CutDbAdapter(getActivity(), null, 0));
 	}
 	
 	@Override
@@ -55,6 +61,7 @@ public class JobFragment extends ListFragment
 		switch (item.getItemId()) {
 		case R.id.menu_add:
 			Intent intent = new Intent(getActivity(), MeasureActivity.class);
+			intent.putExtra(Util.JOB, mJob.getId());
 			startActivity(intent);
 			return true;
 		}
@@ -65,13 +72,15 @@ public class JobFragment extends ListFragment
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		Loader<Cursor> loader; 
-		final BuckDatabaseAdapter dB = BaseActivity.getService().getDbAdapter();
 		loader = new SimpleCursorLoader(getActivity(), args) {
 			@Override
 			public Cursor loadInBackground() {
+				BuckService service = BaseActivity.getService();
 				switch ( getId() ) {
-				case JOB_LOADER:
-					return dB.fetchEntry(Tables.Jobs, getArguments().getInt(Util._ID));
+				case LOADER_JOB:
+					return service.getItem(Tables.Jobs, getArguments().getInt(Util._ID));
+				case LOADER_CUTS:
+					return service.getCuts(getArguments().getInt(Util._ID));
 				}
 				return null;
 			};
@@ -83,29 +92,35 @@ public class JobFragment extends ListFragment
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 		switch ( loader.getId() ) {
-		case JOB_LOADER:
+		case LOADER_JOB:
 			mJob = new Job(cursor);
 			String jobName = mJob.getAsString(Job.Fields.Name);
 			ActionBar actionBar = getActivity().getActionBar();
 			actionBar.setDisplayShowTitleEnabled(true);
 			actionBar.setTitle(jobName);
 			break;
+		case LOADER_CUTS:
+			mCutsAdapter.swapCursor(cursor);
+			break;
 		}
-		//getListAdapter().swapCursor(cursor);
 	}
 	
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
 		switch ( loader.getId() ) {
-		case JOB_LOADER:
+		case LOADER_JOB:
 			mJob = null;
+			break;
+		case LOADER_CUTS:
+			mCutsAdapter.swapCursor(null);
 			break;
 		}
 	}
 	
 	@Override
 	public void update() {
-		getLoaderManager().restartLoader(JOB_LOADER, null, this);
+		getLoaderManager().restartLoader(LOADER_JOB, null, this);
+		getLoaderManager().restartLoader(LOADER_CUTS, null, this);
 	}
 	
 }

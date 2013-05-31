@@ -36,8 +36,12 @@ public class BuckService extends Service  {
 	private BuckDatabaseAdapter mDbAdapter = null;
 	private CutPlanner mCutPlanner = null;
 
-	public BuckDatabaseAdapter getDbAdapter() {
+	private BuckDatabaseAdapter getDbAdapter() {
 		return mDbAdapter;
+	}
+	
+	public boolean ready() {
+		return mDbAdapter != null;
 	}
 	
 	public class LocalBinder extends Binder {
@@ -101,6 +105,7 @@ public class BuckService extends Service  {
 		Log.i(getClass().getSimpleName(), "Destroyed");
 	}
 
+	// Tells all listening clients to re-query everything.  A bit overkill
 	public void sendUpdate() {
 		try {
 			for ( Messenger messenger : mClients ) {
@@ -115,6 +120,7 @@ public class BuckService extends Service  {
 	
 	public void addCutsToJob(CutNode item, int jobId) {
 		getDbAdapter().insertItems(item.getCutsList(jobId));
+		sendUpdate();
 	}
 
 	public Mill getMill(int millId) {
@@ -163,6 +169,18 @@ public class BuckService extends Service  {
 		values.put(Mill.Fields.Enabled.name(), checked ? "1" : "0");
 		getDbAdapter().updateTable(Tables.Mills.name(), rowId, values);
 		sendUpdate();
+	}
+
+	public Cursor getItem(Tables table, int id) {
+		return getDbAdapter().fetchEntry(table, id);
+	}
+	
+	public Cursor getAllItems(Tables table) {
+		return getDbAdapter().fetchAll(table);
+	}
+
+	public Cursor getCuts(int jobId) {
+		return getDbAdapter().fetchCuts(jobId);
 	}
 
 

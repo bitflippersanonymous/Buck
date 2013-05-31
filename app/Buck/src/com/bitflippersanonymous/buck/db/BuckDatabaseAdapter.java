@@ -56,6 +56,17 @@ public class BuckDatabaseAdapter implements Util.DatabaseBase, Util.InsertItems 
 		}
 		return cursor;
 	}
+	
+	public Cursor fetchCuts(int jobId) throws SQLException {
+		Cursor cursor = mDbHelper.getReadableDatabase().query(true, Tables.Cuts.name(), 
+				null,
+				Cut.Fields.JobId + "=?", new String[]{String.valueOf(jobId)}, 
+				null, null, null, null);
+		if (cursor != null) {
+			cursor.moveToFirst();
+		}
+		return cursor;
+	}
 
 	public Cursor fetchEntry(Tables table, int id) throws SQLException {
 		Cursor cursor = mDbHelper.getReadableDatabase().query(true, table.name(), 
