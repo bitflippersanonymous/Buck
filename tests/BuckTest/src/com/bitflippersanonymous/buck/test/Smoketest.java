@@ -96,12 +96,13 @@ public class Smoketest extends ServiceTestCase<BuckService> {
 		
 		// Check scribner.csv loaded
 		Dimension cut = new Dimension(0, 0);
-		for ( int w = 4; w <= 30; w++ ) {
-			for ( int l = 6; l <= 40; l++ ) {
+		for ( int w = 4; w <= 50; w++ ) {
+			for ( int l = 6; l <= 50; l++ ) {
 				if ( w <= 4 && l <= 7 ) continue;
 				cut.setLength(l);
 				cut.setWidth(w);
 				Integer bf = mService.getBoardFeet(cut);
+				//double vol = Math.PI * Math.pow(((double)w/24), 2) * l * 12;
 				assertTrue(bf > 0);
 			}
 		}

@@ -17,7 +17,7 @@ import com.bitflippersanonymous.buck.service.LoadTask;
 public class CutPlanner {
   //TODO: Get from prefs
 	
-	private Map<Dimension, Integer> mScribnerTable = new HashMap<Dimension, Integer>();
+	private int mScribnerTable[][]; // [Length][Width]
 	private List<CutNode> mCutNodes;
 	private List<Dimension> mWholeLogSize = null;
 	private Object mLock = new Object();
@@ -35,14 +35,15 @@ public class CutPlanner {
 	public int getBoardFeet(Dimension dim) {
 		waitTillReady();
 
-		// Hashmap lookup here is slow. Would be better as 2D array.
-		Integer bf = mScribnerTable.get(dim);
-		if ( bf != null )
-			return bf;
+		int w = dim.getWidth();
+		int l = dim.getLength();
+		if ( l <= mScribnerTable.length-1 && w <= mScribnerTable[l].length-1 ) {
+			return mScribnerTable[l][w];
+		}
 
 		// Untested
-		double D = dim.getWidth();
-		double L = dim.getLength();
+		double D = w;
+		double L = l;
 		return (int) ((Math.pow(0.79 * D, 2) - 2D - 4) * (L / 16));
 	}
 
@@ -60,7 +61,8 @@ public class CutPlanner {
 	}
 	
 	private void loadScribner(Context context, String filename) {
-		Util.FileReader reader = new ScribnerReader(context, filename);
+		final List<List<Integer>> mValues = new ArrayList<List<Integer>>();
+		Util.FileReader reader = new ScribnerReader(context, filename, mValues);
 		LoadTask task = new LoadTask(){
 			private void setReady() {
 				synchronized(mLock) {
@@ -74,6 +76,18 @@ public class CutPlanner {
 			}
 			@Override
 			protected void onPostExecute(Integer result) {
+				int lSize = mValues.get(mValues.size()-1).get(0)+1;
+				int wSize = mValues.get(0).get(mValues.get(0).size()-1)+1;
+				mScribnerTable = new int[lSize][wSize];
+				for ( int i = 1; i < mValues.size(); i++ ) {
+					for ( int j = 1; j < mValues.get(0).size(); j++ ) {
+						int l = mValues.get(i).get(0);
+						int w = mValues.get(0).get(j);
+						int v = mValues.get(i).get(j);
+						mScribnerTable[l][w] = v;
+					}
+				}
+				
 				setReady();
 			}
 		};
@@ -81,27 +95,22 @@ public class CutPlanner {
 	}
 
 	class ScribnerReader implements Util.FileReader {
-		List<Integer> mWidths;
 		String mFilename;
 		Context mContext;
+		List<List<Integer>> mValues;
 		
-		public ScribnerReader(Context context, String filename) {
+		public ScribnerReader(Context context, String filename, List<List<Integer>> values) {
 			mFilename = filename;
 			mContext = context;
+			mValues = values;
 		}
-		
+	
 		@Override
 		public void handleLine(String line) {
 			List<Integer> ints = new ArrayList<Integer>();
 			 for ( String s : line.split(","))
 				 ints.add(Integer.parseInt(s));
-			 if ( mWidths == null )
-				 mWidths = ints;
-			 else {
-				 // FIXME: Check for nulls here, table may be incomplete
-				 for ( int i = 1; i < ints.size(); i++ )
-					 mScribnerTable.put(new Dimension(mWidths.get(i), ints.get(0)), ints.get(i));
-			 }
+			 mValues.add(ints);
 		}
 
 		@Override
