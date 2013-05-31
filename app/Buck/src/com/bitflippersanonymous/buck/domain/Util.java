@@ -13,10 +13,11 @@ public class Util {
 	public static final String SCRIBNER = "scribner.csv"; 
 	public static final String TABLE = "TABLE";
 	public static final String MILL = "MILL";
+	public static final String JOB = "JOB";
 	
 	// Define an common interface for db classes for shared strings
 	public interface DatabaseBase {
-		public enum Tables {Mills, Jobs, Prices}
+		public enum Tables {Mills, Jobs, Prices, Cuts}
 	}
 
 	public interface InsertItems {

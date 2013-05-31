@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.bitflippersanonymous.buck.domain.Cut;
 import com.bitflippersanonymous.buck.domain.Job;
 import com.bitflippersanonymous.buck.domain.Mill;
 import com.bitflippersanonymous.buck.domain.Price;
@@ -41,24 +42,35 @@ public class BuckDatabaseHelper extends SQLiteOpenHelper implements Util.Databas
 		"create table " + Tables.Prices.name() + " ("
 		+ Util._ID + " integer primary key autoincrement ",
 
+		"create table " + Tables.Cuts.name() + " ("
+		+ Util._ID + " integer primary key autoincrement ",
 	};
 	
 	static {
+		int i = 0;
 		for ( DbTags.Tag column : Mill.getsTags() ) {
-			CREATE_TABLES[0] += ", " + column.getKey() + " " + column.getValue(); 
+			CREATE_TABLES[i] += ", " + column.getKey() + " " + column.getValue(); 
 		}
-		CREATE_TABLES[0] += ");";
+		CREATE_TABLES[i] += ");";
 		
-		
+		i++;
 		for ( DbTags.Tag column : Job.getsTags() ) {
-			CREATE_TABLES[1] += ", " + column.getKey() + " " + column.getValue(); 
+			CREATE_TABLES[i] += ", " + column.getKey() + " " + column.getValue(); 
 		}
-		CREATE_TABLES[1] += ");";
-
+		CREATE_TABLES[i] += ");";
+		
+		i++;
 		for ( DbTags.Tag column : Price.getsTags() ) {
-			CREATE_TABLES[2] += ", " + column.getKey() + " " + column.getValue(); 
+			CREATE_TABLES[i] += ", " + column.getKey() + " " + column.getValue(); 
 		}
-		CREATE_TABLES[2] += ");";
+		CREATE_TABLES[i] += ");";
+		
+		i++;
+		for ( DbTags.Tag column : Cut.getsTags() ) {
+			CREATE_TABLES[i] += ", " + column.getKey() + " " + column.getValue(); 
+		}
+		CREATE_TABLES[i] += ");";
+
 	}
 	
 	@Override
