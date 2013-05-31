@@ -1,12 +1,17 @@
 package com.bitflippersanonymous.buck.db;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.bitflippersanonymous.buck.domain.Cut;
 import com.bitflippersanonymous.buck.domain.CutNode;
+import com.bitflippersanonymous.buck.domain.DbItem;
 import com.bitflippersanonymous.buck.domain.Job;
 import com.bitflippersanonymous.buck.domain.Mill;
 import com.bitflippersanonymous.buck.domain.Price;
@@ -87,6 +92,20 @@ public class BuckDatabaseAdapter implements Util.DatabaseBase, Util.InsertItems 
 		ContentValues values = item.getContentValues();
 		return database.insert(item.getTableName(), null, values);
 	}
+
+	public List<Long> insertItems(List<DbTags> items) {
+		List<Long> idList = new ArrayList<Long>();
+		final SQLiteDatabase database = mDbHelper.getWritableDatabase();
+		database.beginTransactionNonExclusive();
+		
+		for ( DbTags item : items ) {
+			idList.add(database.insert(item.getTableName(), null, item.getContentValues()));
+		}
+		
+		database.setTransactionSuccessful();
+		database.endTransaction();
+		return idList;
+	}
 	
 	public long insertMill(Mill mill) {
 		final SQLiteDatabase database = mDbHelper.getWritableDatabase();
@@ -104,11 +123,6 @@ public class BuckDatabaseAdapter implements Util.DatabaseBase, Util.InsertItems 
 	public int updateTable(String table, long rowId, ContentValues values) throws SQLException {
 		return mDbHelper.getWritableDatabase().update(table, values, 
 				Util._ID + "=?", new String[]{String.valueOf(rowId)});
-	}
-
-	public void addPieceToJob(CutNode item, Job job) {
-		// TODO Auto-generated method stub
-		
 	}
 	
 }

@@ -11,6 +11,7 @@ import android.content.Loader;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -31,8 +32,6 @@ import com.bitflippersanonymous.buck.domain.Mill;
 import com.bitflippersanonymous.buck.domain.Util;
 import com.bitflippersanonymous.buck.domain.Util.DatabaseBase.Tables;
 import com.bitflippersanonymous.buck.service.SimpleCursorLoader;
-
-
 
 public class CutActivity extends BaseActivity 
 	implements LoaderManager.LoaderCallbacks<List<CutNode>>,
@@ -146,9 +145,10 @@ public class CutActivity extends BaseActivity
 				Intent.FLAG_ACTIVITY_CLEAR_TOP |
 				Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(intent);
-		Job job = null; //FIXME: Get from args bundle?  Passed to this activity?
-		getService().addPieceToJob(mAdapter.getItem(position), job);
-		Toast.makeText(this, "Add to Database", Toast.LENGTH_SHORT).show();
+		int jobId = getIntent().getIntExtra(Util.JOB, -1);
+		if ( jobId == -1 )
+			Log.e(getClass().getSimpleName(), "JobId not in Intent");
+		getService().addCutsToJob(mAdapter.getItem(position), jobId);
 		finish();
 	}
 	

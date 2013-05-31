@@ -154,9 +154,10 @@ public class CutPlanner {
 		return width;
 	}
 
-	private void recCutPlan(CutNode parent, int position, List<Price> prices) {
+	private void recCutPlan(CutNode parent, int position, Mill mill) {
 		
-		for ( Price price : prices ) {
+		
+		for ( Price price : mill.getPrices() ) {
 			int length = price.getLength();
 			int minWidth = price.getTop();
 			if ( minWidth == -1 )
@@ -168,26 +169,26 @@ public class CutPlanner {
 			if ( width >= minWidth ) {
 				Dimension dim = new Dimension(width, length);
 				CutNode newNode = new CutNode(dim, getBoardFeet(dim), 
-						price.getPrice());
+						price.getPrice(), mill.getId());
 				parent.addChild(newNode);
 				
-				recCutPlan(newNode, newPosition, prices);
+				recCutPlan(newNode, newPosition, mill);
 			}
 		}
 
 		// Couldn't add any more, so we're at a leaf. Rest is firewood.
 		if ( parent.getChildren().size() == 0 ) {
-			CutNode scrapNode = calcScrapNode(position);
+			CutNode scrapNode = calcScrapNode(position, mill);
 			parent.addChild(scrapNode);
 			mCutNodes.add(scrapNode);
 		}
 	}
 
-	private CutNode calcScrapNode(int position) {
+	private CutNode calcScrapNode(int position, Mill mill) {
 		int scrapLength = mTotalLogLength - position;
 		int scrapWidth = widthAtPosition(mTotalLogLength);
 		Dimension scrapDim = new Dimension(scrapWidth, scrapLength);
-		CutNode scrapNode = new CutNode(scrapDim, 0, 0);
+		CutNode scrapNode = new CutNode(scrapDim, 0, 0, mill.getId());
 		return scrapNode;
 	}
 
@@ -220,7 +221,7 @@ public class CutPlanner {
 			mWholeLogSize.add(new Dimension(mMinTopDiameter, 0));
 		}
 			
-		recCutPlan(new CutNode(mill), 0, mill.getPrices());
+		recCutPlan(new CutNode(), 0, mill);
 		
 		Collections.sort(mCutNodes, CutNode.getByTotalValue());
 		return mCutNodes;

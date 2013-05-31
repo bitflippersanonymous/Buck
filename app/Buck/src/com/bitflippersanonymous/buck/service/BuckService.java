@@ -17,6 +17,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.bitflippersanonymous.buck.db.BuckDatabaseAdapter;
+import com.bitflippersanonymous.buck.domain.Cut;
 import com.bitflippersanonymous.buck.domain.CutNode;
 import com.bitflippersanonymous.buck.domain.CutPlanner;
 import com.bitflippersanonymous.buck.domain.Dimension;
@@ -112,9 +113,8 @@ public class BuckService extends Service  {
 		}
 	}
 	
-	public void addPieceToJob(CutNode item, Job job) {
-		getDbAdapter().addPieceToJob(item, job);
-		Log.e(getClass().getSimpleName(), "Store CutPlan in db");
+	public void addCutsToJob(CutNode item, int jobId) {
+		getDbAdapter().insertItems(item.getCutsList(jobId));
 	}
 
 	public Mill getMill(int millId) {
@@ -127,14 +127,12 @@ public class BuckService extends Service  {
 	public Job getJob(int jobId) {
 		Cursor cursor = getDbAdapter().fetchEntry(Tables.Jobs, jobId);
 		Job job = new Job(cursor);
-		job.setSummary(getSummary(jobId));
 		return job;
 	}
-
 	
+	/* Count items in db matching jobid */
 	private List<JobSummary> getSummary(int jobId) {
-		List<JobSummary> summary = new ArrayList<JobSummary>();
-		return summary;
+		return null;
 	}
 
 	private List<Price> getPrices(int millId) {
