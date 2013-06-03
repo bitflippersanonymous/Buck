@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 
 import com.bitflippersanonymous.buck.R;
-import com.bitflippersanonymous.buck.domain.CutDbAdapter;
+import com.bitflippersanonymous.buck.domain.CutsAdapter;
 import com.bitflippersanonymous.buck.domain.Job;
 import com.bitflippersanonymous.buck.domain.Util;
 import com.bitflippersanonymous.buck.domain.Util.DatabaseBase.Tables;
@@ -30,7 +30,7 @@ public class JobFragment extends ListFragment
 	private static final int LOADER_CUTS = 1;
 	
 	private Job mJob = null;
-	private CursorAdapter mCutsAdapter;
+	private CutsAdapter mCutsAdapter;
 	
 	public JobFragment() {}
 	
@@ -40,7 +40,7 @@ public class JobFragment extends ListFragment
 		setHasOptionsMenu(true);
 		getLoaderManager().initLoader(LOADER_JOB, null, this);
 		getLoaderManager().initLoader(LOADER_CUTS, null, this);
-		setListAdapter(mCutsAdapter = new CutDbAdapter(getActivity(), null, 0));
+		setListAdapter(mCutsAdapter = new CutsAdapter(null));
 	}
 	
 	@Override

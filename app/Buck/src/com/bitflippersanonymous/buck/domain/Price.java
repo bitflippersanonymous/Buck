@@ -10,6 +10,7 @@ public class Price extends DbItem<Price.Fields> {
 	private int mLength;
 	private int mTop;
 	private int mPrice;
+	private int mMillId;
 	
 	public enum Fields {MillId, Length, Rate, Top, Price};
 	private static final Tag[] sTags = {
@@ -34,12 +35,17 @@ public class Price extends DbItem<Price.Fields> {
 		else
 			mTop = -1;
 		mPrice = getAsInteger(Price.Fields.Price);
+		mMillId = getAsInteger(Price.Fields.MillId);
 	}
 
 	public Price(int i) {
 		super(sTags, i);
 	}
 
+	public int getMillId() {
+		return mMillId;
+	}
+	
 	public int getLength() {
 		return mLength;
 	}
@@ -67,5 +73,6 @@ public class Price extends DbItem<Price.Fields> {
 			}};
 		return sByLength;
 	}
+
 
 }

@@ -11,18 +11,16 @@ import com.bitflippersanonymous.buck.domain.Util.DbTags;
 public class CutNode {
 	private CutNode mParent;
 	private List<CutNode> mChildren = new ArrayList<CutNode>();
-	private int mMillId = -1;
 	private Dimension mDimension;
 	private int mBoardFeet = 0;
-	private int mPrice = 0;
+	private Price mPrice;
 
 	public CutNode() { } // Root node
 	
-	public CutNode(Dimension dimension, int boardFeet, int price, int millId) {
+	public CutNode(Dimension dimension, int boardFeet, Price price) {
 		mDimension = dimension;
 		mBoardFeet = boardFeet;
 		mPrice = price;
-		mMillId = millId;
 	}
 
 	public CutNode getParent() {
@@ -47,7 +45,9 @@ public class CutNode {
 	}
 
 	public int getMillId() {
-		return mMillId;
+		if ( mPrice == null )
+			return -1;
+		return mPrice.getMillId();
 	}
 	
 	public int getBoardFeet() {
@@ -57,7 +57,7 @@ public class CutNode {
 	public int getTotalBoardFeet() {
 		int total = 0;
 		for ( CutNode node = this; node.mDimension != null; node = node.mParent ) {
-			if ( node.mPrice > 0 )
+			if ( node.mPrice != null )
 				total += node.mBoardFeet;
 		}
 		return total;
@@ -73,7 +73,9 @@ public class CutNode {
 	}
 
 	public int getValue() {
-		return (int)(mBoardFeet * ((float)mPrice / 1000));
+		if ( mPrice == null )
+			return 0;
+		return (int)(mBoardFeet * ((float)mPrice.getPrice() / 1000));
 	}
 	
 	public int getTotalValue() {

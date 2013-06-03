@@ -17,7 +17,6 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.bitflippersanonymous.buck.db.BuckDatabaseAdapter;
-import com.bitflippersanonymous.buck.domain.Cut;
 import com.bitflippersanonymous.buck.domain.CutNode;
 import com.bitflippersanonymous.buck.domain.CutPlanner;
 import com.bitflippersanonymous.buck.domain.Dimension;
@@ -27,7 +26,6 @@ import com.bitflippersanonymous.buck.domain.Price;
 import com.bitflippersanonymous.buck.domain.JobSummary;
 import com.bitflippersanonymous.buck.domain.Util;
 import com.bitflippersanonymous.buck.domain.Util.DatabaseBase.Tables;
-import com.bitflippersanonymous.buck.ui.BaseActivity;
 import com.bitflippersanonymous.buck.ui.SettingsActivity;
 
 public class BuckService extends Service  {
