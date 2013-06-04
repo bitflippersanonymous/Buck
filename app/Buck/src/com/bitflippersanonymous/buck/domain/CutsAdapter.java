@@ -44,6 +44,8 @@ public class CutsAdapter extends BaseAdapter implements ListAdapter {
 			Integer length = cursor.getInt(Cut.Fields.Length.ordinal()+1);
 			Integer value = cursor.getInt(Cut.Fields.Value.ordinal()+1);
 			Integer fbm = cursor.getInt(Cut.Fields.FBM.ordinal()+1);
+			
+			Integer rate = 0; //cursor.getInt(Cut.Fields.Rate.ordinal()+1);
 
 			// Should sort and group by PriceId to separate by Mill.
 			// FIXME: firewood FBM not set by CutPlanner, ignore for now
@@ -54,13 +56,20 @@ public class CutsAdapter extends BaseAdapter implements ListAdapter {
 				summaries.put(priceId, sum = new JobSummary(priceId, name.toString()));
 			}
 			
+			sum.mCount++;
 			sum.mValue += value;
 			sum.mFBM += fbm;
+			mTotal.mCount++;
 			mTotal.mValue += value;
 			mTotal.mFBM += fbm;
 		} while ( cursor.moveToNext() );
 		
 		mSummaries.addAll(summaries.values());
+		for ( JobSummary summary : mSummaries ) {
+			if ( summary.mRate != 0 ) {
+				summary.mRate = summary.mCount / mTotal.mCount;
+			}
+		}
 		Collections.sort(mSummaries, JobSummary.getByPriceId());
 		notifyDataSetChanged();
 	}
@@ -80,15 +89,23 @@ public class CutsAdapter extends BaseAdapter implements ListAdapter {
 		JobSummary summary = getItem(position);
 		if ( convertView == null )
 			convertView = LayoutInflater.from(parent.getContext()).inflate(
-					R.layout.cut_entry, parent, false);
+					R.layout.summary_entry, parent, false);
+
+		StringBuilder rate = new StringBuilder(); 
+		if ( summary.mRate > 0 )
+			rate.append(summary.mRate);
 		
-		((TextView)convertView.findViewById(R.id.textViewCutCuts))
+		((TextView)convertView.findViewById(R.id.textViewSumName))
 			.setText(summary.getName());
-		((TextView)convertView.findViewById(R.id.textViewCutBf))
+		((TextView)convertView.findViewById(R.id.textViewSumRate))
+			.setText(rate);
+		((TextView)convertView.findViewById(R.id.textViewSumCount))
+			.setText(Integer.toString(summary.mCount));
+		((TextView)convertView.findViewById(R.id.textViewSumBf))
 			.setText(Integer.toString((summary.mFBM)));
 		StringBuilder sb = new StringBuilder();
 		sb.append("$").append(summary.mValue);
-		((TextView)convertView.findViewById(R.id.textViewCutValue))
+		((TextView)convertView.findViewById(R.id.textViewSumValue))
 			.setText(sb);
 		return convertView;	
 	}

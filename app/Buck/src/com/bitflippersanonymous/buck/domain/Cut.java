@@ -32,6 +32,7 @@ public class Cut extends DbItem<Cut.Fields> {
 		super(sTags, i);
 	}
 
+	// Into DB
 	public Cut(int jobId, CutNode node) {
 		super(sTags, -1);
 		put(Fields.JobId, jobId);

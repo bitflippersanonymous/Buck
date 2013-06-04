@@ -9,14 +9,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Inventory"
+        android:text="@string/job_inventory"
         android:textAppearance="?android:attr/textAppearanceLarge" />
     
     <include
-        android:id="@+id/header_cutlist"
+        android:id="@+id/header_sumlist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        layout="@layout/cut_entry" 
+        layout="@layout/summary_entry" 
         android:paddingBottom="5dp" />
     
     <ListView

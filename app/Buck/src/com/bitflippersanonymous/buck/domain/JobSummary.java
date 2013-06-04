@@ -8,9 +8,10 @@ public class JobSummary {
 	final int mPriceId;
 	
 	// Totals for this group
-	public int mCount = 0;
+	public int mCount = 1;
 	public int mFBM = 0;
 	public int mValue = 0;
+	public int mRate = 0;
 	
 	public JobSummary(int priceId, String name) {
 		mPriceId = priceId;

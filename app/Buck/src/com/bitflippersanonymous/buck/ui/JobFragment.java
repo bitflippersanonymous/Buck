@@ -50,16 +50,17 @@ public class JobFragment extends ListFragment
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_job, container, false);
-		populateHeader(view);
 		return view;
 	}
-	
+
+	/*
 	private void populateHeader(View view) {
 		final Resources res = getResources();
 		((TextView)view.findViewById(R.id.textViewCutCuts)).setText(res.getString(R.string.cutheader_cuts));
 		((TextView)view.findViewById(R.id.textViewCutBf)).setText(res.getString(R.string.cutheader_bf));
 		((TextView)view.findViewById(R.id.textViewCutValue)).setText(res.getString(R.string.cutheader_value));
 	}
+	*/
 	
 	@Override
 	public void onCreateOptionsMenu (Menu menu, MenuInflater inflater) {
