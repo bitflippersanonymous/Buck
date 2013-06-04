@@ -134,11 +134,6 @@ public class BuckService extends Service  {
 		return job;
 	}
 	
-	/* Count items in db matching jobid */
-	private List<JobSummary> getSummary(int jobId) {
-		return null;
-	}
-
 	private List<Price> getPrices(int millId) {
 		List<Price > prices = new ArrayList<Price>();
 		Cursor cursor =  getDbAdapter().fetchPrices(millId);

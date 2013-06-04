@@ -107,27 +107,33 @@ public class BuckDatabaseAdapter implements Util.DatabaseBase, Util.InsertItems 
 	public List<Long> insertItems(List<DbTags> items) {
 		List<Long> idList = new ArrayList<Long>();
 		final SQLiteDatabase database = mDbHelper.getWritableDatabase();
-		database.beginTransactionNonExclusive();
-		
-		for ( DbTags item : items ) {
-			idList.add(database.insert(item.getTableName(), null, item.getContentValues()));
+		try {
+			database.beginTransactionNonExclusive();
+
+			for ( DbTags item : items ) {
+				idList.add(database.insert(item.getTableName(), null, item.getContentValues()));
+			}
+
+			database.setTransactionSuccessful();
+		} finally {
+			database.endTransaction();
 		}
-		
-		database.setTransactionSuccessful();
-		database.endTransaction();
 		return idList;
 	}
 	
 	public long insertMill(Mill mill) {
 		final SQLiteDatabase database = mDbHelper.getWritableDatabase();
-		database.beginTransactionNonExclusive();
-		mill.setId((int)database.insert(mill.getTableName(), null, mill.getContentValues()));
-		for ( Price price : mill.getPrices() ) {
-			price.put(Price.Fields.MillId, mill.getId());
-			price.setId((int)database.insert(price.getTableName(), null, price.getContentValues()));
+		try {
+			database.beginTransactionNonExclusive();
+			mill.setId((int)database.insert(mill.getTableName(), null, mill.getContentValues()));
+			for ( Price price : mill.getPrices() ) {
+				price.put(Price.Fields.MillId, mill.getId());
+				price.setId((int)database.insert(price.getTableName(), null, price.getContentValues()));
+			}
+			database.setTransactionSuccessful();
+		} finally {
+			database.endTransaction();
 		}
-		database.setTransactionSuccessful();
-		database.endTransaction();
 		return mill.getId();
 	}
 

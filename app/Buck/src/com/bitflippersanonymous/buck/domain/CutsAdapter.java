@@ -29,6 +29,7 @@ public class CutsAdapter extends BaseAdapter implements ListAdapter {
 		swapCursor(cursor);
 	}
 
+	// Note: This happens on the UI thread
 	public void swapCursor(Cursor cursor) {
 		mTotal = new JobSummary(TOTAL);
 		mSummaries = new ArrayList<JobSummary>();
