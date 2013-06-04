@@ -2,16 +2,14 @@ package com.bitflippersanonymous.buck.domain;
 
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.bitflippersanonymous.buck.R;
 
-import android.content.Context;
 import android.database.Cursor;
-import android.database.DataSetObserver;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,23 +29,31 @@ public class CutsAdapter extends BaseAdapter implements ListAdapter {
 
 	// Note: This happens on the UI thread
 	public void swapCursor(Cursor cursor) {
-		mTotal = new JobSummary(TOTAL);
+		mTotal = new JobSummary(-1, TOTAL);
 		mSummaries = new ArrayList<JobSummary>();
-
+		mSummaries.add(mTotal);
+		
 		Map<Integer, JobSummary> summaries = new HashMap<Integer, JobSummary>();
-		summaries.put(-1, mTotal);
 		
 		if ( cursor == null || !cursor.moveToFirst() )
 			return;
 		do {
-			Integer length = cursor.getInt(Cut.Fields.Length.ordinal());
-			Integer value = cursor.getInt(Cut.Fields.Value.ordinal());
-			Integer fbm = cursor.getInt(Cut.Fields.FBM.ordinal());
+			// FIXME: enum/sql column is off by 1 from _id
+			Integer priceId = cursor.getInt(Cut.Fields.PriceId.ordinal()+1);
+			if ( priceId == -1 ) continue;
+			Integer length = cursor.getInt(Cut.Fields.Length.ordinal()+1);
+			Integer value = cursor.getInt(Cut.Fields.Value.ordinal()+1);
+			Integer fbm = cursor.getInt(Cut.Fields.FBM.ordinal()+1);
 
-			JobSummary sum = summaries.get(length);
-			if ( sum == null )
-				summaries.put(length, sum = new JobSummary(Integer.toString(length)));
-
+			// Should sort and group by PriceId to separate by Mill.
+			// FIXME: firewood FBM not set by CutPlanner, ignore for now
+			JobSummary sum = summaries.get(priceId);
+			if ( sum == null ) {
+				StringBuilder name = new StringBuilder();
+				name.append(length).append("'");
+				summaries.put(priceId, sum = new JobSummary(priceId, name.toString()));
+			}
+			
 			sum.mValue += value;
 			sum.mFBM += fbm;
 			mTotal.mValue += value;
@@ -55,6 +61,7 @@ public class CutsAdapter extends BaseAdapter implements ListAdapter {
 		} while ( cursor.moveToNext() );
 		
 		mSummaries.addAll(summaries.values());
+		Collections.sort(mSummaries, JobSummary.getByPriceId());
 		notifyDataSetChanged();
 	}
 
@@ -79,10 +86,10 @@ public class CutsAdapter extends BaseAdapter implements ListAdapter {
 			.setText(summary.getName());
 		((TextView)convertView.findViewById(R.id.textViewCutBf))
 			.setText(Integer.toString((summary.mFBM)));
-		StringBuilder value = new StringBuilder();
-		value.append("$").append(summary.mValue);
+		StringBuilder sb = new StringBuilder();
+		sb.append("$").append(summary.mValue);
 		((TextView)convertView.findViewById(R.id.textViewCutValue))
-			.setText(value);
+			.setText(sb);
 		return convertView;	
 	}
 

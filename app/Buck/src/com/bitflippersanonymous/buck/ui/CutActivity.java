@@ -56,7 +56,7 @@ public class CutActivity extends BaseActivity
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setTitle(R.string.title_activity_cut);
 
-		populate_header();
+		populateHeader();
 		setupMillSpinner();
 		setViewState(ViewState.LOADING);
 
@@ -98,7 +98,7 @@ public class CutActivity extends BaseActivity
 		currentMill.setOnItemSelectedListener(this);
 	}
 	
-	private void populate_header() {
+	private void populateHeader() {
 		final Resources res = getResources();
 		((TextView)findViewById(R.id.textViewCutCuts)).setText(res.getString(R.string.cutheader_cuts));
 		((TextView)findViewById(R.id.textViewCutBf)).setText(res.getString(R.string.cutheader_bf));

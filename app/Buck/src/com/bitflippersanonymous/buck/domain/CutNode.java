@@ -49,6 +49,12 @@ public class CutNode {
 			return -1;
 		return mPrice.getMillId();
 	}
+
+	public int getPriceId() {
+		if ( mPrice == null )
+			return -1;
+		return mPrice.getId();
+	}
 	
 	public int getBoardFeet() {
 		return mBoardFeet;
@@ -97,8 +103,7 @@ public class CutNode {
 		List<DbTags> cuts = new ArrayList<DbTags>();
 		Cut cut;
 		for ( CutNode node = this; node.mDimension != null; node = node.mParent ) {
-			cuts.add(cut = new Cut(node));
-			cut.put(Cut.Fields.JobId, jobId);
+			cuts.add(cut = new Cut(jobId, node));
 		}
 		return cuts;
 	}

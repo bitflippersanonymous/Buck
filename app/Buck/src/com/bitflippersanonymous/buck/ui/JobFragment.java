@@ -1,10 +1,12 @@
 package com.bitflippersanonymous.buck.ui;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.TextView;
 
 import com.bitflippersanonymous.buck.R;
 import com.bitflippersanonymous.buck.domain.CutsAdapter;
@@ -47,7 +50,15 @@ public class JobFragment extends ListFragment
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_job, container, false);
+		populateHeader(view);
 		return view;
+	}
+	
+	private void populateHeader(View view) {
+		final Resources res = getResources();
+		((TextView)view.findViewById(R.id.textViewCutCuts)).setText(res.getString(R.string.cutheader_cuts));
+		((TextView)view.findViewById(R.id.textViewCutBf)).setText(res.getString(R.string.cutheader_bf));
+		((TextView)view.findViewById(R.id.textViewCutValue)).setText(res.getString(R.string.cutheader_value));
 	}
 	
 	@Override

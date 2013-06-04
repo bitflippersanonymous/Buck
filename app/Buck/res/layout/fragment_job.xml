@@ -11,7 +11,14 @@
         android:gravity="center"
         android:text="Inventory"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-
+    
+    <include
+        android:id="@+id/header_cutlist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/cut_entry" 
+        android:paddingBottom="5dp" />
+    
     <ListView
         android:id="@android:id/list"
         android:layout_width="match_parent"
