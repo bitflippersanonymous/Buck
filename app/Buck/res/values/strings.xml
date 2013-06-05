@@ -33,10 +33,10 @@
     <string name="cutheader_value">Value</string>
 
 	<string name="sumheader_name">Piece</string>
-    <string name="sumheader_rate">Count</string>
-	<string name="sumheader_count">Count</string>
+    <string name="sumheader_rate">%</string>
+	<string name="sumheader_count">#</string>
 	<string name="sumheader_bf">FBM</string>
-    <string name="sumheader_value">Value</string>
+    <string name="sumheader_value">$</string>
     
     <string name="kerf_title">Kerf</string>
     <string name="kerf_desc">\' trim length</string>

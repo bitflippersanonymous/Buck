@@ -6,52 +6,52 @@
 
     <TextView
         android:id="@+id/textViewSumName"
-        android:text="@string/sumheader_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight=".3"
+        android:layout_weight=".4"
         android:gravity="left"
         android:paddingLeft="2sp"
+        android:text="@string/sumheader_name"
         android:textAppearance="?android:attr/textAppearanceLarge" />
- 
+
     <TextView
         android:id="@+id/textViewSumRate"
-		android:text="@string/sumheader_rate"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight=".5"
+        android:layout_weight=".4"
         android:gravity="right"
         android:paddingLeft="2sp"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
-    
+        android:text="@string/sumheader_rate"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
     <TextView
         android:id="@+id/textViewSumCount"
-		android:text="@string/sumheader_count"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight=".5"
+        android:layout_weight=".4"
         android:gravity="right"
         android:paddingLeft="2sp"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
-    
+        android:text="@string/sumheader_count"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
     <TextView
         android:id="@+id/textViewSumBf"
-        android:text="@string/sumheader_bf"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight=".5"
+        android:layout_weight=".4"
         android:gravity="right"
         android:paddingLeft="2sp"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
-    
+        android:text="@string/sumheader_bf"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
     <TextView
         android:id="@+id/textViewSumValue"
-        android:text="@string/sumheader_value"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight=".5"
+        android:layout_weight=".4"
         android:gravity="right"
         android:paddingLeft="2sp"
+        android:text="@string/sumheader_value"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </LinearLayout>
