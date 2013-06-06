@@ -1,4 +1,5 @@
 package com.bitflippersanonymous.buck.domain;
+
 import android.database.Cursor;
 
 /*
@@ -8,33 +9,15 @@ import android.database.Cursor;
  * the price after the log is cut. 
  * 
  */
-public class Cut extends DbItem<Cut.Fields> {
-	public enum Fields {JobId, MillId, PriceId, Width, Length, FBM, Value };
-	private static final Tag[] sTags = {
-			new Tag(Fields.JobId, DataType.integer),
-			new Tag(Fields.MillId, DataType.integer),
-			new Tag(Fields.PriceId, DataType.integer),
-			new Tag(Fields.Width, DataType.integer),
-			new Tag(Fields.Length, DataType.integer),
-			new Tag(Fields.FBM, DataType.integer),
-			new Tag(Fields.Value, DataType.integer),
-	};
-	
-	public static Tag[] getsTags() {
-		return sTags;
-	}
+public class Cut extends DbItem {
+	public enum Fields { _id, JobId, MillId, PriceId,	Width, Length, FBM,	Value	};
 	
 	public Cut(Cursor cursor) {
-		super(sTags, cursor);
-	}
-
-	public Cut(int i) {
-		super(sTags, i);
+		super(cursor);
 	}
 
 	// Into DB
 	public Cut(int jobId, CutNode node) {
-		super(sTags, -1);
 		put(Fields.JobId, jobId);
 		put(Fields.MillId, node.getMillId());
 		put(Fields.PriceId, node.getPriceId());
@@ -43,7 +26,7 @@ public class Cut extends DbItem<Cut.Fields> {
 		put(Fields.FBM, node.getBoardFeet());
 		put(Fields.Value, node.getValue());
 	}
-
+	
 	@Override
 	public String getTableName() {
 		return Util.DatabaseBase.Tables.Cuts.name();

@@ -38,14 +38,15 @@ public class CutsAdapter extends BaseAdapter implements ListAdapter {
 		if ( cursor == null || !cursor.moveToFirst() )
 			return;
 		do {
-			// FIXME: enum/sql column is off by 1 from _id
-			Integer priceId = cursor.getInt(Cut.Fields.PriceId.ordinal()+1);
+			Cut cut = new Cut(cursor);
+			Integer priceId = cut.getAsInteger(Cut.Fields.PriceId);
 			if ( priceId == -1 ) continue;
-			Integer length = cursor.getInt(Cut.Fields.Length.ordinal()+1);
-			Integer value = cursor.getInt(Cut.Fields.Value.ordinal()+1);
-			Integer fbm = cursor.getInt(Cut.Fields.FBM.ordinal()+1);
 			
-			Integer rate = 0; //cursor.getInt(Cut.Fields.Rate.ordinal()+1);
+			Integer length = cut.getAsInteger(Cut.Fields.Length);
+			Integer value = cut.getAsInteger(Cut.Fields.Value);
+			Integer fbm = cut.getAsInteger(Cut.Fields.FBM);
+			
+			Integer rate = 0; // cut.getAsInteger(Cut.Fields.Rate);
 
 			// Should sort and group by PriceId to separate by Mill.
 			// FIXME: firewood FBM not set by CutPlanner, ignore for now

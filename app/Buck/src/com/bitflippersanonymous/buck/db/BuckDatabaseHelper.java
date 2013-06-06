@@ -16,7 +16,6 @@ import com.bitflippersanonymous.buck.domain.Job;
 import com.bitflippersanonymous.buck.domain.Mill;
 import com.bitflippersanonymous.buck.domain.Price;
 import com.bitflippersanonymous.buck.domain.Util;
-import com.bitflippersanonymous.buck.domain.Util.DbTags;
 
 /*
  * Could also use:
@@ -111,8 +110,6 @@ public class BuckDatabaseHelper extends SQLiteOpenHelper implements Util.Databas
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		Log.w(getClass().getName(),	"Upgrading database from version " + oldVersion + " to "
 				+ newVersion + ", which will destroy all old data");
-		for ( Tables table : Tables.values() )
-			db.execSQL("DROP TABLE IF EXISTS " + table.name());
 		onCreate(db);
 	}
 

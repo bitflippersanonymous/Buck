@@ -59,7 +59,7 @@ public class DBItemXMLReader {
 	}
 	
 	private class XMLHandler extends DefaultHandler {
-	    private DbItem<?> mCurrent = null;
+		private DbItem mCurrent = null;
 		private Mill mMill = null;
 	    
 		@Override
@@ -80,13 +80,13 @@ public class DBItemXMLReader {
 	        
 	        // Just pass attributes to c'tor and let it fill in?
 	        if ( localName.equals(Mill.MILL) ) {
-	        	mCurrent = mMill = new Mill(-1);
+	        	mCurrent = mMill = new Mill();
 	        } else if ( localName.equals(Price.PRICE) && mMill != null ) {
-	        	Price price = new Price(-1);
+	        	Price price = new Price();
 	        	mMill.getPrices().add(price);
 	        	mCurrent = price;
 	        } else if ( localName.equals(Job.JOB) )
-	        	mCurrent = new Job(-1);
+	        	mCurrent = new Job();
 	        else {
 				Log.w(getClass().getName(), "Unhandled XML Element: " + localName );
 				return;

@@ -58,7 +58,7 @@ public class BuckService extends Service  {
 
 		final String jobs[] = {"Back 40", "Homeplace"};
 		for ( String name : jobs ) {
-			Job job = new Job(-1);
+			Job job = new Job();
 			job.put(Job.Fields.Name, name);
 			mDbAdapter.insertItem(job);
 		}

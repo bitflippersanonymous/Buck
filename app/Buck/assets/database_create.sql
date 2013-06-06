@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS Cuts;
 CREATE TABLE Cuts (
 	_id integer primary key autoincrement, 
 	JobId integer, 
@@ -9,17 +10,20 @@ CREATE TABLE Cuts (
 	Value integer
 );
 
+DROP TABLE IF EXISTS Jobs;
 CREATE TABLE Jobs (
 	_id integer primary key autoincrement, 
 	Name text
 );
 
+DROP TABLE IF EXISTS Mills;
 CREATE TABLE Mills (
 	_id integer primary key autoincrement,
 	Name text,
 	Enabled integer
 );
 
+DROP TABLE IF EXISTS Prices;
 CREATE TABLE Prices (
 	_id integer primary key autoincrement,
 	MillId integer,
@@ -29,5 +33,6 @@ CREATE TABLE Prices (
 	Price integer
 );
 
-CREATE VIEW "job_totals" AS
+DROP VIEW IF EXISTS Job_Totals;
+CREATE VIEW Job_Totals AS
 	select JobId, count(JobId) as count from Cuts group by JobId;

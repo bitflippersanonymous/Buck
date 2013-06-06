@@ -6,29 +6,17 @@ import java.util.List;
 
 import android.database.Cursor;
 
-import com.bitflippersanonymous.buck.domain.Util.DbTags;
-
-public class Mill extends DbItem<Mill.Fields> {
-	public enum Fields {Name, Enabled};
-	private static final Tag[] sTags = {
-		new Tag(Fields.Name),
-		new Tag(Fields.Enabled, DbTags.DataType.integer),
-	};
+public class Mill extends DbItem  {
+	public enum Fields {_id, Name, Enabled};
 	public static final String MILL = "Mill";
-
-	public static Tag[] getsTags() {
-		return sTags;
-	}
-
+	
 	private List<Price> mPrices = new ArrayList<Price>();
 	
 	public Mill(Cursor cursor) {
-		super(sTags, cursor);
+		super(cursor);
 	}
 
-	public Mill(int i) {
-		super(sTags, i);
-	}
+	public Mill() {	}
 
 	public String getTableName() {
 		return Util.DatabaseBase.Tables.Mills.name();

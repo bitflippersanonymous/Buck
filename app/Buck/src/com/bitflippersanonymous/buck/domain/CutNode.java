@@ -5,9 +5,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Collections;
 
-import com.bitflippersanonymous.buck.domain.Cut.Fields;
-import com.bitflippersanonymous.buck.domain.Util.DbTags;
-
 public class CutNode {
 	private CutNode mParent;
 	private List<CutNode> mChildren = new ArrayList<CutNode>();
@@ -99,11 +96,10 @@ public class CutNode {
 		return total;
 	}
 
-	public List<DbTags> getCutsList(int jobId) {
-		List<DbTags> cuts = new ArrayList<DbTags>();
-		Cut cut;
+	public List<DbItem> getCutsList(int jobId) {
+		List<DbItem> cuts = new ArrayList<DbItem>();
 		for ( CutNode node = this; node.mDimension != null; node = node.mParent ) {
-			cuts.add(cut = new Cut(jobId, node));
+			cuts.add(new Cut(jobId, node));
 		}
 		return cuts;
 	}

@@ -3,20 +3,13 @@ package com.bitflippersanonymous.buck.domain;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-public abstract class DbItem<Fields extends Enum<?>> implements Util.DbTags {
+public abstract class DbItem {
 
-	private final Tag[] mTags;
 	private int mId;
-	private final ContentValues mData;
-	
-	public Tag[] getTags() {
-		return mTags;
-	}
+	private final ContentValues mData = new ContentValues();
 	
 	// Out of DB
-	protected DbItem(Tag[] tags, Cursor cursor) {
-		mTags = tags;
-		mData = new ContentValues();
+	protected DbItem(Cursor cursor) {
 		if ( cursor == null || cursor.getCount() == 0 )
 			return;
 		
@@ -29,53 +22,35 @@ public abstract class DbItem<Fields extends Enum<?>> implements Util.DbTags {
 		}
 	}
 
-	protected DbItem(Tag[] tags, int id) {
-		mTags = tags;
-		mData = new ContentValues();
-		mId = id;
+	protected DbItem() {
+		mId = -1;
 	}
 
 	public int getId() {
 		return mId;
 	}
 	
-
 	public void setId(int id) {
 		mId = id;
 	}
 
-	//TODO: Check that Tag matches type
-	public String getAsString(Fields field) {
+	public String getAsString(Enum<?> field) {
 		return mData.getAsString(field.name());
 	}
 
-	public Integer getAsInteger(Fields field) {
+	public Integer getAsInteger(Enum<?> field) {
 		return mData.getAsInteger(field.name());
 	}
 	
-	public boolean put(String key, String value) {
-		for ( Tag tag : mTags ) {
-			if ( key.equals(tag.getKey()) ) {
-				switch ( tag.getValue() ) {
-				case integer:
-					mData.put(key, Integer.valueOf(value)); // Throws
-					return true;
-				case text:
-					mData.put(key, value);
-					return true;
-				default:
-					break;
-				}
-			}
-		}
-		return false;
+	public void put(String field, String value) {
+		mData.put(field, value);
 	}
-
-	public void put(Fields field, String value) {
+	
+	public void put(Enum<?> field, String value) {
 		mData.put(field.name(), value);
 	}
 	
-	public void put(Fields field, Integer value) {
+	public void put(Enum<?> field, Integer value) {
 		mData.put(field.name(), value);
 	}
 	//

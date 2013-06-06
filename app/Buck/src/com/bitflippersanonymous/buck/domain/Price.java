@@ -5,29 +5,17 @@ import java.util.Comparator;
 import android.database.Cursor;
 
 
-public class Price extends DbItem<Price.Fields> {
+public class Price extends DbItem {
+	public enum Fields { _id, MillId, Length, Rate, Top, Price };
+	public static final String PRICE = "Price";
 
 	private int mLength;
 	private int mTop;
 	private int mPrice;
 	private int mMillId;
 	
-	public enum Fields {MillId, Length, Rate, Top, Price};
-	private static final Tag[] sTags = {
-		new Tag(Fields.MillId, DataType.integer), 
-		new Tag(Fields.Length, DataType.integer), 
-		new Tag(Fields.Rate, DataType.integer),
-		new Tag(Fields.Top, DataType.integer), 
-		new Tag(Fields.Price, DataType.integer)};
-
-	public static final String PRICE = "Price";
-	
-	public static Tag[] getsTags() {
-		return sTags;
-	}
-
 	public Price(Cursor cursor) {
-		super(sTags, cursor);
+		super(cursor);
 		mLength = getAsInteger(Price.Fields.Length);
 		Integer top = getAsInteger(Price.Fields.Top);
 		if ( top != null )
@@ -38,9 +26,7 @@ public class Price extends DbItem<Price.Fields> {
 		mMillId = getAsInteger(Price.Fields.MillId);
 	}
 
-	public Price(int i) {
-		super(sTags, i);
-	}
+	public Price() { }
 
 	public int getMillId() {
 		return mMillId;
