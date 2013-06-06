@@ -44,3 +44,8 @@ Notes:
 	RenamingDelegatingContext 
 	provides a Context in which most functions are handled by an existing Context, but file and database operations are handled by a IsolatedContext. The isolated part uses a test directory and creates special file and directory names. You can control the naming yourself, or let the constructor determine it automatically.
 
+CREATE VIEW "job_totals" AS
+select JobId, count(JobId) as count from Cuts group by JobId
+
+select length, 100 * count(priceid) / count as rate from Cuts, job_totals where job_totals.jobid == cuts.jobid group by cuts.priceid
+
