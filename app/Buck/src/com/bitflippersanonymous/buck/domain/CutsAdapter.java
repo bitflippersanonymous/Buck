@@ -29,48 +29,34 @@ public class CutsAdapter extends BaseAdapter implements ListAdapter {
 
 	// Note: This happens on the UI thread
 	public void swapCursor(Cursor cursor) {
-		mTotal = new JobSummary(-1, TOTAL);
 		mSummaries = new ArrayList<JobSummary>();
-		mSummaries.add(mTotal);
-		
 		Map<Integer, JobSummary> summaries = new HashMap<Integer, JobSummary>();
 		
 		if ( cursor == null || !cursor.moveToFirst() )
 			return;
 		do {
-			Cut cut = new Cut(cursor);
-			Integer priceId = cut.getAsInteger(Cut.Fields.PriceId);
+			JobSummary sum = new JobSummary(cursor);
+			mSummaries.add(sum);
+			
+			Integer priceId = sum.getAsInteger(Cut.Fields.PriceId);
 			if ( priceId == -1 ) continue;
 			
-			Integer length = cut.getAsInteger(Cut.Fields.Length);
-			Integer value = cut.getAsInteger(Cut.Fields.Value);
-			Integer fbm = cut.getAsInteger(Cut.Fields.FBM);
-			
-			Integer rate = 0; // cut.getAsInteger(Cut.Fields.Rate);
+			Integer millId = sum.getAsInteger(Cut.Fields.MillId);
+			Integer value = sum.getAsInteger(Cut.Fields.Value);
+			Integer fbm = sum.getAsInteger(Cut.Fields.FBM);
 
-			// Should sort and group by PriceId to separate by Mill.
-			// FIXME: firewood FBM not set by CutPlanner, ignore for now
-			JobSummary sum = summaries.get(priceId);
-			if ( sum == null ) {
-				StringBuilder name = new StringBuilder();
-				name.append(length).append("'");
-				summaries.put(priceId, sum = new JobSummary(priceId, name.toString()));
+			JobSummary millTotal = summaries.get(millId);
+			if ( millTotal == null ) {
+				summaries.put(millId, millTotal = new JobSummary(millId, "Mill Total"));
 			}
+
+			millTotal.mCount++;
+			millTotal.mValue += value;
+			millTotal.mFBM += fbm;
 			
-			sum.mCount++;
-			sum.mValue += value;
-			sum.mFBM += fbm;
-			mTotal.mCount++;
-			mTotal.mValue += value;
-			mTotal.mFBM += fbm;
 		} while ( cursor.moveToNext() );
 		
 		mSummaries.addAll(summaries.values());
-		for ( JobSummary summary : mSummaries ) {
-			if ( summary.mRate != 0 ) {
-				summary.mRate = summary.mCount / mTotal.mCount;
-			}
-		}
 		Collections.sort(mSummaries, JobSummary.getByPriceId());
 		notifyDataSetChanged();
 	}
@@ -97,7 +83,7 @@ public class CutsAdapter extends BaseAdapter implements ListAdapter {
 			rate.append(summary.mRate);
 		
 		((TextView)convertView.findViewById(R.id.textViewSumName))
-			.setText(summary.getName());
+			.setText(summary.mName);
 		((TextView)convertView.findViewById(R.id.textViewSumRate))
 			.setText(rate);
 		((TextView)convertView.findViewById(R.id.textViewSumCount))

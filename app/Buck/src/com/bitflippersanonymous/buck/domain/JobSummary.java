@@ -2,10 +2,13 @@ package com.bitflippersanonymous.buck.domain;
 
 import java.util.Comparator;
 
-public class JobSummary {
-	
-	final String mName;
-	final int mPriceId;
+import android.database.Cursor;
+
+public class JobSummary extends DbItem {
+	public enum Fields { _id, PriceId, MillId, Name, Rate, Length, FBM,	Value	};
+
+	public final String mName;
+	public final int mPriceId;
 	
 	// Totals for this group
 	public int mCount = 1;
@@ -13,13 +16,15 @@ public class JobSummary {
 	public int mValue = 0;
 	public int mRate = 0;
 	
-	public JobSummary(int priceId, String name) {
+	public JobSummary(int millId, String name) {
 		mPriceId = priceId;
 		mName = name;
 	}
 
-	public String getName() {
-		return mName;
+	public JobSummary(Cursor cursor) {
+		super(cursor);
+		mPriceId = getAsInteger(Fields.PriceId);
+		mName = getAsString(Fields.Name);
 	}
 	
 	private static Comparator<? super JobSummary> sByPriceId = null;
@@ -31,5 +36,10 @@ public class JobSummary {
 				return rhs.mPriceId - lhs.mPriceId;
 			}};
 		return sByPriceId;
+	}
+
+	@Override
+	public String getTableName() {
+		return null;
 	}
 }

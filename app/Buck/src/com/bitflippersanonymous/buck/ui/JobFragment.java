@@ -53,15 +53,6 @@ public class JobFragment extends ListFragment
 		return view;
 	}
 
-	/*
-	private void populateHeader(View view) {
-		final Resources res = getResources();
-		((TextView)view.findViewById(R.id.textViewCutCuts)).setText(res.getString(R.string.cutheader_cuts));
-		((TextView)view.findViewById(R.id.textViewCutBf)).setText(res.getString(R.string.cutheader_bf));
-		((TextView)view.findViewById(R.id.textViewCutValue)).setText(res.getString(R.string.cutheader_value));
-	}
-	*/
-	
 	@Override
 	public void onCreateOptionsMenu (Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.add_menu, menu);

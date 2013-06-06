@@ -94,7 +94,7 @@ public class BuckDatabaseAdapter implements Util.DatabaseBase, Util.InsertItems 
 	}
 	*/
 	
-	// Optionally could set id on item. (Would need to add setId to DbTags interface)
+	// Optionally could set id on item.
 	public long insertItem(DbItem item) {
 		SQLiteDatabase database = mDbHelper.getWritableDatabase();
 		ContentValues values = item.getContentValues();
