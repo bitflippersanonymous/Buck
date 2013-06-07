@@ -138,5 +138,13 @@ public class BuckDatabaseAdapter implements Util.DatabaseBase, Util.InsertItems 
 		return mDbHelper.getWritableDatabase().update(table, values, 
 				Util._ID + "=?", new String[]{String.valueOf(rowId)});
 	}
+
+	public Cursor rawQuery(String sql, String[] binds) {
+		Cursor cursor = mDbHelper.getReadableDatabase().rawQuery(sql, binds);
+		if (cursor != null) {
+			cursor.moveToFirst();
+		}
+		return cursor;
+	}
 	
 }

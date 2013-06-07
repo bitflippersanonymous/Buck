@@ -17,7 +17,8 @@ public class Util {
 	
 	// Define an common interface for db classes for shared strings
 	public interface DatabaseBase {
-		public enum Tables {Mills, Jobs, Prices, Cuts }
+		public enum Tables { Mills, Jobs, Prices, Cuts };
+		public enum Views { Job_Totals };
 	}
 
 	public interface InsertItems {

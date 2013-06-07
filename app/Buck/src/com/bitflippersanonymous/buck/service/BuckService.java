@@ -173,7 +173,8 @@ public class BuckService extends Service  {
 	}
 
 	public Cursor getCuts(int jobId) {
-		return getDbAdapter().fetchCuts(jobId);
+		return getDbAdapter().rawQuery(JobSummary.getSql(), 
+				new String[]{Integer.toString(jobId)});
 	}
 
 
