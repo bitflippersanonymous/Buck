@@ -2,16 +2,10 @@ package com.bitflippersanonymous.buck.domain;
 
 import java.util.Comparator;
 
-import com.bitflippersanonymous.buck.domain.Util.DatabaseBase.Tables;
-import com.bitflippersanonymous.buck.domain.Util.DatabaseBase.Views;
-
 import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteQueryBuilder;
 
 public class JobSummary extends DbItem {
-	public enum Fields { PriceId, MillId, Name, Rate, Length, FBM, Value };
+	public enum Fields { PriceId, MillId, Length, Count, Rate, FBM, Value };
 
 	public final String mName;
 	public final int mPriceId;
@@ -32,16 +26,21 @@ public class JobSummary extends DbItem {
 	public JobSummary(Cursor cursor) {
 		super(cursor);
 		mPriceId = getAsInteger(Fields.PriceId);
-		mMillId = getAsInteger(Fields.PriceId);
-		mName = getAsString(Fields.Name);
+		mMillId = getAsInteger(Fields.MillId);
+		mName = getAsString(Fields.Length);
+		mCount = getAsInteger(Fields.Count);
+		mRate = getAsInteger(Fields.Rate);
+		mFBM = getAsInteger(Fields.FBM);
+		mValue = getAsInteger(Fields.Value);
 	}
-
-	final static String mQuery = "SELECT millid, Name, " +
-			"100 * count(priceid) / count AS rate, " +
-			"Length, FBM, Value" +
+	
+	final static String mQuery = 
+			"SELECT cuts.PriceId, cuts.MillId, prices.Length, count(cuts._id) AS Count, " +
+			"100 * count(priceid) / count AS Rate, " +
+			"FBM, Value " +
 			"FROM Cuts, Prices, job_totals " +
 			"WHERE job_totals.jobid == cuts.jobid " +
-			"AND cuts.priceid = price._id " +
+			"AND cuts.priceid = prices._id " +
 			"AND cuts.jobid == ? " +
 			"GROUP BY cuts.priceid";
 	

@@ -18,7 +18,7 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 public class CutsAdapter extends BaseAdapter implements ListAdapter {
-	final static String TOTAL = "TOTAL";
+	final static String MILL_TOTAL = "Mill Total";
 	
 	JobSummary mTotal;
 	List<JobSummary> mSummaries;
@@ -27,7 +27,6 @@ public class CutsAdapter extends BaseAdapter implements ListAdapter {
 		swapCursor(cursor);
 	}
 
-	// Note: This happens on the UI thread
 	public void swapCursor(Cursor cursor) {
 		mSummaries = new ArrayList<JobSummary>();
 		Map<Integer, JobSummary> summaries = new HashMap<Integer, JobSummary>();
@@ -38,19 +37,20 @@ public class CutsAdapter extends BaseAdapter implements ListAdapter {
 			JobSummary sum = new JobSummary(cursor);
 			mSummaries.add(sum);
 			
-			Integer priceId = sum.getAsInteger(Cut.Fields.PriceId);
+			Integer priceId = sum.getAsInteger(JobSummary.Fields.PriceId);
 			if ( priceId == -1 ) continue;
 			
-			Integer millId = sum.getAsInteger(Cut.Fields.MillId);
-			Integer value = sum.getAsInteger(Cut.Fields.Value);
-			Integer fbm = sum.getAsInteger(Cut.Fields.FBM);
+			Integer millId = sum.getAsInteger(JobSummary.Fields.MillId);
+			Integer count = sum.getAsInteger(JobSummary.Fields.Count);
+			Integer value = sum.getAsInteger(JobSummary.Fields.Value);
+			Integer fbm = sum.getAsInteger(JobSummary.Fields.FBM);
 
 			JobSummary millTotal = summaries.get(millId);
 			if ( millTotal == null ) {
-				summaries.put(millId, millTotal = new JobSummary(millId, "Mill Total"));
+				summaries.put(millId, millTotal = new JobSummary(millId, MILL_TOTAL));
 			}
 
-			millTotal.mCount++;
+			millTotal.mCount += count;
 			millTotal.mValue += value;
 			millTotal.mFBM += fbm;
 			
