@@ -29,35 +29,27 @@ public class CutsAdapter extends BaseAdapter implements ListAdapter {
 
 	public void swapCursor(Cursor cursor) {
 		mSummaries = new ArrayList<JobSummary>();
-		Map<Integer, JobSummary> summaries = new HashMap<Integer, JobSummary>();
+		Map<Integer, JobSummary> millTotals = new HashMap<Integer, JobSummary>();
 		
 		if ( cursor == null || !cursor.moveToFirst() )
 			return;
 		do {
 			JobSummary sum = new JobSummary(cursor);
 			mSummaries.add(sum);
-			
-			Integer priceId = sum.getAsInteger(JobSummary.Fields.PriceId);
-			if ( priceId == -1 ) continue;
-			
-			Integer millId = sum.getAsInteger(JobSummary.Fields.MillId);
-			Integer count = sum.getAsInteger(JobSummary.Fields.Count);
-			Integer value = sum.getAsInteger(JobSummary.Fields.Value);
-			Integer fbm = sum.getAsInteger(JobSummary.Fields.FBM);
 
-			JobSummary millTotal = summaries.get(millId);
+			JobSummary millTotal = millTotals.get(sum.mMillId);
 			if ( millTotal == null ) {
-				summaries.put(millId, millTotal = new JobSummary(millId, MILL_TOTAL));
+				millTotals.put(sum.mMillId, millTotal = new JobSummary(sum.mMillId, MILL_TOTAL));
 			}
 
-			millTotal.mCount += count;
-			millTotal.mValue += value;
-			millTotal.mFBM += fbm;
+			millTotal.mCount += sum.mCount;
+			millTotal.mValue += sum.mValue;
+			millTotal.mFBM += sum.mFBM;
 			
 		} while ( cursor.moveToNext() );
 		
-		mSummaries.addAll(summaries.values());
-		Collections.sort(mSummaries, JobSummary.getByPriceId());
+		mSummaries.addAll(millTotals.values());
+		Collections.sort(mSummaries, JobSummary.getByMillId());
 		notifyDataSetChanged();
 	}
 
@@ -70,7 +62,19 @@ public class CutsAdapter extends BaseAdapter implements ListAdapter {
 	public JobSummary getItem(int position) {
 		return mSummaries.get(position);
 	}
-		
+	
+	@Override
+	public int getItemViewType(int position) {
+		if ( position >= mSummaries.size() )
+			return JobSummary.ViewType.PieceCount.ordinal();
+		return mSummaries.get(position).mViewType.ordinal();
+	}
+	
+	@Override
+	public int getViewTypeCount() {
+		return JobSummary.ViewType.values().length;
+	}
+	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		JobSummary summary = getItem(position);
@@ -79,11 +83,18 @@ public class CutsAdapter extends BaseAdapter implements ListAdapter {
 					R.layout.summary_entry, parent, false);
 
 		StringBuilder rate = new StringBuilder(); 
-		if ( summary.mRate > 0 )
-			rate.append(summary.mRate);
+		rate.append(summary.mCutRate);
+		if ( summary.mPriceRate != null ) {
+			// TODO: Set icon indicating above or below desired rate
+		}
+		
+		StringBuilder name = new StringBuilder();
+		name.append(summary.mName);
+		if ( summary.mPriceId != -1 )
+			name.append("'");
 		
 		((TextView)convertView.findViewById(R.id.textViewSumName))
-			.setText(summary.mName);
+			.setText(name);
 		((TextView)convertView.findViewById(R.id.textViewSumRate))
 			.setText(rate);
 		((TextView)convertView.findViewById(R.id.textViewSumCount))
@@ -94,12 +105,17 @@ public class CutsAdapter extends BaseAdapter implements ListAdapter {
 		sb.append("$").append(summary.mValue);
 		((TextView)convertView.findViewById(R.id.textViewSumValue))
 			.setText(sb);
+		
+		if ( getItemViewType(position) == JobSummary.ViewType.JobCount.ordinal() ) {
+			// TODO: Add drawable under row to make bold line for Total
+		}
+		
 		return convertView;	
 	}
 
 	@Override
 	public long getItemId(int position) {
-		return 0; // TODO: Return db id of Mill/Price?
+		return mSummaries.get(position).mPriceId;
 	}
 
 }

@@ -35,4 +35,4 @@ CREATE TABLE Prices (
 
 DROP VIEW IF EXISTS Job_Totals;
 CREATE VIEW Job_Totals AS
-	select JobId, count(JobId) as count from Cuts group by JobId;
+	SELECT JobId, count(JobId) AS count FROM Cuts WHERE Cuts.PriceId >= 0 GROUP BY JobId ;
