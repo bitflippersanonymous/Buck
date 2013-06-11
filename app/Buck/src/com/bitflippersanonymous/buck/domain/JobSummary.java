@@ -8,9 +8,11 @@ import android.database.sqlite.SQLiteQueryBuilder;
 public class JobSummary extends DbItem {
 	enum ViewType { PieceCount, JobCount };
 	
+	// These go directly to the sql SELECT
 	public enum Fields { 
 		PriceId("Cuts.PriceId"), 
 		MillId("Cuts.MillId"),
+		MillName("Mills.Name"),
 		Length("Prices.Length"),
 		Count("count(cuts._id)"), 
 		PriceRate("Prices.Rate"),
@@ -30,7 +32,8 @@ public class JobSummary extends DbItem {
 	};
 
 	public final ViewType mViewType;
-	public final String mName;
+	public final String mLength;
+	public final String mMillName;
 	public final int mPriceId;
 	public final int mMillId;
 	public int mCount = 0;
@@ -41,11 +44,12 @@ public class JobSummary extends DbItem {
 	
 	
 	// Used for the Mill Total rows
-	public JobSummary(int millId, String name) {
+	public JobSummary(int millId, String millName) {
 		mViewType = ViewType.JobCount;
 		mPriceId = -1;
 		mMillId = millId;
-		mName = name;
+		mMillName = millName;
+		mLength = null;
 	}
 
 	public JobSummary(Cursor cursor) {
@@ -53,7 +57,8 @@ public class JobSummary extends DbItem {
 		mViewType = ViewType.PieceCount;
 		mPriceId = getAsInteger(Fields.PriceId);
 		mMillId = getAsInteger(Fields.MillId);
-		mName = getAsString(Fields.Length);
+		mMillName = getAsString(Fields.MillName);
+		mLength = getAsString(Fields.Length);
 		mCount = getAsInteger(Fields.Count);
 		mPriceRate = getAsInteger(Fields.PriceRate);
 		mCutRate = getAsInteger(Fields.CutRate);
@@ -63,7 +68,7 @@ public class JobSummary extends DbItem {
 	
 	final static String mQuery;
 	static {
-		String tables = "Cuts, Prices, Job_totals";
+		String tables = "Cuts, Prices, Job_totals, Mills";
 		Fields[] values = Fields.values();
 		String[] columns = new String[values.length];
 		for ( int i=0; i<values.length; i++ ) {
@@ -71,6 +76,7 @@ public class JobSummary extends DbItem {
 		}
 		String where = "job_totals.jobid == cuts.jobid " +
 				"AND cuts.priceid = prices._id " +
+				"AND prices.millid = mills._id " +
 				"AND cuts.jobid == ? ";
 		String groupBy = "cuts.priceid";
 		String orderBy = "Prices.MillId";

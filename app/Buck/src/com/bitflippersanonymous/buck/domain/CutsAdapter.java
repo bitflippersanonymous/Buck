@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.bitflippersanonymous.buck.R;
+import com.bitflippersanonymous.buck.domain.JobSummary.ViewType;
 
 import android.database.Cursor;
 import android.view.LayoutInflater;
@@ -18,6 +19,8 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 public class CutsAdapter extends BaseAdapter implements ListAdapter {
+	private static final int MILLNAMELENGTH = 16;
+
 	final static String MILL_TOTAL = "Mill Total";
 	
 	JobSummary mTotal;
@@ -37,11 +40,7 @@ public class CutsAdapter extends BaseAdapter implements ListAdapter {
 			JobSummary sum = new JobSummary(cursor);
 			mSummaries.add(sum);
 
-			JobSummary millTotal = millTotals.get(sum.mMillId);
-			if ( millTotal == null ) {
-				millTotals.put(sum.mMillId, millTotal = new JobSummary(sum.mMillId, MILL_TOTAL));
-			}
-
+			JobSummary millTotal = getMillTotal(millTotals, sum);
 			millTotal.mCount += sum.mCount;
 			millTotal.mValue += sum.mValue;
 			millTotal.mFBM += sum.mFBM;
@@ -51,6 +50,15 @@ public class CutsAdapter extends BaseAdapter implements ListAdapter {
 		mSummaries.addAll(millTotals.values());
 		Collections.sort(mSummaries, JobSummary.getByMillId());
 		notifyDataSetChanged();
+	}
+
+	private JobSummary getMillTotal(Map<Integer, JobSummary> millTotals,
+			JobSummary sum) {
+		JobSummary millTotal = millTotals.get(sum.mMillId);
+		if ( millTotal == null ) {
+			millTotals.put(sum.mMillId, millTotal = new JobSummary(sum.mMillId, sum.mMillName));
+		}
+		return millTotal;
 	}
 
 	@Override
@@ -65,9 +73,7 @@ public class CutsAdapter extends BaseAdapter implements ListAdapter {
 	
 	@Override
 	public int getItemViewType(int position) {
-		if ( position >= mSummaries.size() )
-			return JobSummary.ViewType.PieceCount.ordinal();
-		return mSummaries.get(position).mViewType.ordinal();
+		return getItem(position).mViewType.ordinal();
 	}
 	
 	@Override
@@ -83,18 +89,26 @@ public class CutsAdapter extends BaseAdapter implements ListAdapter {
 					R.layout.summary_entry, parent, false);
 
 		StringBuilder rate = new StringBuilder(); 
-		rate.append(summary.mCutRate);
-		if ( summary.mPriceRate != null ) {
-			// TODO: Set icon indicating above or below desired rate
+		StringBuilder total = new StringBuilder();
+		switch ( ViewType.values()[getItemViewType(position)]) {
+		case PieceCount:
+			total.append(summary.mLength + "'");
+
+			rate.append(summary.mCutRate);
+			if ( summary.mPriceRate != null ) {
+				// TODO: Set icon indicating above or below desired rate
+			}
+			break;
+		case JobCount:
+			total.append(summary.mMillName);
+			if ( total.length() > MILLNAMELENGTH ) {
+				total.setLength(MILLNAMELENGTH); 
+				total.append("...");
+			}
 		}
 		
-		StringBuilder name = new StringBuilder();
-		name.append(summary.mName);
-		if ( summary.mPriceId != -1 )
-			name.append("'");
-		
 		((TextView)convertView.findViewById(R.id.textViewSumName))
-			.setText(name);
+			.setText(total);
 		((TextView)convertView.findViewById(R.id.textViewSumRate))
 			.setText(rate);
 		((TextView)convertView.findViewById(R.id.textViewSumCount))
