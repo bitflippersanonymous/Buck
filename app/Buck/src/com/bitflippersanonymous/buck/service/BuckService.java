@@ -63,7 +63,7 @@ public class BuckService extends Service  {
 			mDbAdapter.insertItem(job);
 		}
 		
-		mCutPlanner = new CutPlanner(this, Util.SCRIBNER);
+		mCutPlanner = new CutPlanner(this);
 		
 		// Don't reuse reader until it's done, create new one for each file
 		new DBItemXMLReader(this, mDbAdapter){
