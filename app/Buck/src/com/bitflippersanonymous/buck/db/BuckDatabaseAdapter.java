@@ -10,6 +10,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.bitflippersanonymous.buck.domain.Cut;
+import com.bitflippersanonymous.buck.domain.Util.DbContent;
 import com.bitflippersanonymous.buck.domain.DbItem;
 import com.bitflippersanonymous.buck.domain.Mill;
 import com.bitflippersanonymous.buck.domain.Price;
@@ -95,19 +96,19 @@ public class BuckDatabaseAdapter implements Util.DatabaseBase, Util.InsertItems 
 	*/
 	
 	// Optionally could set id on item.
-	public long insertItem(DbItem item) {
+	public long insertItem(DbContent item) {
 		SQLiteDatabase database = mDbHelper.getWritableDatabase();
 		ContentValues values = item.getContentValues();
 		return database.insert(item.getTableName(), null, values);
 	}
 
-	public List<Long> insertItems(List<DbItem> items) {
+	public List<Long> insertItems(List<DbContent> items) {
 		List<Long> idList = new ArrayList<Long>();
 		final SQLiteDatabase database = mDbHelper.getWritableDatabase();
 		try {
 			database.beginTransactionNonExclusive();
 
-			for ( DbItem item : items ) {
+			for ( DbContent item : items ) {
 				idList.add(database.insert(item.getTableName(), null, item.getContentValues()));
 			}
 

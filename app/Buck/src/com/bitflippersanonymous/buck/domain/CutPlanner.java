@@ -27,10 +27,9 @@ public class CutPlanner {
 		private int mMinTopDiameter;
 		private SparseIntArray mWidthCache;
 		
-		public CutPlanner(Context context, String filename) {
-			loadScribner(context, filename);
+		public CutPlanner(Context context) {
+			loadScribner(context, Util.SCRIBNER);
 		}
-		
 		
 		public int getBoardFeet(Dimension dim) {
 			waitTillReady();

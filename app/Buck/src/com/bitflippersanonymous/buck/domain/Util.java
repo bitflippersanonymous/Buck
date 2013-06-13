@@ -35,4 +35,10 @@ public class Util {
 		String getFilename();
 	}
 
+	public interface DbContent {
+		ContentValues getContentValues();
+		String getTableName();
+	}
+
+	
 }

@@ -1,9 +1,11 @@
 package com.bitflippersanonymous.buck.domain;
 
+import com.bitflippersanonymous.buck.domain.Util.DbContent;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 
-public abstract class DbItem {
+public abstract class DbItem implements DbContent {
 
 	private int mId;
 	private final ContentValues mData = new ContentValues();
