@@ -2,6 +2,7 @@ package com.bitflippersanonymous.buck.ui;
 
 
 import android.app.ActionBar;
+import android.app.DialogFragment;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
@@ -12,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -97,7 +99,10 @@ public class MillFragment extends ListFragment
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_add:
-			Toast.makeText(this.getActivity(), "foo", Toast.LENGTH_SHORT).show();
+			getActivity().getFragmentManager().beginTransaction()
+			.replace(R.id.detail_container, DialogMillPrice.newInstance())
+			.addToBackStack(null)
+			.commit();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
