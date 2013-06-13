@@ -100,7 +100,7 @@ public class MillFragment extends ListFragment
 		switch (item.getItemId()) {
 		case R.id.menu_add:
 			getActivity().getFragmentManager().beginTransaction()
-			.replace(R.id.detail_container, DialogMillPrice.newInstance())
+			.add(R.id.detail_container, DialogMillPrice.newInstance())
 			.addToBackStack(null)
 			.commit();
 			return true;

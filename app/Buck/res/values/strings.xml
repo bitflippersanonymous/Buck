@@ -36,6 +36,8 @@
     <string name="price_length">Length Feet:</string>
     <string name="price_rate">Rate %:</string>
     <string name="price_value">Value $/MFBM:</string>
+    <string name="price_cancel">Cancel</string>
+    <string name="price_save">Save</string>
     <string name="kerf_title">Kerf</string>
     <string name="kerf_desc">\' trim length</string>
     <string name="top_title">Min Top</string>

@@ -1,74 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:layout_gravity="bottom" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:orientation="horizontal" >
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
 
         <TextView
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/price_length" />
+            android:layout_weight=".5"
+            android:text="@string/price_length"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:text="@string/price_rate"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:text="@string/price_value"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
 
         <EditText
             android:id="@+id/price_length"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight=".5"
+            android:focusable="true"
             android:imeOptions="actionNext"
-            android:inputType="number"
-            android:nextFocusRight="@+id/price_rate" >
-            <requestFocus />
+            android:inputType="numberDecimal" >
         </EditText>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:orientation="horizontal" >
-
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/price_rate" />
 
         <EditText
-            android:id="@id/price_rate"
-            android:layout_width="fill_parent"
+            android:id="@+id/price_rate"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight=".5"
+            android:focusable="true"
             android:imeOptions="actionNext"
-            android:inputType="number"
-            android:nextFocusRight="@+id/price_value" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:orientation="horizontal" >
-
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/price_value" />
+            android:inputType="numberDecimal" />
 
         <EditText
-            android:id="@id/price_value"
-            android:layout_width="fill_parent"
+            android:id="@+id/price_value"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:imeOptions="actionDone"
-            android:inputType="number" />
-    </LinearLayout>
+            android:layout_weight=".5"
+            android:focusable="true"
+            android:inputType="numberDecimal" />
 
-</LinearLayout>
+    </TableRow>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/buttonCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:text="@string/price_cancel" />
+
+        <Button
+            android:id="@+id/buttonSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:text="@string/price_save" />
+    </TableRow>
+
+</TableLayout>
